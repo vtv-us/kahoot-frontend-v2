@@ -15,12 +15,18 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
 
 function Signup() {
   const [values, setValues] = React.useState({
     password: "",
     showPassword: false,
   });
+  const { register, handleSubmit } = useForm();
+  const onSubmit = formValues => {
+    // TO DO
+    console.log(formValues);
+  };
   useEffect(() => {
     document.title = "Sign Up";
   }, []);
@@ -43,15 +49,33 @@ function Signup() {
       <Grid>
         <Paper className="w-[420px] bg-white py-7 px-5 mx-auto">
           <h2 className="text-center mb-5 text-xl font-bold">Sign up with your email</h2>
-          <form action="" className="flex flex-col gap-4">
-            <TextField fullWidth label="Username" placeholder="Enter your username" />
-            <TextField fullWidth label="Email Address" placeholder="Enter your email address" type="email" />
+          <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+            <TextField
+              fullWidth
+              label="Username"
+              placeholder="Enter your username"
+              id="username"
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...register("username")}
+            />
+            <TextField
+              fullWidth
+              label="Email Address"
+              id="email"
+              placeholder="Enter your email address"
+              type="email"
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...register("email")}
+            />
             <FormControl sx={{ width: "100%" }} variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
                 type={values.showPassword ? "text" : "password"}
                 value={values.password}
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...register("password")}
+                name="password"
                 onChange={handleChange("password")}
                 endAdornment={
                   <InputAdornment position="end">
@@ -74,7 +98,11 @@ function Signup() {
               placeholder="Enter your confirm password"
               type="password"
             ></TextField> */}
-            <Button variant="contained" className="bg-green-600 text-white hover:bg-green-700 py-3 text-lg">
+            <Button
+              type="submit"
+              variant="contained"
+              className="bg-green-600 text-white hover:bg-green-700 py-3 text-lg"
+            >
               Sign up
             </Button>
             <FormGroup>

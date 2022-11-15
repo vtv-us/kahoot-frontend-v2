@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable react/jsx-props-no-spreading */
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,
@@ -11,6 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 function Login() {
@@ -18,6 +21,11 @@ function Login() {
     password: "",
     showPassword: false,
   });
+  const { register, handleSubmit } = useForm();
+  const onSubmit = formValues => {
+    // TO DO
+    console.log(formValues);
+  };
   useEffect(() => {
     document.title = "Log In";
   }, []);
@@ -42,8 +50,14 @@ function Login() {
       <Grid>
         <Paper className="w-[420px] bg-white py-7 px-5 mx-auto">
           <h2 className="text-center mb-5 text-xl font-bold">Log in</h2>
-          <form action="" className="flex flex-col gap-4">
-            <TextField fullWidth label="Email Address" placeholder="Enter your email address" type="email" />
+          <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+            <TextField
+              fullWidth
+              label="Email Address"
+              placeholder="Enter your email address"
+              type="email"
+              {...register("email")}
+            />
             <FormControl sx={{ width: "100%" }} variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
               <OutlinedInput
@@ -51,6 +65,7 @@ function Login() {
                 type={values.showPassword ? "text" : "password"}
                 value={values.password}
                 onChange={handleChange("password")}
+                {...register("password")}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -67,8 +82,12 @@ function Login() {
               />
             </FormControl>
 
-            <Button variant="contained" className="bg-green-600 text-white hover:bg-green-700 py-3 text-lg">
-              Sign up
+            <Button
+              type="submit"
+              variant="contained"
+              className="bg-green-600 text-white hover:bg-green-700 py-3 text-lg"
+            >
+              LOG IN
             </Button>
           </form>
           <div className="w-full float-left border-t-[1px] mt-10 text-center ">
