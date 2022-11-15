@@ -1,13 +1,13 @@
 import React from "react";
 import LayoutAuth from "../components/layout/LayoutAuth";
-import Login from "../modules/auth/Login";
+import Signup from "../modules/auth/Sinup";
 
-const LogInPage = () => {
+function RegisterPage() {
   return (
     <LayoutAuth>
-      <Login></Login>
+      <Signup />
     </LayoutAuth>
   );
-};
+}
 
-export default LogInPage;
+export default RegisterPage;
