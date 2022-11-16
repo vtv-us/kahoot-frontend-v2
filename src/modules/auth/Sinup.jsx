@@ -5,6 +5,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Grid,
   IconButton,
   InputAdornment,
@@ -16,13 +17,36 @@ import {
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
+const maxLength = 40;
+const minLength = 5;
+const schemaValidation = yup.object({
+  username: yup
+    .string()
+    .required("Please enter your username")
+    .min(minLength, `Your username must contain from ${minLength}-${maxLength} characters`)
+    .max(maxLength, `Your username must contain from ${minLength}-${maxLength} characters`),
+  email: yup.string().required("Please enter your email").email("This email is invalid"),
+  password: yup
+    .string()
+    .required("Please Enter your password")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+      "Must Contain 8 Characters, one uppercase, one lowercase, one number"
+    ),
+});
 function Signup() {
   const [values, setValues] = React.useState({
     password: "",
     showPassword: false,
   });
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schemaValidation) });
   const onSubmit = formValues => {
     // TO DO
     console.log(formValues);
@@ -55,6 +79,8 @@ function Signup() {
               label="Username"
               placeholder="Enter your username"
               id="username"
+              error={errors?.username != null}
+              helperText={errors?.username && errors.username.message}
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...register("username")}
             />
@@ -64,11 +90,16 @@ function Signup() {
               id="email"
               placeholder="Enter your email address"
               type="email"
+              error={errors?.email != null}
+              helperText={errors?.email && errors.email.message}
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...register("email")}
             />
+            {/* {errors?.email && <div className="text-red-500">{errors.email.message}</div>} */}
             <FormControl sx={{ width: "100%" }} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-password" error={errors?.password != null}>
+                Password
+              </InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
                 type={values.showPassword ? "text" : "password"}
@@ -77,6 +108,8 @@ function Signup() {
                 {...register("password")}
                 name="password"
                 onChange={handleChange("password")}
+                error={errors?.password != null}
+                // helperText={errors?.password && errors.password.message}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -91,6 +124,11 @@ function Signup() {
                 }
                 label="Password"
               />
+              {errors?.password && (
+                <FormHelperText error id="username-error">
+                  {errors.password.message}
+                </FormHelperText>
+              )}
             </FormControl>
             {/* <TextField
               fullWidth
