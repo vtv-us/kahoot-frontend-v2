@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,

@@ -1,7 +1,31 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
 import React from "react";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
+import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import User from "../../components/user/User";
 import Icon from "../../components/icon/Icon";
+import DropdownMenu from "../../components/dropdown/DropdownMenu";
+
+const option = [
+  {
+    icon: <OpenInNewOutlinedIcon />,
+    title: "Home",
+    onClick: () => {},
+  },
+  {
+    icon: <PersonAddAltOutlinedIcon />,
+    title: "Invite members",
+    onClick: () => {},
+  },
+  {
+    icon: <DeleteOutlinedIcon />,
+    title: "Delete",
+    onClick: () => {},
+  },
+];
 
 function GroupItem() {
   return (
@@ -11,8 +35,8 @@ function GroupItem() {
           {/* <User className="bg-gray-400" /> */}
           <User className="bg-gray-400" />
         </div>
-        <Icon className="hidden option-list-item">
-          <MoreVertOutlinedIcon />
+        <Icon className="hidden option-list-item relative">
+          <DropdownMenu data={option} />
         </Icon>
       </div>
       <div className="text-sm group-desc">
