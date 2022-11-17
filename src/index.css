@@ -10,4 +10,17 @@
   .custom-checkbox-label .MuiTypography-root {
     font-size: 14px;
   }
+  .user-header svg {
+    color: white;
+  }
+  .group-desc {
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .group-item:hover .option-list-item {
+    display: block;
+  }
 }
