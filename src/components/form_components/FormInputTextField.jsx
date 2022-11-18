@@ -1,28 +1,20 @@
-// import { TextField } from "@mui/material";
-// import React from "react";
-// import { Controller, useFormContext } from "react-hook-form";
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/prop-types */
+import { TextField } from "@mui/material";
+import React from "react";
+import { Controller } from "react-hook-form";
 
-// function FormInputTextField({ name, label, placeholder, type, id }) {
-//   const control = useFormContext();
-//   return (
-//     <Controller
-//       name={name}
-//       control={control}
-//       render={({ field: { onChange, value }, fieldState: { error }, formState }) => {
-//         <TextField
-//           fullWidth
-//           label={label}
-//           id={id}
-//           placeholder={placeholder}
-//           type={type}
-//           onChange={onChange}
-//           value={value}
-//           inputRef={ref}
-//           name={name}
-//         />;
-//       }}
-//     />
-//   );
-// }
+function FormInputTextField({ control, ...props }) {
+  //   const control = useFormContext();
+  return (
+    <Controller
+      name={props.name}
+      control={control}
+      defaultValue=""
+      render={({ field }) => <TextField fullWidth {...field} {...props} />}
+    />
+  );
+}
 
-// export default FormInputTextField;
+export default FormInputTextField;

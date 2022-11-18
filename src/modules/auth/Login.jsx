@@ -1,27 +1,20 @@
+/* eslint-disable react/self-closing-comp */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  Button,
-  FormControl,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { Button, Grid, Paper } from "@mui/material";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import FormHideShowInput from "../../components/form_components/FormHideShowInput";
+import FormInputTextField from "../../components/form_components/FormInputTextField";
 
 function Login() {
   const [values, setValues] = React.useState({
     password: "",
     showPassword: false,
   });
-  const { register, handleSubmit } = useForm();
+  const { handleSubmit, control } = useForm();
   const onSubmit = formValues => {
     // TO DO
     console.log(formValues);
@@ -51,14 +44,14 @@ function Login() {
         <Paper className="w-[420px] bg-white py-7 px-5 mx-auto">
           <h2 className="text-center mb-5 text-xl font-bold">Log in</h2>
           <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-            <TextField
+            {/* <TextField
               fullWidth
               label="Email Address"
               placeholder="Enter your email address"
               type="email"
               {...register("email")}
-            />
-            <FormControl sx={{ width: "100%" }} variant="outlined">
+            /> */}
+            {/* <FormControl sx={{ width: "100%" }} variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
@@ -80,7 +73,28 @@ function Login() {
                 }
                 label="Password"
               />
-            </FormControl>
+            </FormControl> */}
+            <FormInputTextField
+              name="email"
+              fullWidth
+              label="Email Address"
+              placeholder="Enter your email address"
+              type="email"
+              control={control}
+            ></FormInputTextField>
+            <FormHideShowInput
+              id="outlined-adornment-password"
+              name="password"
+              type={values.showPassword ? "text" : "password"}
+              value={values.password}
+              onChange={handleChange("password")}
+              label="Password"
+              endIcon
+              onIconClick={handleClickShowPassword}
+              onIconMouseDown={handleMouseDownPassword}
+              control={control}
+              icon={values.showPassword ? <VisibilityOff /> : <Visibility />}
+            ></FormHideShowInput>
 
             <Button
               type="submit"

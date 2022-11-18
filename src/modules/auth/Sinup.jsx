@@ -1,3 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/self-closing-comp */
 /* eslint-disable no-console */
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -20,6 +23,8 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import FormInputTextField from "../../components/form_components/FormInputTextField";
+import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 
 const maxLength = 40;
 const minLength = 5;
@@ -47,6 +52,7 @@ function Signup() {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm({ resolver: yupResolver(schemaValidation) });
   const onSubmit = formValues => {
     // TO DO
@@ -75,17 +81,25 @@ function Signup() {
         <Paper className="w-[420px] bg-white py-7 px-5 mx-auto">
           <h2 className="text-center mb-5 text-xl font-bold">Sign up with your email</h2>
           <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-            <TextField
+            {/* <TextField
               fullWidth
               label="Username"
               placeholder="Enter your username"
               id="username"
               error={errors?.username != null}
               helperText={errors?.username && errors.username.message}
-              // eslint-disable-next-line react/jsx-props-no-spreading
               {...register("username")}
-            />
-            <TextField
+            /> */}
+            <FormInputTextField
+              name="username"
+              label="Username"
+              placeholder="Enter your username"
+              id="username"
+              error={errors?.username != null}
+              helperText={errors?.username && errors.username.message}
+              control={control}
+            ></FormInputTextField>
+            {/* <TextField
               fullWidth
               label="Email Address"
               id="email"
@@ -93,15 +107,22 @@ function Signup() {
               type="email"
               error={errors?.email != null}
               helperText={errors?.email && errors.email.message}
-              // eslint-disable-next-line react/jsx-props-no-spreading
               {...register("email")}
-            />
-            {/* {errors?.email && <div className="text-red-500">{errors.email.message}</div>} */}
-            <FormControl sx={{ width: "100%" }} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password" error={errors?.password != null}>
+            /> */}
+            <FormInputTextField
+              name="email"
+              label="Email Address"
+              id="email"
+              placeholder="Enter your email address"
+              type="email"
+              error={errors?.email != null}
+              helperText={errors?.email && errors.email.message}
+              control={control}
+            ></FormInputTextField>
+            {/* <InputLabel htmlFor="outlined-adornment-password" error={errors?.password != null}>
                 Password
-              </InputLabel>
-              <OutlinedInput
+              </InputLabel> */}
+            {/* <OutlinedInput
                 id="outlined-adornment-password"
                 type={values.showPassword ? "text" : "password"}
                 value={values.password}
@@ -124,13 +145,27 @@ function Signup() {
                   </InputAdornment>
                 }
                 label="Password"
-              />
-              {errors?.password && (
+              /> */}
+            <FormHideShowInput
+              id="outlined-adornment-password"
+              type={values.showPassword ? "text" : "password"}
+              value={values.password}
+              name="password"
+              onChange={handleChange("password")}
+              error={errors?.password != null}
+              helperText={errors?.password && errors.password.message}
+              endIcon
+              onIconClick={handleClickShowPassword}
+              onIconMouseDown={handleMouseDownPassword}
+              control={control}
+              label="Password"
+              icon={values.showPassword ? <VisibilityOff /> : <Visibility />}
+            ></FormHideShowInput>
+            {/* {errors?.password && (
                 <FormHelperText error id="username-error">
                   {errors.password.message}
                 </FormHelperText>
-              )}
-            </FormControl>
+              )} */}
             {/* <TextField
               fullWidth
               label="Confirm Password"
