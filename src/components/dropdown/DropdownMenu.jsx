@@ -12,18 +12,21 @@ import useClickOutside from "../../hooks/useClickOutSide";
 function Dropdown({ data }) {
   const { show, setShow, nodeRef } = useClickOutside();
   return (
-    <div className="relative w-full max-w-[400px]" ref={nodeRef}>
-      <div className="cursor-pointer" onClick={() => setShow(!show)}>
+    <div className="relative" ref={nodeRef}>
+      <div className="cursor-pointer w-fit" onClick={() => setShow(!show)}>
         <MoreVertOutlinedIcon />
       </div>
       {show && (
-        <div className=" p-3 rounded-lg absolute top-full w-[175px] bg-white right-[-15px] shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px]">
+        <div className=" p-3 rounded-lg absolute top-full w-[175px] z-10 bg-white right-[-15px] shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px]">
           {data.length > 0 &&
             data.map((item, index) => (
               <div
                 key={index}
                 className="px-1 py-2 hover:bg-gray-200 cursor-pointer rounded-md text-black"
-                onClick={item.onClick}
+                onClick={() => {
+                  item.onClick();
+                  setShow(false);
+                }}
               >
                 {item.icon} <span className="text-sm">{item.title}</span>
               </div>

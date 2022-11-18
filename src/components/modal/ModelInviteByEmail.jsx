@@ -8,7 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PropTypes from "prop-types";
 import Input from "../input/Input";
 
-export default function ModalCreateGroup({ open, handleClose }) {
+export default function ModalInviteByEmail({ open, handleClose }) {
   return (
     <div>
       <Dialog
@@ -18,11 +18,11 @@ export default function ModalCreateGroup({ open, handleClose }) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title" className="font-bold">
-          Create group
+          Invite by email address
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <Input name="name" label="Name" />
+            <Input name="email" label="Email address" type="email" limit={50} />
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mx-auto pb-8">
@@ -41,7 +41,7 @@ export default function ModalCreateGroup({ open, handleClose }) {
     </div>
   );
 }
-ModalCreateGroup.propTypes = {
+ModalInviteByEmail.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
 };

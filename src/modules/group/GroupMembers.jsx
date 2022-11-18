@@ -1,31 +1,56 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { Button } from "@mui/material";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import LayoutMain from "../../components/layout/LayoutMain";
 import GroupBar from "../../components/menu/GroupBar";
 import Table from "../../components/table/Table";
 import Account from "../../components/user/Account";
 import LabelStatus from "../../components/label/LabelStatus";
 import ActionMember from "../../components/action/ActionMember";
+import ModalInvite from "../../components/modal/ModalInvite";
 
 function GroupMembers() {
+  const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    document.title = "Group members";
+  }, []);
   return (
     <LayoutMain className="!bg-white">
       <div className="flex ">
         <GroupBar />
         <div className="px-32 py-8 flex-1 flex flex-col gap-4">
           <div className="flex gap-4">
-            <Button variant="contained" className="w-6 bg-white hover:bg-gray-100">
+            <Button
+              variant="contained"
+              className="w-6 bg-white hover:bg-gray-100"
+              onClick={() => navigate("/groups/owned")}
+            >
               <KeyboardBackspaceOutlinedIcon className="text-black" />
             </Button>
             <div>
               <h1 className="font-bold text-2xl text-gray-800">Group members</h1>
             </div>
           </div>
-          <Button variant="contained bg-blue-700 normal-case text-white font-semibold hover:bg-blue-800 ml-auto w-fit px-4 py-2 mt-4">
+          <Button
+            variant="contained bg-blue-700 normal-case text-white font-semibold hover:bg-blue-800 ml-auto w-fit px-4 py-2 mt-4"
+            onClick={handleClickOpen}
+          >
             Invite
           </Button>
+
+          <ModalInvite open={open} handleClose={handleClose} />
           <Table>
             <thead>
               <tr>
@@ -55,6 +80,61 @@ function GroupMembers() {
                 </td>
                 <td>
                   <ActionMember isPending />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Account username="muvodoi" />
+                </td>
+                <td>
+                  <LabelStatus type="danger">Reject</LabelStatus>
+                </td>
+                <td>
+                  <ActionMember />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Account username="muvodoi" />
+                </td>
+                <td>
+                  <LabelStatus type="danger">Reject</LabelStatus>
+                </td>
+                <td>
+                  <ActionMember />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Account username="muvodoi" />
+                </td>
+                <td>
+                  <LabelStatus type="danger">Reject</LabelStatus>
+                </td>
+                <td>
+                  <ActionMember />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Account username="muvodoi" />
+                </td>
+                <td>
+                  <LabelStatus type="danger">Reject</LabelStatus>
+                </td>
+                <td>
+                  <ActionMember />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Account username="muvodoi" />
+                </td>
+                <td>
+                  <LabelStatus type="danger">Reject</LabelStatus>
+                </td>
+                <td>
+                  <ActionMember />
                 </td>
               </tr>
               <tr>

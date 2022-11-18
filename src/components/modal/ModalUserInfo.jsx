@@ -27,7 +27,7 @@ export default function ModalUserInfo({ open, handleClose = () => {} }) {
               <User className="bg-green-600 w-fit" />
               <table>
                 <thead>
-                  <th> </th>
+                  <th className="w-[100px]"> </th>
                   <th> </th>
                 </thead>
                 <tbody>

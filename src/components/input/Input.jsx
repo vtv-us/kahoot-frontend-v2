@@ -31,8 +31,8 @@ const InputStyles = styled.div`
     color: #84878b;
   }
 `;
-const Input = ({ name = "", type = "text", ...props }) => {
-  const [countdown, setCountdown] = useState(LIMIT_NAME);
+const Input = ({ name = "", label = "", type = "text", limit = LIMIT_NAME, ...props }) => {
+  const [countdown, setCountdown] = useState(limit);
   const [filter, setFilter] = React.useState("");
   const handleChange = e => {
     const { length } = e.target.value;
@@ -45,7 +45,7 @@ const Input = ({ name = "", type = "text", ...props }) => {
   return (
     <InputStyles>
       <label className="font-semibold text-gray-800" htmlFor={name}>
-        Name
+        {label}
       </label>
       <input
         className="!border !border-gray-500 outline-purple-400"
@@ -57,16 +57,20 @@ const Input = ({ name = "", type = "text", ...props }) => {
       />
       <div className="absolute right-5 top-9">{countdown}</div>
       {/* {children} */}
-      <div className={`${filter.length <= 2 ? "" : "hidden"} text-red-500 text-sm`}>
-        Group name must be at least 3 characters
-      </div>
+      {type === "text" && (
+        <div className={`${filter.length <= 2 ? "" : "hidden"} text-red-500 text-sm`}>
+          Group name must be at least 3 characters
+        </div>
+      )}
     </InputStyles>
   );
 };
 Input.propTypes = {
   name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   type: PropTypes.string,
   children: PropTypes.any,
+  limit: PropTypes.number,
 };
 
 export default Input;
