@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/require-default-props */
@@ -5,15 +6,23 @@ import React from "react";
 import { Button } from "@mui/material";
 import PropTypes from "prop-types";
 
-function ButtonMain({ children, className = "", onClick = () => {}, ...props }) {
+function ButtonMain({
+  children,
+  textColor = "text-white",
+  bgColor,
+  hoverColor,
+  className = "",
+  onClick = () => {},
+  ...props
+}) {
   return (
     <Button
       variant="contained"
       onClick={onClick}
-      className={`bg-blue-700 font-semibold hover:bg-blue-800 ${className}`}
+      className={`${bgColor ?? "bg-blue-700"} font-semibold hover:${hoverColor ?? "bg-blue-800"} ${className}`}
       {...props}
     >
-      {children}
+      <div className={`${textColor}`}>{children}</div>
     </Button>
   );
 }

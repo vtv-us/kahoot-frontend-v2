@@ -1,12 +1,13 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import HeaderMain from "./HeaderMain";
 
-function LayoutMain({ children, className = "" }) {
+function LayoutMain({ children, bgColor, className = "" }) {
   return (
     <>
       <HeaderMain />
-      <div className={`bg-gray-200 h-screen mx-auto pt-[58px] ${className}`}>{children}</div>
+      <div className={`${bgColor || "bg-gray-100"} h-screen mx-auto pt-[58px] ${className}`}>{children}</div>
     </>
   );
 }

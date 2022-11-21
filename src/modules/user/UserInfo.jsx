@@ -32,15 +32,15 @@ function UserInfo() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="p-4 rounded-md w-2/4 bg-white shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px]"
+      className="rounded-md w-2/4 bg-white shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px]"
     >
-      <div className="flex justify-between border-gray-500 border-b-2 pb-4">
-        <h2 className="font-bold text-xl">User information</h2>
-        <ButtonMain type="submit" className="bg-green-700 hover:bg-green-800">
+      <div className="px-5 py-2 flex justify-between border-gray-300 border-b-[1.5px]">
+        <h2 className="font-bold text-lg">User information</h2>
+        <ButtonMain type="submit" className="bg-green-700 hover:bg-green-800 h-8 w-[96px]">
           Save
         </ButtonMain>
       </div>
-      <div className="flex gap-4 mt-4">
+      <div className="p-5 flex gap-4 mt-4">
         <div className="w-[185px] h-[136px] bg-blue-400 rounded-lg" />
         <div className="flex flex-col gap-5 w-full">
           <FormInputTextField

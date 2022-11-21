@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import GroupPage from "./pages/GroupPage";
 import GroupMembers from "./modules/group/GroupMembers";
 import UserPage from "./pages/UserPage";
+import InvitationPage from "./pages/InvitationPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/groups/:role" element={<GroupPage />} />
         <Route path="/groups/:id/members" element={<GroupMembers />} />
         <Route path="/user/manage" element={<UserPage />} />
+        <Route path="/invitation" element={<InvitationPage />} />
       </Routes>
     </div>
   );

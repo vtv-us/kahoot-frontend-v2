@@ -8,8 +8,8 @@ function UserManage() {
     document.title = "User manage";
   }, []);
   return (
-    <div className="mx-auto w-[1232px] m-10">
-      <h1 className="font-bold text-2xl mb-4">User profile</h1>
+    <div className="mx-auto w-[1232px] m-10 bg-inherit">
+      <h1 className="font-bold text-3xl mb-4">Setting</h1>
       <div className="flex gap-4 justify-between">
         <UserInfo></UserInfo>
         <ChangePassword></ChangePassword>
