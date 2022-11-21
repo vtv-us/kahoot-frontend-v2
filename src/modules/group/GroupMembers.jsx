@@ -10,18 +10,11 @@ import Account from "../../components/user/Account";
 import LabelStatus from "../../components/label/LabelStatus";
 import ActionMember from "../../components/action/ActionMember";
 import ModalInvite from "../../components/modal/ModalInvite";
+import useToggleModal from "../../hooks/useToggleModal";
 
 function GroupMembers() {
   const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const { open, handleClickOpen, handleClose } = useToggleModal();
 
   useEffect(() => {
     document.title = "Group members";

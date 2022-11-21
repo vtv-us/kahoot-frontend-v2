@@ -6,17 +6,10 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
 import DropdownMenu from "../dropdown/DropdownMenu";
 import ModalUserInfo from "../modal/ModalUserInfo";
+import useToggleModal from "../../hooks/useToggleModal";
 
 function ActionMember({ isPending = false }) {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const { open, handleClickOpen, handleClose } = useToggleModal();
 
   const optionGroupManage = [
     {

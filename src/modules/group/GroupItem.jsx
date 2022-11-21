@@ -14,18 +14,11 @@ import User from "../../components/user/User";
 import Icon from "../../components/icon/Icon";
 import DropdownMenu from "../../components/dropdown/DropdownMenu";
 import ModalInvite from "../../components/modal/ModalInvite";
+import useToggleModal from "../../hooks/useToggleModal";
 
 function GroupItem({ to = "" }) {
   const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const { open, handleClickOpen, handleClose } = useToggleModal();
   const optionGroupMenu = [
     {
       icon: <OpenInNewOutlinedIcon />,
@@ -36,8 +29,7 @@ function GroupItem({ to = "" }) {
       icon: <PersonAddAltOutlinedIcon />,
       title: "Invite members",
       onClick: e => {
-        // handleClickOpen();
-        // e.stopPropagation();
+        handleClickOpen();
       },
     },
     {
@@ -65,7 +57,14 @@ function GroupItem({ to = "" }) {
         elit
       </div>
       <div className="flex-1 flex items-end font-semibold text-gray-800">MUN</div>
-      <ModalInvite open={open} handleClose={handleClose} />
+      <ModalInvite
+        open={open}
+        onClick={e => e.stopPropagation()}
+        handleClose={e => {
+          e.stopPropagation();
+          handleClose();
+        }}
+      />
     </div>
   );
 }

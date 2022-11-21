@@ -5,18 +5,12 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import CopyToClipboard from "react-copy-to-clipboard";
 import ButtonMain from "../button/ButtonMain";
 import ModalInviteByEmail from "../modal/ModelInviteByEmail";
+import useToggleModal from "../../hooks/useToggleModal";
 
 function InviteLinkInput() {
   const [link, setLink] = useState("InviteLinkInput");
   const [copied, setCopied] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const { open, handleClickOpen, handleClose } = useToggleModal();
 
   const onCopy = React.useCallback(() => {
     setCopied(true);

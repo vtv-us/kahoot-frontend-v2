@@ -1,0 +1,143 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/self-closing-comp */
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import FormHideShowInput from "../../components/form_components/FormHideShowInput";
+import ButtonMain from "../../components/button/ButtonMain";
+
+const minLength = 8;
+const maxLength = 50;
+const schema = yup.object({
+  password: yup
+    .string()
+    .min(minLength, `password must be at least ${minLength} characters`)
+    .required("Please Enter your password")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+      "Must Contain 8 Characters, one uppercase, one lowercase, one number"
+    ),
+  newPassword: yup
+    .string()
+    .min(minLength, `password must be at least ${minLength} characters`)
+    .required("Please Enter your password")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+      "Must Contain 8 Characters, one uppercase, one lowercase, one number"
+    ),
+  confirmPassword: yup.string().oneOf([yup.ref("newPassword"), null], "Passwords must match"),
+});
+function ChangePassword() {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: "onChange",
+  });
+  const [values, setValues] = React.useState({
+    showPassword: false,
+    showNewPassword: false,
+    showConfirmPassword: false,
+  });
+  const onSubmit = formValues => {
+    // TO DO
+    console.log(formValues);
+  };
+
+  const handleClickShowPassword = type => {
+    switch (type) {
+      case "password":
+        setValues({
+          ...values,
+          showPassword: !values.showPassword,
+        });
+        break;
+      case "confirmPassword":
+        setValues({
+          ...values,
+          showConfirmPassword: !values.showConfirmPassword,
+        });
+        break;
+      case "newPassword":
+        setValues({
+          ...values,
+          showNewPassword: !values.showNewPassword,
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
+  const handleChange = prop => event => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+  const handleMouseDownPassword = event => {
+    event.preventDefault();
+  };
+  return (
+    <div className="p-4 rounded-md w-2/4 bg-white shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px]">
+      <div className="flex justify-between border-gray-500 border-b-2 pb-4">
+        <h2 className="font-bold text-xl">Change password</h2>
+      </div>
+      <div className="flex gap-4 mt-4 ">
+        <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit(onSubmit)}>
+          <FormHideShowInput
+            id="password"
+            name="password"
+            type={values.showPassword ? "text" : "password"}
+            onChange={handleChange("password")}
+            label="Old Password"
+            endIcon
+            onIconClick={() => handleClickShowPassword("password")}
+            onIconMouseDown={handleMouseDownPassword}
+            control={control}
+            icon={values.showPassword ? <VisibilityOff /> : <Visibility />}
+            error={errors?.password != null}
+            helperText={errors?.password && errors.password.message}
+          ></FormHideShowInput>
+          <div className="flex gap-4">
+            <FormHideShowInput
+              id="new-password"
+              name="newPassword"
+              type={values.showNewPassword ? "text" : "password"}
+              onChange={handleChange("newPassword")}
+              label="New Password"
+              endIcon
+              onIconClick={() => handleClickShowPassword("newPassword")}
+              onIconMouseDown={handleMouseDownPassword}
+              control={control}
+              error={errors?.newPassword != null}
+              helperText={errors?.newPassword && errors.newPassword.message}
+              icon={values.showNewPassword ? <VisibilityOff /> : <Visibility />}
+            ></FormHideShowInput>
+            <FormHideShowInput
+              id="confirm-password"
+              name="confirmPassword"
+              type={values.showConfirmPassword ? "text" : "password"}
+              onChange={handleChange("confirmPassword")}
+              label="Confirm Password"
+              endIcon
+              onIconClick={() => handleClickShowPassword("confirmPassword")}
+              onIconMouseDown={handleMouseDownPassword}
+              control={control}
+              error={errors?.confirmPassword != null}
+              helperText={errors?.confirmPassword && errors.confirmPassword.message}
+              icon={values.showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+            ></FormHideShowInput>
+          </div>
+
+          <ButtonMain type="submit" className="bg-green-700 hover:bg-green-800 w-30 mx-auto">
+            Save change
+          </ButtonMain>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default ChangePassword;

@@ -14,14 +14,15 @@ function Login() {
     password: "",
     showPassword: false,
   });
+  useEffect(() => {
+    document.title = "Log In";
+  }, []);
   const { handleSubmit, control } = useForm();
   const onSubmit = formValues => {
     // TO DO
     console.log(formValues);
   };
-  useEffect(() => {
-    document.title = "Log In";
-  }, []);
+
   const handleClickShowPassword = () => {
     setValues({
       ...values,
@@ -44,36 +45,6 @@ function Login() {
         <Paper className="w-[420px] bg-white py-7 px-5 mx-auto">
           <h2 className="text-center mb-5 text-xl font-bold">Log in</h2>
           <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-            {/* <TextField
-              fullWidth
-              label="Email Address"
-              placeholder="Enter your email address"
-              type="email"
-              {...register("email")}
-            /> */}
-            {/* <FormControl sx={{ width: "100%" }} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password"
-                type={values.showPassword ? "text" : "password"}
-                value={values.password}
-                onChange={handleChange("password")}
-                {...register("password")}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-              />
-            </FormControl> */}
             <FormInputTextField
               name="email"
               fullWidth

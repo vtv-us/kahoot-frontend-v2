@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-fragments */
 import { Button } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Bell from "../icon/Bell";
 import MenuBar from "../menu/MenuBar";
 import User from "../user/User";
 
 function HeaderMain() {
+  const navigate = useNavigate();
   return (
     <div className="flex items-center justify-between  px-4 py-3 fixed w-full z-50 bg-white shadow-[rgb(0_0_0_/_10%)_0px_2px_4px_0px]">
       <div className=" flex items-center gap-4">
@@ -18,7 +20,7 @@ function HeaderMain() {
         <Button variant="contained" className="bg-blue-700 normal-case px-6">
           Create
         </Button>
-        <User className="bg-green-600" />
+        <User onClick={() => navigate("/user/manage")} className="bg-green-600" />
         <Bell />
       </div>
     </div>

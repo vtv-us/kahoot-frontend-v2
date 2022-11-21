@@ -26,6 +26,7 @@ function Dropdown({ data }) {
                 onClick={() => {
                   item.onClick();
                   setShow(false);
+                  // e.stopPropagation();
                 }}
               >
                 {item.icon} <span className="text-sm">{item.title}</span>

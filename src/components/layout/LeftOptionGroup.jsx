@@ -5,16 +5,10 @@ import DnsOutlinedIcon from "@mui/icons-material/DnsOutlined";
 import HorizontalSplitOutlinedIcon from "@mui/icons-material/HorizontalSplitOutlined";
 import Icon from "../icon/Icon";
 import ModalCreateGroup from "../modal/ModelCreateGroup";
+import useToggleModal from "../../hooks/useToggleModal";
 
 function LeftOptionGroup() {
-  const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const { open, handleClickOpen, handleClose } = useToggleModal();
 
   return (
     <div className="flex gap-4">
