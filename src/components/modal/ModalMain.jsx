@@ -26,7 +26,14 @@ export default function ModalMain({ open, children, handleClose, title = "", but
         <DialogActions className="mx-auto pb-8">
           {buttonList.length > 0 &&
             buttonList.map(item => (
-              <ButtonMain key={item.id} className={item.className || ""} onClick={item.onClick}>
+              <ButtonMain
+                key={item.id}
+                textColor={item.textColor}
+                hoverColor={item.hoverColor}
+                bgColor={item.bgColor}
+                className={item.className || ""}
+                onClick={item.onClick}
+              >
                 {item.title}
               </ButtonMain>
             ))}

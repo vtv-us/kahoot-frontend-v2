@@ -10,13 +10,19 @@ export default function ModalCreateGroup({ open, handleClose }) {
       id: uuid(),
       title: "Cancle",
       onClick: handleClose,
-      className: "bg-gray-200 text-black font-bold hover:bg-gray-300 px-8 normal-case",
+      className: "font-bold px-8 normal-case",
+      bgColor: "bg-gray-100",
+      hoverColor: "bg-gray-200",
+      textColor: "text-gray-800",
     },
     {
       id: uuid(),
       title: "Agree",
       onClick: handleClose,
-      className: "bg-green-700 hover:bg-green-800 text-white font-bold px-8 normal-case",
+      className: "font-bold px-8 normal-case",
+      bgColor: "bg-green-700",
+      hoverColor: "bg-green-800",
+      textColor: "text-white",
     },
   ];
   return (
