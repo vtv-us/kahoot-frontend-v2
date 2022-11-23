@@ -12,7 +12,7 @@ export default function ModalInvite({ handleClose = () => {}, open = false }) {
     {
       id: uuid(),
       title: "Close",
-      className: "font-semibold mx-auto mb-4",
+      className: "font-semibold mx-auto",
       bgColor: "bg-gray-100",
       hoverColor: "bg-gray-200",
       textColor: "text-gray-800",
@@ -20,7 +20,16 @@ export default function ModalInvite({ handleClose = () => {}, open = false }) {
     },
   ];
   return (
-    <ModalMain open={open} handleClose={handleClose} title="Invite link" buttonList={buttonList}>
+    <ModalMain
+      open={open}
+      onClick={e => {
+        console.log("click");
+        e.stopPropagation();
+      }}
+      handleClose={handleClose}
+      title="Invite link"
+      buttonList={buttonList}
+    >
       <InviteLinkInput></InviteLinkInput>
     </ModalMain>
   );

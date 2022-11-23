@@ -1,3 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/require-default-props */
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import Dialog from "@mui/material/Dialog";
@@ -8,7 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PropTypes from "prop-types";
 import ButtonMain from "../button/ButtonMain";
 
-export default function ModalMain({ open, children, handleClose, title = "", buttonList = [] }) {
+export default function ModalMain({ open, children, handleClose, title = "", buttonList = [], ...props }) {
   return (
     <div>
       <Dialog
@@ -17,13 +20,13 @@ export default function ModalMain({ open, children, handleClose, title = "", but
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" className="font-bold">
+        <DialogTitle id="alert-dialog-title" className="font-bold" {...props}>
           {title}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent {...props}>
           <DialogContentText id="alert-dialog-description">{children}</DialogContentText>
         </DialogContent>
-        <DialogActions className="mx-auto pb-8">
+        <DialogActions className="flex items-center justify-center mb-4" {...props}>
           {buttonList.length > 0 &&
             buttonList.map(item => (
               <ButtonMain
@@ -49,4 +52,5 @@ ModalMain.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   buttonList: PropTypes.array.isRequired,
   children: PropTypes.node.isRequired,
+  props: PropTypes.any,
 };

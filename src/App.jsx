@@ -14,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<RegisterPage />} />
         <Route path="/login" element={<LogInPage />} />
+        <Route path="/groups/:id" element={<GroupPage />} />
         <Route path="/groups/:role" element={<GroupPage />} />
         <Route path="/groups/:id/members" element={<GroupMembers />} />
         <Route path="/user/manage" element={<UserPage />} />

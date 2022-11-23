@@ -9,7 +9,7 @@ export default function ModalUserInfo({ open, handleClose = () => {} }) {
     {
       id: uuid(),
       title: "Close",
-      className: "font-semibold mx-auto mb-4",
+      className: "font-semibold mx-auto",
       bgColor: "bg-gray-100",
       hoverColor: "bg-gray-200",
       textColor: "text-gray-800",
