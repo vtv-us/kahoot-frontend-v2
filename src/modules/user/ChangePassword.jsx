@@ -80,9 +80,9 @@ function ChangePassword() {
     event.preventDefault();
   };
   return (
-    <div className=" rounded-md w-2/4 bg-white shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px]">
-      <div className="px-5 py-2 flex justify-between border-gray-300 border-b-[1.5px] h-12">
-        <h2 className="font-bold text-lg">Change password</h2>
+    <div className=" rounded-md w-2/4 bg-white shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px] mx-auto">
+      <div className="px-5 py-4 flex justify-between border-gray-200 border-b-[1.5px] leading-8">
+        <h2 className="font-bold text-lg block">Change password</h2>
       </div>
       <div className="p-5 flex gap-4 mt-4 ">
         <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -131,8 +131,13 @@ function ChangePassword() {
             ></FormHideShowInput>
           </div>
 
-          <ButtonMain type="submit" className="bg-green-700 hover:bg-green-800 w-30 mx-auto mt-4">
-            Save change
+          <ButtonMain
+            type="submit"
+            bgColor="bg-green-700"
+            hoverColor="bg-green-800"
+            className=" w-30 mx-auto mt-4 w-[96px]"
+          >
+            Save
           </ButtonMain>
         </form>
       </div>
