@@ -9,7 +9,7 @@ export default function useUploadImage() {
   const handleChangeImage = files => {
     const formData = new FormData();
     formData.append("file", files);
-    formData.append("upload_preset", "qryswafs");
+    formData.append("upload_preset", process.env.REACT_APP_NEXT_PUBLIC_CLOUDINARY_UNSIGNED_UPLOAD_PRESET);
     const config = {
       onUploadProgress: e => {
         const { loaded, total } = e;
@@ -17,9 +17,15 @@ export default function useUploadImage() {
       },
     };
 
-    axios.post("https://api.cloudinary.com/v1_1/dzflfdnci/image/upload", formData, config).then(response => {
-      setImage(response.data.url);
-    });
+    axios
+      .post(
+        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_NEXT_PUBLIC_CLOUDINARY_CLOUDNAME}/image/upload`,
+        formData,
+        config
+      )
+      .then(response => {
+        setImage(response.data.url);
+      });
   };
   const handleDeleteImage = () => {};
   return {

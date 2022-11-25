@@ -7,6 +7,7 @@ const TableStyles = styled.div`
   overflow-x: auto;
   background-color: white;
   border-radius: 10px;
+  box-shadow: rgb(0 0 0 / 15%) 0px 1px 4px 0px;
   table {
     width: 100%;
   }

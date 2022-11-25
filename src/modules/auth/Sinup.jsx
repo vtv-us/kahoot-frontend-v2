@@ -23,17 +23,20 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
+import { registerUser } from "../../redux/apiRequest";
 
 const maxLength = 40;
 const minLength = 5;
 const schemaValidation = yup.object({
-  username: yup
+  name: yup
     .string()
-    .required("Please enter your username")
-    .min(minLength, `Your username must contain from ${minLength}-${maxLength} characters`)
-    .max(maxLength, `Your username must contain from ${minLength}-${maxLength} characters`),
+    .required("Please enter your name")
+    .min(minLength, `Your name must contain from ${minLength}-${maxLength} characters`)
+    .max(maxLength, `Your name must contain from ${minLength}-${maxLength} characters`),
   email: yup.string().required("Please enter your email").email("This email is invalid"),
   password: yup
     .string()
@@ -48,15 +51,18 @@ function Signup() {
     password: "",
     showPassword: false,
   });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
   } = useForm({ resolver: yupResolver(schemaValidation) });
-  const onSubmit = formValues => {
+  const navigate = useNavigate();
+  const onSubmit = user => {
     // TO DO
-    console.log(formValues);
+    console.log(user);
+    registerUser(user, navigate);
   };
   useEffect(() => {
     document.title = "Sign Up";
@@ -73,7 +79,6 @@ function Signup() {
   const handleMouseDownPassword = event => {
     event.preventDefault();
   };
-  const navigate = useNavigate();
   return (
     <div className="w-[420px] mx-auto">
       <h1 className="text-center text-3xl font-bold my-6">Create an account</h1>
@@ -81,34 +86,16 @@ function Signup() {
         <Paper className="w-[420px] bg-white py-7 px-5 mx-auto">
           <h2 className="text-center mb-5 text-xl font-bold">Sign up with your email</h2>
           <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-            {/* <TextField
-              fullWidth
-              label="Username"
-              placeholder="Enter your username"
-              id="username"
-              error={errors?.username != null}
-              helperText={errors?.username && errors.username.message}
-              {...register("username")}
-            /> */}
             <FormInputTextField
-              name="username"
-              label="Username"
-              placeholder="Enter your username"
-              id="username"
-              error={errors?.username != null}
-              helperText={errors?.username && errors.username.message}
+              name="name"
+              label="Name"
+              placeholder="Enter your name"
+              id="name"
+              error={errors?.name != null}
+              helperText={errors?.name && errors.name.message}
               control={control}
             ></FormInputTextField>
-            {/* <TextField
-              fullWidth
-              label="Email Address"
-              id="email"
-              placeholder="Enter your email address"
-              type="email"
-              error={errors?.email != null}
-              helperText={errors?.email && errors.email.message}
-              {...register("email")}
-            /> */}
+
             <FormInputTextField
               name="email"
               label="Email Address"
@@ -119,33 +106,7 @@ function Signup() {
               helperText={errors?.email && errors.email.message}
               control={control}
             ></FormInputTextField>
-            {/* <InputLabel htmlFor="outlined-adornment-password" error={errors?.password != null}>
-                Password
-              </InputLabel> */}
-            {/* <OutlinedInput
-                id="outlined-adornment-password"
-                type={values.showPassword ? "text" : "password"}
-                value={values.password}
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...register("password")}
-                name="password"
-                onChange={handleChange("password")}
-                error={errors?.password != null}
-                // helperText={errors?.password && errors.password.message}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-              /> */}
+
             <FormHideShowInput
               id="outlined-adornment-password"
               type={values.showPassword ? "text" : "password"}
@@ -161,17 +122,7 @@ function Signup() {
               label="Password"
               icon={values.showPassword ? <VisibilityOff /> : <Visibility />}
             ></FormHideShowInput>
-            {/* {errors?.password && (
-                <FormHelperText error id="username-error">
-                  {errors.password.message}
-                </FormHelperText>
-              )} */}
-            {/* <TextField
-              fullWidth
-              label="Confirm Password"
-              placeholder="Enter your confirm password"
-              type="password"
-            ></TextField> */}
+
             <Button
               type="submit"
               variant="contained"

@@ -33,7 +33,7 @@ function UserInfo() {
   };
 
   const { image, setImage, progress, handleChangeImage, handleDeleteImage } = useUploadImage();
-
+  console.log("env", process.env.REACT_APP_NEXT_PUBLIC_CLOUDINARY_CLOUDNAME);
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

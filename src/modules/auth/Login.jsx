@@ -6,26 +6,32 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Button, Grid, Paper } from "@mui/material";
 import axios from "axios";
 import React, { useEffect } from "react";
+import { useCookies } from "react-cookie";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
+import { loginUser } from "../../redux/apiRequest";
 
 function Login() {
   const [values, setValues] = React.useState({
     password: "",
     showPassword: false,
   });
+  const [cookiesAccess, setCookieAccess] = useCookies(["accessToken"]);
+  const [cookiesRefresh, setCookieRefresh] = useCookies(["refreshToken"]);
   useEffect(() => {
     document.title = "Log In";
   }, []);
+  console.log("accessToken", cookiesAccess);
+  console.log("refreshToken", cookiesRefresh);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { handleSubmit, control } = useForm();
-  const onSubmit = async formValues => {
+  const onSubmit = async account => {
     // TO DO
-    const { email, password } = formValues;
-    const res = await axios.post("/auth/login", { email, password }).then(response => {
-      console.log(response);
-    });
+    loginUser(account, dispatch, navigate, setCookieAccess, setCookieRefresh);
   };
 
   const handleClickShowPassword = () => {
@@ -40,7 +46,6 @@ function Login() {
   const handleMouseDownPassword = event => {
     event.preventDefault();
   };
-  const navigate = useNavigate();
   function handleClick() {
     navigate("/");
   }

@@ -2,7 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { StyledEngineProvider } from "@mui/material";
+import { ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
+import { CookiesProvider } from "react-cookie";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
@@ -11,7 +13,10 @@ root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
       <BrowserRouter>
-        <App />
+        <CookiesProvider>
+          <App />
+        </CookiesProvider>
+        <ToastContainer />
       </BrowserRouter>
     </StyledEngineProvider>
   </React.StrictMode>
