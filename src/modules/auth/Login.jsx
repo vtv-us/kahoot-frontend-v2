@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Button, Grid, Paper } from "@mui/material";
+import axios from "axios";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
@@ -18,9 +20,12 @@ function Login() {
     document.title = "Log In";
   }, []);
   const { handleSubmit, control } = useForm();
-  const onSubmit = formValues => {
+  const onSubmit = async formValues => {
     // TO DO
-    console.log(formValues);
+    const { email, password } = formValues;
+    const res = await axios.post("/auth/login", { email, password }).then(response => {
+      console.log(response);
+    });
   };
 
   const handleClickShowPassword = () => {
