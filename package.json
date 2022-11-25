@@ -80,5 +80,5 @@
       "eslint --config ./.eslintrc.json --ext js --ext ts --ext jsx --ext tsx --fix"
     ]
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "https://kahoot-backend-vtvus.herokuapp.com"
 }
