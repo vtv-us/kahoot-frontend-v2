@@ -23,14 +23,14 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useCookies } from "react-cookie";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 import { registerUser } from "../../redux/apiRequest";
 
 const maxLength = 40;
-const minLength = 5;
+const minLength = 6;
 const schemaValidation = yup.object({
   name: yup
     .string()
@@ -43,7 +43,7 @@ const schemaValidation = yup.object({
     .required("Please Enter your password")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
-      "Must Contain 8 Characters, one uppercase, one lowercase, one number"
+      `Must Contain from ${minLength} characters, one uppercase, one lowercase, one number`
     ),
 });
 function Signup() {
@@ -58,11 +58,13 @@ function Signup() {
     formState: { errors },
     control,
   } = useForm({ resolver: yupResolver(schemaValidation) });
+  const errorMessage = useSelector(state => state.auth.register.errorMsg);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const onSubmit = user => {
     // TO DO
     console.log(user);
-    registerUser(user, navigate);
+    registerUser(user, dispatch, navigate);
   };
   useEffect(() => {
     document.title = "Sign Up";
@@ -85,6 +87,11 @@ function Signup() {
       <Grid>
         <Paper className="w-[420px] bg-white py-7 px-5 mx-auto">
           <h2 className="text-center mb-5 text-xl font-bold">Sign up with your email</h2>
+          {errorMessage && (
+            <div className="bg-red-100 rounded-sm px-4 py-2 text-red-600 mb-4">
+              <h3>{errorMessage}</h3>
+            </div>
+          )}
           <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
             <FormInputTextField
               name="name"

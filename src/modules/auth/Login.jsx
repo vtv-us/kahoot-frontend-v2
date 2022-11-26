@@ -8,7 +8,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
@@ -24,8 +24,8 @@ function Login() {
   useEffect(() => {
     document.title = "Log In";
   }, []);
-  console.log("accessToken", cookiesAccess);
-  console.log("refreshToken", cookiesRefresh);
+  // console.log("accessToken", cookiesAccess);
+  // console.log("refreshToken", cookiesRefresh);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { handleSubmit, control } = useForm();
@@ -33,6 +33,7 @@ function Login() {
     // TO DO
     loginUser(account, dispatch, navigate, setCookieAccess, setCookieRefresh);
   };
+  const errorMessage = useSelector(state => state.auth.login.errorMsg);
 
   const handleClickShowPassword = () => {
     setValues({
@@ -77,6 +78,11 @@ function Login() {
               icon={values.showPassword ? <VisibilityOff /> : <Visibility />}
             ></FormHideShowInput>
 
+            {errorMessage && (
+              <div className="bg-red-100 rounded-sm px-4 py-2 text-red-600">
+                <h3>{errorMessage}</h3>
+              </div>
+            )}
             <Button
               type="submit"
               variant="contained"

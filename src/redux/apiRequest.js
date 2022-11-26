@@ -1,23 +1,27 @@
+/* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/prefer-default-export */
 import axios from "axios";
 import { toast } from "react-toastify";
-import { loginSuccess } from "./authSlice";
+import { loginFailed, loginStart, loginSuccess, registerFailed, registerStart, registerSuccess } from "./authSlice";
 
-export const registerUser = async (user, navigate) => {
+export const registerUser = async (user, dispatch, navigate) => {
   try {
     await axios.post("/auth/register", user);
+    dispatch(registerSuccess(user.email));
     toast.success("Sign up successfully");
-    // navigate("/login");
+    navigate("/verifyaccount");
   } catch (err) {
-    toast.error(err, {
-      pauseOnHover: false,
-      delay: 100,
+    const errorMessage = err.response.data.error;
+    dispatch(registerFailed(errorMessage));
+    toast.error(errorMessage, {
+      autoClose: false,
     });
   }
 };
 
 export const loginUser = async (user, dispatch, navigate, setCookieAccess, setCookieRefresh) => {
+  dispatch(loginStart());
   try {
     const res = await axios.post("/auth/login", user);
 
@@ -27,6 +31,8 @@ export const loginUser = async (user, dispatch, navigate, setCookieAccess, setCo
     setCookieRefresh("refreshToken", res.data?.refresh_token, { path: "/" });
     // navigate("/");
   } catch (err) {
-    console.log(err);
+    const errorMessage = err.response.data.error;
+    dispatch(loginFailed(errorMessage));
+    toast.error(errorMessage, { autoClose: false });
   }
 };

@@ -9,6 +9,7 @@ import GroupMembers from "./modules/group/GroupMembers";
 import UserPage from "./pages/UserPage";
 import InvitationPage from "./pages/InvitationPage";
 import store from "./redux/store";
+import VerifyAccountPage from "./pages/VerifyAccountPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/groups/:id/members" element={<GroupMembers />} />
           <Route path="/user/manage" element={<UserPage />} />
           <Route path="/invitation" element={<InvitationPage />} />
+          <Route path="/verifyaccount" element={<VerifyAccountPage />} />
         </Routes>
       </div>
     </Provider>

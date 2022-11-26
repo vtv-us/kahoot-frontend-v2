@@ -5,8 +5,10 @@ import { StyledEngineProvider } from "@mui/material";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
 import { CookiesProvider } from "react-cookie";
+import { Provider } from "react-redux";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import store from "./redux/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -14,7 +16,9 @@ root.render(
     <StyledEngineProvider injectFirst>
       <BrowserRouter>
         <CookiesProvider>
-          <App />
+          <Provider store={store}>
+            <App />
+          </Provider>
         </CookiesProvider>
         <ToastContainer />
       </BrowserRouter>
