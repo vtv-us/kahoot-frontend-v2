@@ -1,10 +1,20 @@
+/* eslint-disable import/order */
+/* eslint-disable react/require-default-props */
+/* eslint-disable no-unused-vars */
 import * as React from "react";
 import PropTypes from "prop-types";
 import uuid from "react-uuid";
 import Input from "../input/Input";
 import ModalMain from "./ModalMain";
+import { getCurrentUser } from "../../utils/constants";
+import { createGroup } from "../../redux/apiRequest";
+import { useDispatch } from "react-redux";
 
-export default function ModalCreateGroup({ open, handleClose }) {
+export default function ModalCreateGroup({ open, handleClose, handleAgree }) {
+  const [textFieldValue, setTextFieldValue] = React.useState("");
+  const handleOnChange = text => {
+    setTextFieldValue(text);
+  };
   const buttonList = [
     {
       id: uuid(),
@@ -18,7 +28,10 @@ export default function ModalCreateGroup({ open, handleClose }) {
     {
       id: uuid(),
       title: "Agree",
-      onClick: handleClose,
+      onClick: () => {
+        handleAgree(textFieldValue);
+        handleClose();
+      },
       className: "font-bold px-8 normal-case",
       bgColor: "bg-green-700",
       hoverColor: "bg-green-800",
@@ -27,11 +40,12 @@ export default function ModalCreateGroup({ open, handleClose }) {
   ];
   return (
     <ModalMain open={open} handleClose={handleClose} title="Create group" buttonList={buttonList}>
-      <Input name="name" label="Name" />
+      <Input name="name" label="Name" onChange={handleOnChange} />
     </ModalMain>
   );
 }
 ModalCreateGroup.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  handleAgree: PropTypes.func,
 };

@@ -12,6 +12,17 @@ import {
   registerStart,
   registerSuccess,
 } from "./authSlice";
+import {
+  createGroupFailed,
+  createGroupStart,
+  createGroupSuccess,
+  getGroupsCreatedByUserFailed,
+  getGroupsCreatedByUserStart,
+  getGroupsCreatedByUserSuccess,
+  getGroupsUserHaveJoinedFailed,
+  getGroupsUserHaveJoinedStart,
+  getGroupsUserHaveJoinedSuccess,
+} from "./groupSlice";
 
 export const registerUser = async (user, dispatch, navigate) => {
   try {
@@ -46,4 +57,40 @@ export const loginUser = async (user, dispatch, navigate, setCookieAccess, setCo
 };
 export const logoutUser = dispatch => {
   dispatch(logoutSuccess());
+};
+
+export const createGroup = async (groupName, accessToken, dispatch) => {
+  // dispatch(createGroupStart());
+  try {
+    const res = await axios.post("/group", groupName, { headers: { Authorization: `Bearer ${accessToken}` } });
+    // dispatch(createGroupSuccess());
+    console.log("rewwq");
+  } catch (error) {
+    console.log(error);
+    // dispatch(createGroupFailed());
+  }
+};
+
+export const getGroupsCreatedByUser = async (accessToken, dispatch) => {
+  dispatch(getGroupsCreatedByUserStart());
+  try {
+    const res = await axios.get("/group", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    dispatch(getGroupsCreatedByUserSuccess(res.data));
+  } catch (error) {
+    dispatch(getGroupsCreatedByUserFailed());
+  }
+};
+
+export const getGroupsUserHaveJoined = async (accessToken, dispatch) => {
+  dispatch(getGroupsUserHaveJoinedStart());
+  try {
+    const res = await axios.get("/group/joined", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    dispatch(getGroupsUserHaveJoinedSuccess(res.data));
+  } catch (error) {
+    dispatch(getGroupsUserHaveJoinedFailed());
+  }
 };

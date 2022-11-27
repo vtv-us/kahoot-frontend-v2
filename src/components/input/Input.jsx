@@ -31,13 +31,15 @@ const InputStyles = styled.div`
     color: #84878b;
   }
 `;
-const Input = ({ name = "", label = "", type = "text", limit = LIMIT_NAME, ...props }) => {
+
+const Input = ({ name = "", label = "", type = "text", limit = LIMIT_NAME, onChange, ...props }) => {
   const [countdown, setCountdown] = useState(limit);
   const [filter, setFilter] = React.useState("");
   const handleChange = e => {
     const { length } = e.target.value;
     if (length < LIMIT_NAME) {
       setFilter(e.target.value);
+      onChange(filter);
     }
     setCountdown(LIMIT_NAME - length);
   };
@@ -71,6 +73,7 @@ Input.propTypes = {
   type: PropTypes.string,
   children: PropTypes.any,
   limit: PropTypes.number,
+  onChange: PropTypes.func,
 };
 
 export default Input;
