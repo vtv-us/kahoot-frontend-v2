@@ -8,12 +8,14 @@ import ButtonMain from "../../components/button/ButtonMain";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
 import ImageUpload from "../../components/image/UploadImage";
 import useUploadImage from "../../hooks/useUploadImage";
+import { getCurrentUser } from "../../utils/constants";
 
 const schema = yup.object({
   username: yup.string().min(6, "username must be at least 6 characters"),
   email: yup.string().required("Please enter your email").email("Please enter valid email address"),
 });
 function UserInfo() {
+  const user = getCurrentUser();
   const {
     control,
     handleSubmit,
@@ -21,9 +23,9 @@ function UserInfo() {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      username: "ngoctu280801",
-      name: "",
-      email: "ngoctu.280801@gmail.com",
+      // username: "ngoctu280801",
+      name: user?.user?.name,
+      email: user?.user?.email,
     },
     resolver: yupResolver(schema),
   });
@@ -33,7 +35,6 @@ function UserInfo() {
   };
 
   const { image, setImage, progress, handleChangeImage, handleDeleteImage } = useUploadImage();
-  console.log("env", process.env.REACT_APP_NEXT_PUBLIC_CLOUDINARY_CLOUDNAME);
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -56,7 +57,7 @@ function UserInfo() {
           />
         </div>
         <div className="flex flex-col gap-5 w-full">
-          <FormInputTextField
+          {/* <FormInputTextField
             name="username"
             fullWidth
             label="Username"
@@ -65,7 +66,7 @@ function UserInfo() {
             control={control}
             error={errors?.username != null}
             helperText={errors?.username && errors.username.message}
-          />
+          /> */}
           <FormInputTextField
             name="name"
             fullWidth

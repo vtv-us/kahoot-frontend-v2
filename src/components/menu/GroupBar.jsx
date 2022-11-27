@@ -1,8 +1,8 @@
 import React from "react";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { useNavigate, useParams } from "react-router";
 import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router";
 import MenuItem from "./MenuItem";
 import RecentGroup from "./RecentGroup";
 import { JOINED, OWNED } from "../../utils/constants";

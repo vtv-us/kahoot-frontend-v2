@@ -1,13 +1,47 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-fragments */
 import { Button } from "@mui/material";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
+import useToggleModal from "../../hooks/useToggleModal";
+import ButtonMain from "../button/ButtonMain";
 import Bell from "../icon/Bell";
+import DropdownMenu from "../dropdown/DropdownMenu";
 import MenuBar from "../menu/MenuBar";
 import User from "../user/User";
+import { logoutSuccess } from "../../redux/authSlice";
+import { logoutUser } from "../../redux/apiRequest";
 
 function HeaderMain() {
   const navigate = useNavigate();
+  const user = useSelector(state => state.auth.login.currentUser);
+  const dispatch = useDispatch();
+  const { open, handleClickOpen, handleClose } = useToggleModal();
+  const optionUserMenu = [
+    {
+      icon: <AccountCircleIcon />,
+      title: "Setting profile",
+      onClick: () => {
+        navigate("/user/profile");
+      },
+    },
+    {
+      icon: <LogoutIcon />,
+      title: "Log out",
+      onClick: () => {
+        const currentHref = window.location.href.split(process.env.REACT_APP_HOST)[
+          window.location.href.split(process.env.REACT_APP_HOST).length - 1
+        ];
+
+        logoutUser(dispatch);
+        navigate(`${currentHref}`);
+      },
+      className: "text-red-500",
+    },
+  ];
   return (
     <div className="flex items-center justify-between  px-4 py-3 fixed w-full z-50 bg-white shadow-[rgb(0_0_0_/_10%)_0px_2px_4px_0px]">
       <div className=" flex items-center gap-4">
@@ -17,11 +51,32 @@ function HeaderMain() {
         <MenuBar />
       </div>
       <div className="flex gap-4 items-center">
-        <Button variant="contained" className="bg-blue-700 normal-case px-6">
-          Create
-        </Button>
-        <User onClick={() => navigate("/user/manage")} className="bg-green-600" />
-        <Bell />
+        {user ? (
+          <>
+            <Button variant="contained" className="bg-blue-700 normal-case px-6">
+              Create
+            </Button>
+
+            <DropdownMenu data={optionUserMenu}>
+              <User className="bg-green-600" />
+            </DropdownMenu>
+
+            <Bell />
+          </>
+        ) : (
+          <>
+            <Link to="/">
+              <ButtonMain bgColor="bg-green-700" textColor="text-white" hoverColor="bg-green-800">
+                Sign up
+              </ButtonMain>
+            </Link>
+            <Link to="/login">
+              <ButtonMain textColor="text-gray-800" bgColor="bg-white" hoverColor="bg-gray-100">
+                Log in
+              </ButtonMain>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

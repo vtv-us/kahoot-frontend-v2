@@ -19,7 +19,9 @@ function ButtonMain({
     <Button
       variant="contained"
       onClick={onClick}
-      className={`${bgColor ?? "bg-blue-700"} font-semibold hover:${hoverColor ?? "bg-blue-800"} ${className}`}
+      className={`${bgColor ?? "bg-blue-700"} normal-case font-semibold hover:${
+        hoverColor ?? "bg-blue-800"
+      } ${className}`}
       {...props}
     >
       <div className={`${textColor}`}>{children}</div>

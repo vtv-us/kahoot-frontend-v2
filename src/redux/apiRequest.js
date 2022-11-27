@@ -3,7 +3,15 @@
 /* eslint-disable import/prefer-default-export */
 import axios from "axios";
 import { toast } from "react-toastify";
-import { loginFailed, loginStart, loginSuccess, registerFailed, registerStart, registerSuccess } from "./authSlice";
+import {
+  loginFailed,
+  loginStart,
+  loginSuccess,
+  logoutSuccess,
+  registerFailed,
+  registerStart,
+  registerSuccess,
+} from "./authSlice";
 
 export const registerUser = async (user, dispatch, navigate) => {
   try {
@@ -29,10 +37,13 @@ export const loginUser = async (user, dispatch, navigate, setCookieAccess, setCo
     dispatch(loginSuccess(res.data));
     setCookieAccess("accessToken", res.data?.access_token, { path: "/" });
     setCookieRefresh("refreshToken", res.data?.refresh_token, { path: "/" });
-    // navigate("/");
+    navigate("/");
   } catch (err) {
     const errorMessage = err.response.data.error;
     dispatch(loginFailed(errorMessage));
     toast.error(errorMessage, { autoClose: false });
   }
+};
+export const logoutUser = dispatch => {
+  dispatch(logoutSuccess());
 };

@@ -92,7 +92,7 @@ function Login() {
               className="bg-green-600 text-white hover:bg-green-700 py-3 text-lg h-[52px]"
               disabled={isFetching}
             >
-              {isFetching ? <CircularProgress /> : "Log In"}
+              {isFetching ? <CircularProgress /> : "Log in"}
             </Button>
           </form>
           <div className="w-full float-left border-t-[1px] mt-10 text-center ">

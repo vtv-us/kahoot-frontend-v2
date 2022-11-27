@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
+import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import DropdownMenu from "../dropdown/DropdownMenu";
 import ModalUserInfo from "../modal/ModalUserInfo";
 import useToggleModal from "../../hooks/useToggleModal";
@@ -38,7 +39,9 @@ function ActionMember({ isPending = false }) {
       <Button onClick={handleClickOpen} className="hover:bg-white">
         <InfoOutlinedIcon className="cursor-pointer" />
       </Button>
-      <DropdownMenu data={optionGroupManage} />
+      <DropdownMenu data={optionGroupManage}>
+        <MoreVertOutlinedIcon />
+      </DropdownMenu>
       <ModalUserInfo open={open} handleClose={handleClose} />
     </div>
   );

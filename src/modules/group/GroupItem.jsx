@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import User from "../../components/user/User";
 import Icon from "../../components/icon/Icon";
 import DropdownMenu from "../../components/dropdown/DropdownMenu";
@@ -49,7 +50,9 @@ function GroupItem({ to = "" }) {
           <User className="bg-gray-400" />
         </div>
         <Icon onClick={e => e.stopPropagation()} className="hidden option-list-item relative">
-          <DropdownMenu data={optionGroupMenu} />
+          <DropdownMenu data={optionGroupMenu}>
+            <MoreVertOutlinedIcon />
+          </DropdownMenu>
         </Icon>
       </div>
       <div className="text-sm group-desc">

@@ -10,18 +10,20 @@ import UserPage from "./pages/UserPage";
 import InvitationPage from "./pages/InvitationPage";
 import { store } from "./redux/store";
 import VerifyAccountPage from "./pages/VerifyAccountPage";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
     <Provider store={store}>
       <div>
         <Routes>
-          <Route path="/" element={<RegisterPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/signup" element={<RegisterPage />} />
           <Route path="/login" element={<LogInPage />} />
           <Route path="/groups/:id" element={<GroupPage />} />
           <Route path="/groups/:role" element={<GroupPage />} />
           <Route path="/groups/:id/members" element={<GroupMembers />} />
-          <Route path="/user/manage" element={<UserPage />} />
+          <Route path="/user/profile" element={<UserPage />} />
           <Route path="/invitation" element={<InvitationPage />} />
           <Route path="/verifyaccount" element={<VerifyAccountPage />} />
         </Routes>
