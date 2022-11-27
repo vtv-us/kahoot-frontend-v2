@@ -8,7 +8,7 @@ import GroupPage from "./pages/GroupPage";
 import GroupMembers from "./modules/group/GroupMembers";
 import UserPage from "./pages/UserPage";
 import InvitationPage from "./pages/InvitationPage";
-import store from "./redux/store";
+import { store } from "./redux/store";
 import VerifyAccountPage from "./pages/VerifyAccountPage";
 
 function App() {

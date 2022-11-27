@@ -9,9 +9,11 @@ import React, { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router";
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
+
 import { loginUser } from "../../redux/apiRequest";
 
 function Login() {
@@ -34,6 +36,7 @@ function Login() {
     loginUser(account, dispatch, navigate, setCookieAccess, setCookieRefresh);
   };
   const errorMessage = useSelector(state => state.auth.login.errorMsg);
+  const isFetching = useSelector(state => state.auth.login.isFetching);
 
   const handleClickShowPassword = () => {
     setValues({
@@ -86,9 +89,10 @@ function Login() {
             <Button
               type="submit"
               variant="contained"
-              className="bg-green-600 text-white hover:bg-green-700 py-3 text-lg"
+              className="bg-green-600 text-white hover:bg-green-700 py-3 text-lg h-[52px]"
+              disabled={isFetching}
             >
-              LOG IN
+              {isFetching ? <CircularProgress /> : "Log In"}
             </Button>
           </form>
           <div className="w-full float-left border-t-[1px] mt-10 text-center ">

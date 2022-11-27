@@ -34,6 +34,7 @@ const authSlice = createSlice({
       state.login.error = true;
       state.login.errorMsg = action.payload;
       // state.login.errorMsg = "Email or password is incorrect";
+      state.login.currentUser = null;
     },
     registerStart: state => {
       state.register.isFetching = true;
