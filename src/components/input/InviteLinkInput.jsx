@@ -1,14 +1,32 @@
 /* eslint-disable no-unused-vars */
 import { Button } from "@mui/material";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import CopyToClipboard from "react-copy-to-clipboard";
+import axios from "axios";
 import ButtonMain from "../button/ButtonMain";
 import ModalInviteByEmail from "../modal/ModelInviteByEmail";
 import useToggleModal from "../../hooks/useToggleModal";
+import { getCurrentUser } from "../../utils/constants";
 
-function InviteLinkInput() {
-  const [link, setLink] = useState("InviteLinkInput");
+const getLink = async (idGroup, accessToken) => {
+  try {
+    console.log(accessToken);
+    const res = await axios.get(`/group/link/${idGroup}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log("link ne", res.data.group_link);
+    return `${res.data.group_link}`;
+  } catch (error) {
+    console.error(error);
+  }
+  return null;
+};
+function InviteLinkInput({ idGroup }) {
+  const user = getCurrentUser();
+  console.log("link", getLink(idGroup, user.access_token));
+  const [link, setLink] = useState(getLink(idGroup, user.access_token));
   const [copied, setCopied] = useState(false);
   const { open, handleClickOpen, handleClose } = useToggleModal();
 
@@ -41,5 +59,8 @@ function InviteLinkInput() {
     </div>
   );
 }
+InviteLinkInput.propTypes = {
+  idGroup: PropTypes.string.isRequired,
+};
 
 export default InviteLinkInput;

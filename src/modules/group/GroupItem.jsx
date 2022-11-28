@@ -17,7 +17,7 @@ import DropdownMenu from "../../components/dropdown/DropdownMenu";
 import ModalInvite from "../../components/modal/ModalInvite";
 import useToggleModal from "../../hooks/useToggleModal";
 
-function GroupItem({ to = "", groupName = "MUN" }) {
+function GroupItem({ to = "", groupName = "MUN", id = "" }) {
   const navigate = useNavigate();
   const { open, handleClickOpen, handleClose } = useToggleModal();
   const optionGroupMenu = [
@@ -63,6 +63,7 @@ function GroupItem({ to = "", groupName = "MUN" }) {
       <ModalInvite
         open={open}
         onClick={e => e.stopPropagation()}
+        idGroup={id}
         handleClose={e => {
           e.stopPropagation();
           handleClose();
@@ -74,6 +75,7 @@ function GroupItem({ to = "", groupName = "MUN" }) {
 GroupItem.propTypes = {
   to: PropTypes.string,
   groupName: PropTypes.string,
+  id: PropTypes.string,
 };
 
 export default GroupItem;

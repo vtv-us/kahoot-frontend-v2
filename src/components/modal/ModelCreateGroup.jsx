@@ -7,14 +7,25 @@ import uuid from "react-uuid";
 import Input from "../input/Input";
 import ModalMain from "./ModalMain";
 import { getCurrentUser } from "../../utils/constants";
-import { createGroup } from "../../redux/apiRequest";
+import { createGroup, getGroupsCreatedByUser } from "../../redux/apiRequest";
 import { useDispatch } from "react-redux";
+import { getGroupsCreatedByUserStart } from "../../redux/groupSlice";
+import { Navigate, useNavigate } from "react-router";
 
-export default function ModalCreateGroup({ open, handleClose, handleAgree }) {
+export default function ModalCreateGroup({ open, handleClose }) {
   const [textFieldValue, setTextFieldValue] = React.useState("");
   const handleOnChange = text => {
     setTextFieldValue(text);
   };
+  const user = getCurrentUser();
+  const dispatch = useDispatch();
+  const handleAgree = text => {
+    const groupName = {
+      group_name: text,
+    };
+    createGroup(groupName, user.access_token, dispatch);
+  };
+  const navigate = useNavigate();
   const buttonList = [
     {
       id: uuid(),
@@ -47,5 +58,4 @@ export default function ModalCreateGroup({ open, handleClose, handleAgree }) {
 ModalCreateGroup.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  handleAgree: PropTypes.func,
 };

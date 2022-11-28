@@ -59,18 +59,6 @@ export const logoutUser = dispatch => {
   dispatch(logoutSuccess());
 };
 
-export const createGroup = async (groupName, accessToken, dispatch) => {
-  // dispatch(createGroupStart());
-  try {
-    const res = await axios.post("/group", groupName, { headers: { Authorization: `Bearer ${accessToken}` } });
-    // dispatch(createGroupSuccess());
-    console.log("rewwq");
-  } catch (error) {
-    console.log(error);
-    // dispatch(createGroupFailed());
-  }
-};
-
 export const getGroupsCreatedByUser = async (accessToken, dispatch) => {
   dispatch(getGroupsCreatedByUserStart());
   try {
@@ -80,6 +68,17 @@ export const getGroupsCreatedByUser = async (accessToken, dispatch) => {
     dispatch(getGroupsCreatedByUserSuccess(res.data));
   } catch (error) {
     dispatch(getGroupsCreatedByUserFailed());
+  }
+};
+export const createGroup = async (groupName, accessToken, dispatch) => {
+  // dispatch(createGroupStart());
+  try {
+    const res = await axios.post("/group", groupName, { headers: { Authorization: `Bearer ${accessToken}` } });
+    // dispatch(createGroupSuccess());
+    getGroupsCreatedByUser(accessToken, dispatch);
+  } catch (error) {
+    console.log(error);
+    // dispatch(createGroupFailed());
   }
 };
 

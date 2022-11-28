@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Button } from "@mui/material";
@@ -13,14 +14,7 @@ function RecentGroup() {
   const { open, handleClickOpen, handleClose } = useToggleModal();
   const { id } = useParams();
   const navigate = useNavigate();
-  const user = getCurrentUser();
-  const dispatch = useDispatch();
-  const handleAgree = text => {
-    const groupName = {
-      group_name: text,
-    };
-    createGroup(groupName, user.access_token, dispatch);
-  };
+
   return (
     <div className="py-4 px-2">
       <h3 className="font-bold px-2">Recent groups</h3>
@@ -55,7 +49,7 @@ function RecentGroup() {
         <span>Create group</span>
         <span>+</span>
       </Button>
-      <ModalCreateGroup handleClose={handleClose} open={open} handleAgree={handleAgree} />
+      <ModalCreateGroup handleClose={handleClose} open={open} />
     </div>
   );
 }

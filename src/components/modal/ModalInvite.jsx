@@ -7,7 +7,7 @@ import uuid from "react-uuid";
 import InviteLinkInput from "../input/InviteLinkInput";
 import ModalMain from "./ModalMain";
 
-export default function ModalInvite({ handleClose = () => {}, open = false }) {
+export default function ModalInvite({ handleClose = () => {}, idGroup = "", open = false }) {
   const buttonList = [
     {
       id: uuid(),
@@ -30,7 +30,7 @@ export default function ModalInvite({ handleClose = () => {}, open = false }) {
       title="Invite link"
       buttonList={buttonList}
     >
-      <InviteLinkInput></InviteLinkInput>
+      <InviteLinkInput idGroup={idGroup}></InviteLinkInput>
     </ModalMain>
   );
 }
@@ -38,4 +38,5 @@ ModalInvite.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  idGroup: PropTypes.string.isRequired,
 };

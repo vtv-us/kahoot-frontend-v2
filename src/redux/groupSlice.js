@@ -25,9 +25,9 @@ const groupSlice = createSlice({
     createGroupStart: state => {
       state.create.isFetching = true;
     },
-    createGroupSuccess: (state, action) => {
+    createGroupSuccess: state => {
       state.create.isFetching = false;
-      state.create.error = false;
+      // state.create.error = false;
     },
     createGroupFailed: state => {
       state.create.isFetching = false;
