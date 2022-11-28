@@ -65,7 +65,7 @@ function HeaderMain() {
           </>
         ) : (
           <>
-            <Link to="/">
+            <Link to="/signup">
               <ButtonMain bgColor="bg-green-700" textColor="text-white" hoverColor="bg-green-800">
                 Sign up
               </ButtonMain>

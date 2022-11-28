@@ -51,7 +51,7 @@ function Login() {
     event.preventDefault();
   };
   function handleClick() {
-    navigate("/");
+    navigate("/signup");
   }
   return (
     <div className="w-[420px] mx-auto mt-10">
