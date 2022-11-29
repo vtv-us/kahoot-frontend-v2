@@ -14,20 +14,19 @@ import ModalInvite from "../../components/modal/ModalInvite";
 import useToggleModal from "../../hooks/useToggleModal";
 import { getGroupsMembers } from "../../redux/apiRequest";
 import { getCurrentUser } from "../../utils/constants";
+import MemberGroupItem from "./MemberGroupItem";
 
 function GroupMembers() {
-  // const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState([]);
   const navigate = useNavigate();
   const { open, handleClickOpen, handleClose } = useToggleModal();
   const { id } = useParams("id");
   const user = getCurrentUser();
-  const groupIdBody = {
-    group_id: id,
-  };
 
   useEffect(() => {
-    getGroupsMembers(user.access_token, groupIdBody).then(res => console.log(res));
+    getGroupsMembers(user.access_token, id).then(res => setMembers(res));
   }, []);
+  console.log("member", members);
   useEffect(() => {
     document.title = "Group members";
   }, []);
@@ -65,94 +64,7 @@ function GroupMembers() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  <Account username="ngoctu280801" type="admin" />
-                </td>
-                <td>
-                  <LabelStatus type="success">Active</LabelStatus>
-                </td>
-                <td>
-                  <ActionMember />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Account username="manucian" className="bg-red-500" />
-                </td>
-                <td>
-                  <LabelStatus type="pending">Join pending</LabelStatus>
-                </td>
-                <td>
-                  <ActionMember isPending />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Account username="muvodoi" />
-                </td>
-                <td>
-                  <LabelStatus type="danger">Reject</LabelStatus>
-                </td>
-                <td>
-                  <ActionMember />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Account username="muvodoi" />
-                </td>
-                <td>
-                  <LabelStatus type="danger">Reject</LabelStatus>
-                </td>
-                <td>
-                  <ActionMember />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Account username="muvodoi" />
-                </td>
-                <td>
-                  <LabelStatus type="danger">Reject</LabelStatus>
-                </td>
-                <td>
-                  <ActionMember />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Account username="muvodoi" />
-                </td>
-                <td>
-                  <LabelStatus type="danger">Reject</LabelStatus>
-                </td>
-                <td>
-                  <ActionMember />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Account username="muvodoi" />
-                </td>
-                <td>
-                  <LabelStatus type="danger">Reject</LabelStatus>
-                </td>
-                <td>
-                  <ActionMember />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Account username="muvodoi" />
-                </td>
-                <td>
-                  <LabelStatus type="danger">Reject</LabelStatus>
-                </td>
-                <td>
-                  <ActionMember />
-                </td>
-              </tr>
+              {members.length > 0 && members.map(member => <MemberGroupItem key={member.user_id} data={member} />)}
             </tbody>
           </Table>
         </div>

@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import ButtonMain from "../../components/button/ButtonMain";
 import CircularAvatar from "../../components/user/CircularAvatar";
-import { postData } from "../../redux/apiRequest";
+import { responseInvite } from "../../redux/apiRequest";
 import { getCurrentUser } from "../../utils/constants";
 
 function Invitaion() {
@@ -31,7 +31,7 @@ function Invitaion() {
           bgColor="bg-green-700"
           hoverColor="bg-green-800"
           className="mr-4"
-          onClick={() => postData(id, user.access_token, navigate)}
+          onClick={() => responseInvite(id, user.access_token, navigate)}
         >
           Accept invitation
         </ButtonMain>

@@ -48,11 +48,9 @@ export const logoutUser = dispatch => {
   dispatch(logoutSuccess());
 };
 
-export const postData = async (id, accessToken, navigate) => {
-  console.log("accessToken", accessToken);
-  console.log("link", `/group/${id}`);
+export const responseInvite = async (id, accessToken, navigate) => {
   try {
-    await axios.post(`/group/${id}`, { headers: { Authorization: `Bearer ${accessToken}` } });
+    await axios.post(`/group/${id}`, {}, { headers: { Authorization: `Bearer ${accessToken}` } });
     navigate(`/groups/${id}/members`);
   } catch (error) {
     console.log(error);
@@ -61,10 +59,9 @@ export const postData = async (id, accessToken, navigate) => {
 
 export const getGroupsMembers = async (accessToken, groupIdBody) => {
   try {
-    const res = await axios.get("http://localhost:8080/group/member", groupIdBody, {
+    const res = await axios.get(`/group/${groupIdBody}/member`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log(res.data);
     return res.data;
   } catch (error) {
     console.log(error);

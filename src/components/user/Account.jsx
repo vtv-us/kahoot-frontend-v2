@@ -8,7 +8,7 @@ function Account({ username = "", type = "", className = "bg-green-600" }) {
     <div className="flex gap-2 items-center">
       <User className={`${className}`} />
       <span>{username}</span>
-      {type === "admin" && <span className="text-sm bg-gray-100 text-gray-700 px-2 py-2/4 rounded-sm">Admin</span>}
+      <span className="text-sm bg-gray-100 text-gray-700 px-2 py-2/4 rounded-sm">{type}</span>
     </div>
   );
 }
