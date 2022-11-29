@@ -37,7 +37,7 @@ function HeaderMain() {
         ];
 
         logoutUser(dispatch);
-        navigate(`${currentHref}`);
+        navigate(`/login`);
       },
       className: "text-red-500",
     },

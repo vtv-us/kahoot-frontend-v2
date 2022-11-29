@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { Button } from "@mui/material";
 import React from "react";
 import DnsOutlinedIcon from "@mui/icons-material/DnsOutlined";
@@ -7,9 +7,8 @@ import Icon from "../icon/Icon";
 import ModalCreateGroup from "../modal/ModelCreateGroup";
 import useToggleModal from "../../hooks/useToggleModal";
 
-function LeftOptionGroup() {
+function LeftOptionGroup({ handleCreateGroup }) {
   const { open, handleClickOpen, handleClose } = useToggleModal();
-
   return (
     <div className="flex gap-4">
       <Icon isActive>
@@ -21,7 +20,7 @@ function LeftOptionGroup() {
       <Button variant="contained" onClick={handleClickOpen} className="bg-blue-700 normal-case px-6 font-bold">
         Create group
       </Button>
-      <ModalCreateGroup handleClose={handleClose} open={open} />
+      <ModalCreateGroup handleClose={handleClose} open={open} handleAgree={handleCreateGroup} />
     </div>
   );
 }

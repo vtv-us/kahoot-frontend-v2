@@ -34,12 +34,10 @@ const InputStyles = styled.div`
 
 const Input = ({ name = "", label = "", type = "text", limit = LIMIT_NAME, onChange, ...props }) => {
   const [countdown, setCountdown] = useState(limit);
-  const [filter, setFilter] = React.useState("");
   const handleChange = e => {
     const { length } = e.target.value;
     if (length < LIMIT_NAME) {
-      setFilter(e.target.value);
-      onChange(filter);
+      onChange(e.target.value);
     }
     setCountdown(LIMIT_NAME - length);
   };
@@ -55,15 +53,14 @@ const Input = ({ name = "", label = "", type = "text", limit = LIMIT_NAME, onCha
         type={type}
         {...props}
         onChange={handleChange}
-        value={filter}
       />
       <div className="absolute right-5 top-9">{countdown}</div>
       {/* {children} */}
-      {type === "text" && (
+      {/* {type === "text" && (
         <div className={`${filter.length <= 2 ? "" : "hidden"} text-red-500 text-sm`}>
           Group name must be at least 3 characters
         </div>
-      )}
+      )} */}
     </InputStyles>
   );
 };

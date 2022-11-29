@@ -14,7 +14,6 @@ function RecentGroup() {
   const { open, handleClickOpen, handleClose } = useToggleModal();
   const { id } = useParams();
   const navigate = useNavigate();
-
   return (
     <div className="py-4 px-2">
       <h3 className="font-bold px-2">Recent groups</h3>
