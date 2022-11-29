@@ -11,7 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PropTypes from "prop-types";
 import ButtonMain from "../button/ButtonMain";
 
-export default function ModalMain({ open, children, handleClose, title = "", buttonList = [], ...props }) {
+export default function ModalMain({ open, children, handleClose, title, buttonList, ...props }) {
   return (
     <div>
       <Dialog
@@ -20,27 +20,31 @@ export default function ModalMain({ open, children, handleClose, title = "", but
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" className="font-bold" {...props}>
-          {title}
-        </DialogTitle>
+        {title && (
+          <DialogTitle id="alert-dialog-title" className="font-bold" {...props}>
+            {title}
+          </DialogTitle>
+        )}
         <DialogContent {...props}>
           <DialogContentText id="alert-dialog-description">{children}</DialogContentText>
         </DialogContent>
-        <DialogActions className="flex items-center justify-center mb-4" {...props}>
-          {buttonList.length > 0 &&
-            buttonList.map(item => (
-              <ButtonMain
-                key={item.id}
-                textColor={item.textColor}
-                hoverColor={item.hoverColor}
-                bgColor={item.bgColor}
-                className={item.className || ""}
-                onClick={item.onClick}
-              >
-                {item.title}
-              </ButtonMain>
-            ))}
-        </DialogActions>
+        {buttonList && (
+          <DialogActions className="flex items-center justify-center mb-4" {...props}>
+            {buttonList.length > 0 &&
+              buttonList.map(item => (
+                <ButtonMain
+                  key={item.id}
+                  textColor={item.textColor}
+                  hoverColor={item.hoverColor}
+                  bgColor={item.bgColor}
+                  className={item.className || ""}
+                  onClick={item.onClick}
+                >
+                  {item.title}
+                </ButtonMain>
+              ))}
+          </DialogActions>
+        )}
       </Dialog>
     </div>
   );

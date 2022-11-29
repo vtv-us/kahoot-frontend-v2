@@ -1,20 +1,42 @@
+/* eslint-disable no-useless-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable spaced-comment */
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import ButtonMain from "../../components/button/ButtonMain";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
 import ImageUpload from "../../components/image/UploadImage";
 import useUploadImage from "../../hooks/useUploadImage";
 import { getCurrentUser } from "../../utils/constants";
+import { updateCurrentUser } from "../../redux/authSlice";
+import useToggleModal from "../../hooks/useToggleModal";
+import ModalFetching from "../../components/modal/ModalFetching";
+
+const updateUserInfo = async (username, accessToken) => {
+  try {
+    const data = {
+      name: username,
+    };
+    const res = await axios.post("/user/profile", data, { headers: { Authorization: `Bearer ${accessToken}` } });
+    return res.data.user;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
 
 const schema = yup.object({
-  username: yup.string().min(6, "username must be at least 6 characters"),
+  name: yup.string().min(6, "Username must be at least 6 characters"),
   email: yup.string().required("Please enter your email").email("Please enter valid email address"),
 });
 function UserInfo() {
+  const [isFetching, setIsFetching] = useState(false);
+  const dispatch = useDispatch();
   const user = getCurrentUser();
   const {
     control,
@@ -29,9 +51,27 @@ function UserInfo() {
     },
     resolver: yupResolver(schema),
   });
+  const handleUpdateUserInfo = async name => {
+    const res = await updateUserInfo(name, user.access_token);
+    const newUser = { ...user };
+    newUser.user = res;
+    // newUser.user = res;
+    dispatch(updateCurrentUser(newUser));
+  };
   const onSubmit = formValues => {
-    //do sth
-    console.log(formValues);
+    const oldValues = {
+      name: user?.user?.name,
+      email: user?.user?.email,
+    };
+    // handle old values
+    if (JSON.stringify(formValues) === JSON.stringify(oldValues)) {
+      return;
+    }
+    setIsFetching(true);
+    handleUpdateUserInfo(formValues.name).then(res => {
+      setIsFetching(false);
+      toast.success("Update user information successfully");
+    });
   };
 
   const { image, setImage, progress, handleChangeImage, handleDeleteImage } = useUploadImage();
@@ -74,8 +114,11 @@ function UserInfo() {
             type="text"
             label="Name"
             control={control}
+            error={errors?.name != null}
+            helperText={errors?.name && errors.name.message}
           />
           <FormInputTextField
+            disabled
             name="email"
             fullWidth
             placeholder="Enter your email address"
@@ -87,6 +130,7 @@ function UserInfo() {
           />
         </div>
       </div>
+      <ModalFetching isFetching={isFetching} />
     </form>
   );
 }
