@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { Button } from "@mui/material";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import LayoutMain from "../../components/layout/LayoutMain";
 import GroupBar from "../../components/menu/GroupBar";
 import Table from "../../components/table/Table";
@@ -11,11 +12,22 @@ import LabelStatus from "../../components/label/LabelStatus";
 import ActionMember from "../../components/action/ActionMember";
 import ModalInvite from "../../components/modal/ModalInvite";
 import useToggleModal from "../../hooks/useToggleModal";
+import { getGroupsMembers } from "../../redux/apiRequest";
+import { getCurrentUser } from "../../utils/constants";
 
 function GroupMembers() {
+  // const [members, setMembers] = useState([]);
   const navigate = useNavigate();
   const { open, handleClickOpen, handleClose } = useToggleModal();
+  const { id } = useParams("id");
+  const user = getCurrentUser();
+  const groupIdBody = {
+    group_id: id,
+  };
 
+  useEffect(() => {
+    getGroupsMembers(user.access_token, groupIdBody).then(res => console.log(res));
+  }, []);
   useEffect(() => {
     document.title = "Group members";
   }, []);

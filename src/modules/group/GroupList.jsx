@@ -36,7 +36,12 @@ function GroupList() {
       {groupList.length &&
         isFetching === false &&
         groupList?.map(item => (
-          <GroupItem key={item.group_id} id={item.group_id} to="/groups/owned/members" groupName={item.group_name} />
+          <GroupItem
+            key={item.group_id}
+            id={item.group_id}
+            to={`/groups/${item.group_id}/members`}
+            groupName={item.group_name}
+          />
         ))}
 
       {groupList.length > 0 && isFetching && new Array(12).fill(0).map(() => <GroupItemSkeleton />)}

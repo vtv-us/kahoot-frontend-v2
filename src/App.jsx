@@ -24,7 +24,7 @@ function App() {
           <Route path="/groups/:role" element={<GroupPage />} />
           <Route path="/groups/:id/members" element={<GroupMembers />} />
           <Route path="/user/profile" element={<UserPage />} />
-          <Route path="/invitation" element={<InvitationPage />} />
+          <Route path="/group/invite/:id" element={<InvitationPage />} />
           <Route path="/verifyaccount" element={<VerifyAccountPage />} />
         </Routes>
       </div>

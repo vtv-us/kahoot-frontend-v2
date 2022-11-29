@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Button } from "@mui/material";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import CopyToClipboard from "react-copy-to-clipboard";
 import axios from "axios";
@@ -12,12 +12,10 @@ import { getCurrentUser } from "../../utils/constants";
 
 const getLink = async (idGroup, accessToken) => {
   try {
-    console.log(accessToken);
     const res = await axios.get(`/group/link/${idGroup}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log("link ne", res.data.group_link);
-    return `${res.data.group_link}`;
+    return res;
   } catch (error) {
     console.error(error);
   }
@@ -25,11 +23,13 @@ const getLink = async (idGroup, accessToken) => {
 };
 function InviteLinkInput({ idGroup }) {
   const user = getCurrentUser();
-  console.log("link", getLink(idGroup, user.access_token));
-  const [link, setLink] = useState(getLink(idGroup, user.access_token));
+  const [link, setLink] = useState("");
+  useEffect(() => {
+    const inviteLink = getLink(idGroup, user.access_token).then(res => setLink(res.data.group_link));
+  }, [link]);
+
   const [copied, setCopied] = useState(false);
   const { open, handleClickOpen, handleClose } = useToggleModal();
-
   const onCopy = React.useCallback(() => {
     setCopied(true);
   }, []);

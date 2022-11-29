@@ -1,9 +1,19 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/self-closing-comp */
-import React from "react";
+import axios from "axios";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 import ButtonMain from "../../components/button/ButtonMain";
 import CircularAvatar from "../../components/user/CircularAvatar";
+import { postData } from "../../redux/apiRequest";
+import { getCurrentUser } from "../../utils/constants";
 
 function Invitaion() {
+  const { id } = useParams("id");
+  const user = getCurrentUser();
+  const navigate = useNavigate();
+
   return (
     <div className="items-center justify-center py-[200px] h-full">
       <div className="flex justify-between w-[150px] m-auto">
@@ -17,7 +27,12 @@ function Invitaion() {
         </h3>
       </div>
       <div className="flex justify-center m-auto w-[400px] mt-7">
-        <ButtonMain bgColor="bg-green-700" hoverColor="bg-green-800" className="mr-4">
+        <ButtonMain
+          bgColor="bg-green-700"
+          hoverColor="bg-green-800"
+          className="mr-4"
+          onClick={() => postData(id, user.access_token, navigate)}
+        >
           Accept invitation
         </ButtonMain>
         <ButtonMain textColor="text-black" bgColor="bg-gray-50" hoverColor="bg-gray-300">

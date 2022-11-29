@@ -93,3 +93,26 @@ export const getGroupsUserHaveJoined = async (accessToken, dispatch) => {
     dispatch(getGroupsUserHaveJoinedFailed());
   }
 };
+export const postData = async (id, accessToken, navigate) => {
+  console.log("accessToken", accessToken);
+  console.log("link", `/group/${id}`);
+  try {
+    await axios.post(`/group/${id}`, { headers: { Authorization: `Bearer ${accessToken}` } });
+    navigate(`/groups/${id}/members`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getGroupsMembers = async (accessToken, groupIdBody) => {
+  try {
+    const res = await axios.get("http://localhost:8080/group/member", groupIdBody, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
