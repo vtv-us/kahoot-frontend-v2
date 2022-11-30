@@ -8,7 +8,6 @@ import { useParams } from "react-router";
 import { JOINED, OWNED } from "../../utils/constants";
 import GroupItem from "./GroupItem";
 import GroupItemSkeleton from "../../components/skeleton/GroupItemSkeleton";
-import { getGroupsCreatedByUser, getGroupsUserHaveJoined } from "../../redux/apiRequest";
 
 function GroupList({ groupList, isFetching }) {
   return (

@@ -1,10 +1,12 @@
+/* eslint-disable react/require-default-props */
+/* eslint-disable react/forbid-prop-types */
 import * as React from "react";
 import uuid from "react-uuid";
 import PropTypes from "prop-types";
 import User from "../user/User";
 import ModalMain from "./ModalMain";
 
-export default function ModalUserInfo({ open, handleClose = () => {} }) {
+export default function ModalUserInfo({ data, member, open, handleClose = () => {} }) {
   const buttonList = [
     {
       id: uuid(),
@@ -22,33 +24,33 @@ export default function ModalUserInfo({ open, handleClose = () => {} }) {
         <User className="bg-green-600 w-fit" />
         <table>
           <thead>
-            <th className="w-[100px]"> </th>
+            <th className="w-[60px]"> </th>
             <th> </th>
           </thead>
           <tbody>
             <tr>
               <td>
-                <b>Username: </b>
+                <b>Name: </b>
               </td>
-              <td>ngoctu280801</td>
+              <td>{member?.user?.name}</td>
             </tr>
             <tr>
               <td>
                 <b>Email:</b>
               </td>
-              <td>ngoctu280801@gmail.com</td>
+              <td>{member?.user?.email}</td>
             </tr>
             <tr>
               <td>
                 <b>Role:</b>
               </td>
-              <td>Admin</td>
+              <td>{data?.role}</td>
             </tr>
             <tr>
               <td>
                 <b>Status:</b>
               </td>
-              <td>Active</td>
+              <td>{data?.status}</td>
             </tr>
           </tbody>
         </table>
@@ -60,4 +62,6 @@ ModalUserInfo.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  data: PropTypes.object,
+  member: PropTypes.object,
 };

@@ -63,7 +63,6 @@ function Signup() {
   const dispatch = useDispatch();
   const onSubmit = user => {
     // TO DO
-    console.log(user);
     registerUser(user, dispatch, navigate);
   };
   useEffect(() => {

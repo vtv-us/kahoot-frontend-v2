@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/jsx-props-no-spreading */
@@ -23,7 +24,6 @@ export default function ModalInvite({ handleClose = () => {}, idGroup = "", open
     <ModalMain
       open={open}
       onClick={e => {
-        console.log("click");
         e.stopPropagation();
       }}
       handleClose={handleClose}
@@ -38,5 +38,5 @@ ModalInvite.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  idGroup: PropTypes.string.isRequired,
+  idGroup: PropTypes.string,
 };

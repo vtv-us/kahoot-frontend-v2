@@ -29,7 +29,7 @@ export default function ModalMain({ open, children, handleClose, title, buttonLi
           <DialogContentText id="alert-dialog-description">{children}</DialogContentText>
         </DialogContent>
         {buttonList && (
-          <DialogActions className="flex items-center justify-center mb-4" {...props}>
+          <DialogActions className="flex items-center justify-center mb-4">
             {buttonList.length > 0 &&
               buttonList.map(item => (
                 <ButtonMain
@@ -52,7 +52,7 @@ export default function ModalMain({ open, children, handleClose, title, buttonLi
 ModalMain.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   // eslint-disable-next-line react/forbid-prop-types
   buttonList: PropTypes.array.isRequired,
   children: PropTypes.node.isRequired,

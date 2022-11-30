@@ -59,7 +59,7 @@ export const responseInvite = async (id, accessToken, navigate) => {
 
 export const getGroupsMembers = async (accessToken, groupIdBody) => {
   try {
-    const res = await axios.get(`/group/${groupIdBody}/member`, {
+    const res = await axios.get(`/group/member/${groupIdBody}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return res.data;
@@ -67,4 +67,82 @@ export const getGroupsMembers = async (accessToken, groupIdBody) => {
     console.log(error);
   }
   return null;
+};
+
+export const getGroupById = async (id, accessToken) => {
+  try {
+    const res = await axios.get(`/group/${id}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const getUserById = async (id, accessToken) => {
+  try {
+    const res = await axios.get(`/user/profile/${id}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const assign = async (user, groupId, role, accessToken, setData) => {
+  const data = {
+    group_id: groupId,
+    user_id: user?.user_id,
+    role,
+  };
+  try {
+    await axios.post("/group/role", data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    getGroupsMembers(accessToken, groupId).then(res => setData(res));
+
+    toast.success("Assigned successfully");
+  } catch (err) {
+    console.log(err);
+    toast.error("Assigned failed");
+  }
+};
+
+export const deleteUserOnGroup = async (userId, groupId, accessToken, setData) => {
+  const data = {
+    group_id: groupId,
+    user_id: userId,
+  };
+  try {
+    await axios.post("/group/kick", data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    getGroupsMembers(accessToken, groupId).then(res => setData(res));
+
+    toast.success("Deleted successfully");
+  } catch (err) {
+    console.log(err);
+    toast.error("Deleted failed");
+  }
+};
+export const leaveGroup = async (groupId, accessToken, navigate) => {
+  try {
+    await axios.post(
+      `/group/${groupId}/leave`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    navigate("/groups/owned");
+
+    toast.success("Leave successfully");
+  } catch (err) {
+    console.log(err);
+    toast.error("Leave failed");
+  }
 };

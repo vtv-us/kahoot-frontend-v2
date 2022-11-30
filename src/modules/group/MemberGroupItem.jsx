@@ -7,41 +7,42 @@ import axios from "axios";
 import ActionMember from "../../components/action/ActionMember";
 import LabelStatus from "../../components/label/LabelStatus";
 import Account from "../../components/user/Account";
-import { getCurrentUser } from "../../utils/constants";
+import { getCurrentUser, PENDING } from "../../utils/constants";
+import { getUserById } from "../../redux/apiRequest";
 
-function MemberGroupItem({ data }) {
+function MemberGroupItem({ data, setGroupList = () => {} }) {
+  // const [dataMember, setDataMember] = useState(data);
   const id = data?.user_id;
   const [member, setMember] = useState({});
   const user = getCurrentUser();
   useEffect(() => {
-    try {
-      axios
-        .get(`/user/profile/${id}`, {
-          headers: { Authorization: `Bearer ${user.access_token}` },
-        })
-        .then(res => setMember(res.data));
-      //   setMember(res.data);
-    } catch (error) {
-      console.error(error);
-    }
+    getUserById(id, user?.access_token).then(res => setMember(res));
   }, []);
-  console.log(data.role);
+
+  const isCurrent = id === user?.user?.user_id;
   return (
     <tr>
       <td>
-        <Account username={member?.user?.name} type={data.role} />
+        <Account username={member?.user?.name} isCurrent={isCurrent} type={data.role} />
       </td>
       <td>
         <LabelStatus type="success">{data.status}</LabelStatus>
       </td>
       <td>
-        <ActionMember />
+        <ActionMember
+          setData={setGroupList}
+          data={data}
+          member={member}
+          isCurrent={isCurrent}
+          isPending={data.status === PENDING}
+        />
       </td>
     </tr>
   );
 }
 MemberGroupItem.propTypes = {
   data: PropTypes.object,
+  setGroupList: PropTypes.func.isRequired,
 };
 
 export default MemberGroupItem;

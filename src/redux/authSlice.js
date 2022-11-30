@@ -57,7 +57,6 @@ const authSlice = createSlice({
       state.login.currentUser = null;
     },
     updateCurrentUser: (state, action) => {
-      console.log(action.payload);
       state.login.currentUser = action.payload;
     },
   },

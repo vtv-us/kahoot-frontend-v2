@@ -26,9 +26,8 @@ function GroupMembers() {
   useEffect(() => {
     getGroupsMembers(user.access_token, id).then(res => setMembers(res));
   }, []);
-  console.log("member", members);
   useEffect(() => {
-    document.title = "Group members";
+    document.title = "Group ";
   }, []);
   return (
     <LayoutMain className="!bg-white">
@@ -64,7 +63,8 @@ function GroupMembers() {
               </tr>
             </thead>
             <tbody>
-              {members.length > 0 && members.map(member => <MemberGroupItem key={member.user_id} data={member} />)}
+              {members.length > 0 &&
+                members.map(member => <MemberGroupItem setGroupList={setMembers} key={member.user_id} data={member} />)}
             </tbody>
           </Table>
         </div>
