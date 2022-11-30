@@ -5,8 +5,34 @@ import { useForm } from "react-hook-form";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
+import { toast } from "react-toastify";
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 import ButtonMain from "../../components/button/ButtonMain";
+import { getCurrentUser } from "../../utils/constants";
+import ModalFetching from "../../components/modal/ModalFetching";
+
+const changePassword = async (oldPassword, newPassword, accessToken, reset) => {
+  try {
+    const data = {
+      old_password: oldPassword,
+      new_password: newPassword,
+    };
+    const res = await axios.post("/auth/change-password", data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    reset({
+      password: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+    toast.success("Update password successfully");
+    return res;
+  } catch (error) {
+    toast.error(error.response.data.error);
+  }
+  return null;
+};
 
 const minLength = 8;
 const maxLength = 50;
@@ -33,19 +59,25 @@ function ChangePassword() {
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     mode: "onChange",
   });
+  const user = getCurrentUser();
+  const [isFetching, setIsFetching] = React.useState(false);
   const [values, setValues] = React.useState({
     showPassword: false,
     showNewPassword: false,
     showConfirmPassword: false,
   });
-  const onSubmit = formValues => {
+  const onSubmit = async formValues => {
     // TO DO
     console.log(formValues);
+    setIsFetching(true);
+    const res = await changePassword(formValues.password, formValues.newPassword, user.access_token, reset);
+    setIsFetching(false);
   };
 
   const handleClickShowPassword = type => {
@@ -139,6 +171,7 @@ function ChangePassword() {
           >
             Save
           </ButtonMain>
+          <ModalFetching isFetching={isFetching} />
         </form>
       </div>
     </div>

@@ -100,13 +100,13 @@ function ActionMember({ data, setData = () => {}, member, isCurrent = false, isP
 
   if (data?.role === "member" && isRole(user, members, "co-owner")) {
     newOption.push(
-      {
-        icon: <AccountCircleIcon />,
-        title: "Assign co-owner",
-        onClick: () => {
-          assign(data, id, "co-owner", user?.access_token, setData);
-        },
-      },
+      // {
+      //   icon: <AccountCircleIcon />,
+      //   title: "Assign co-owner",
+      //   onClick: () => {
+      //     assign(data, id, "co-owner", user?.access_token, setData);
+      //   },
+      // },
       {
         icon: <PersonRemoveAlt1OutlinedIcon />,
         title: "Remove",

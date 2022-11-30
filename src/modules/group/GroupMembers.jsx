@@ -53,7 +53,7 @@ function GroupMembers() {
             Invite
           </Button>
 
-          <ModalInvite open={open} handleClose={handleClose} />
+          <ModalInvite open={open} handleClose={handleClose} idGroup={id} />
           <Table>
             <thead>
               <tr>

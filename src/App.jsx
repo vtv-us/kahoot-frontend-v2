@@ -11,6 +11,7 @@ import InvitationPage from "./pages/InvitationPage";
 import { store } from "./redux/store";
 import VerifyAccountPage from "./pages/VerifyAccountPage";
 import HomePage from "./pages/HomePage";
+import GoogleLoginPage from "./pages/GoogleLoginPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/user/profile" element={<UserPage />} />
           <Route path="/group/invite/:id/:userId" element={<InvitationPage />} />
           <Route path="/verifyaccount" element={<VerifyAccountPage />} />
+          <Route path="/auth/callback/:callback1/:callback2" element={<GoogleLoginPage />} />
         </Routes>
       </div>
     </Provider>

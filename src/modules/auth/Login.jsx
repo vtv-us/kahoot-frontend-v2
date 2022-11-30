@@ -100,10 +100,12 @@ function Login() {
               or
             </b>
           </div>
-          <Button variant="outlined" className="w-full relative py-2">
-            <img src="/google.svg" alt="" className="absolute left-1" />
-            Continue with Google
-          </Button>
+          <a href="http://localhost:8080/auth/google">
+            <Button variant="outlined" className="w-full relative py-2">
+              <img src="/google.svg" alt="" className="absolute left-1" />
+              Continue with Google
+            </Button>
+          </a>
 
           <div className="text-center mt-4">
             Dont have an account?{" "}

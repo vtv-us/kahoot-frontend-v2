@@ -28,18 +28,22 @@ function GroupList({ groupList, isFetching }) {
     //     {groupList.length <= 0 && <>There no groups here</>}
     //   </div>
     // );
-    <div className="grid grid-cols-4 gap-4 mt-10">
+    <div>
       {groupList.length > 0 ? (
-        groupList?.map(item => (
-          <GroupItem
-            key={item.group_id}
-            id={item.group_id}
-            to={`/groups/${item.group_id}/members`}
-            groupName={item.group_name}
-          />
-        ))
+        <div className="grid grid-cols-4 gap-4 mt-10">
+          {groupList?.map(item => (
+            <GroupItem
+              key={item.group_id}
+              id={item.group_id}
+              to={`/groups/${item.group_id}/members`}
+              groupName={item.group_name}
+            />
+          ))}
+        </div>
       ) : (
-        <>There no groups here</>
+        <div className="w-full h-full flex justify-center items-center mt-[200px]">
+          <h2 className="text-4xl font-bold text-gray-400">There is no group here</h2>
+        </div>
       )}
     </div>
   );

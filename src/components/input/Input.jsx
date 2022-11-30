@@ -36,10 +36,10 @@ const Input = ({ name = "", label = "", type = "text", limit = LIMIT_NAME, onCha
   const [countdown, setCountdown] = useState(limit);
   const handleChange = e => {
     const { length } = e.target.value;
-    if (length < LIMIT_NAME) {
+    if (length < limit) {
       onChange(e.target.value);
     }
-    setCountdown(LIMIT_NAME - length);
+    setCountdown(limit - length);
   };
 
   return (

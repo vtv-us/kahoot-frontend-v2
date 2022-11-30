@@ -11,7 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PropTypes from "prop-types";
 import ButtonMain from "../button/ButtonMain";
 
-export default function ModalMain({ open, children, handleClose, title, buttonList, ...props }) {
+export default function ModalMain({ open, children, handleClose, title, buttonList, maxWidth, ...props }) {
   return (
     <div>
       <Dialog
@@ -19,6 +19,7 @@ export default function ModalMain({ open, children, handleClose, title, buttonLi
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        maxWidth={maxWidth}
       >
         {title && (
           <DialogTitle id="alert-dialog-title" className="font-bold" {...props}>
@@ -57,4 +58,5 @@ ModalMain.propTypes = {
   buttonList: PropTypes.array.isRequired,
   children: PropTypes.node.isRequired,
   props: PropTypes.any,
+  maxWidth: PropTypes.string,
 };

@@ -28,12 +28,27 @@ export const registerUser = async (user, dispatch, navigate) => {
   }
 };
 
+export const loginGoogleUser = async (url, dispatch, navigate, setCookieAccess, setCookieRefresh) => {
+  try {
+    const res = await axios.get(url);
+    // toast.success("Login successfully");
+    dispatch(loginSuccess(res.data));
+    setCookieAccess("accessToken", res.data?.access_token, { path: "/" });
+    setCookieRefresh("refreshToken", res.data?.refresh_token, { path: "/" });
+    navigate("/");
+  } catch (error) {
+    const errorMessage = error.response.data.error;
+    dispatch(loginFailed(errorMessage));
+    // toast.error(errorMessage, { autoClose: false });
+  }
+};
+
 export const loginUser = async (user, dispatch, navigate, setCookieAccess, setCookieRefresh) => {
   dispatch(loginStart());
   try {
     const res = await axios.post("/auth/login", user);
 
-    toast.success("Login successfully");
+    // toast.success("Login successfully");
     dispatch(loginSuccess(res.data));
     setCookieAccess("accessToken", res.data?.access_token, { path: "/" });
     setCookieRefresh("refreshToken", res.data?.refresh_token, { path: "/" });
@@ -41,7 +56,7 @@ export const loginUser = async (user, dispatch, navigate, setCookieAccess, setCo
   } catch (err) {
     const errorMessage = err.response.data.error;
     dispatch(loginFailed(errorMessage));
-    toast.error(errorMessage, { autoClose: false });
+    // toast.error(errorMessage, { autoClose: false });
   }
 };
 export const logoutUser = dispatch => {

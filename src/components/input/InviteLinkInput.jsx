@@ -55,7 +55,7 @@ function InviteLinkInput({ idGroup }) {
       <button type="submit" className="text-blue-500 text-center w-full mt-4" onClick={handleClickOpen}>
         <EmailOutlinedIcon /> <span>Invite via email</span>
       </button>
-      <ModalInviteByEmail handleClose={handleClose} open={open} />
+      <ModalInviteByEmail handleClose={handleClose} open={open} groupId={idGroup} />
     </div>
   );
 }
