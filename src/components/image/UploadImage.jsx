@@ -23,6 +23,7 @@ function ImageUpload(props) {
       <input
         type="file"
         name={name}
+        accept="image/*"
         className="hidden-input"
         onChange={e => {
           handleChangeImage(e.target.files[0]);

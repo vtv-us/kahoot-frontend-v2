@@ -32,10 +32,6 @@ function HeaderMain() {
       icon: <LogoutIcon />,
       title: "Log out",
       onClick: () => {
-        const currentHref = window.location.href.split(process.env.REACT_APP_HOST)[
-          window.location.href.split(process.env.REACT_APP_HOST).length - 1
-        ];
-
         logoutUser(dispatch);
         navigate(`/login`);
       },

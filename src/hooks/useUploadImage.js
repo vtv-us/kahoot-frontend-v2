@@ -19,7 +19,6 @@ export default function useUploadImage() {
     console.log(files);
     const formData = new FormData();
     formData.append("file", files);
-    formData.append("upload_preset", process.env.REACT_APP_NEXT_PUBLIC_CLOUDINARY_UNSIGNED_UPLOAD_PRESET);
     const config = {
       // onUploadProgress: e => {
       //   const { loaded, total } = e;

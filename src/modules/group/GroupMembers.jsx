@@ -3,6 +3,7 @@
 import { Button } from "@mui/material";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import React, { useEffect, useState } from "react";
+import uuid from "react-uuid";
 import { useNavigate, useParams } from "react-router-dom";
 import LayoutMain from "../../components/layout/LayoutMain";
 import GroupBar from "../../components/menu/GroupBar";
@@ -15,16 +16,22 @@ import useToggleModal from "../../hooks/useToggleModal";
 import { getGroupsMembers } from "../../redux/apiRequest";
 import { getCurrentUser } from "../../utils/constants";
 import MemberGroupItem from "./MemberGroupItem";
+import GroupMemberSkeleton from "../../components/skeleton/GroupMemberSkeletion";
 
 function GroupMembers() {
   const [members, setMembers] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
   const navigate = useNavigate();
   const { open, handleClickOpen, handleClose } = useToggleModal();
   const { id } = useParams("id");
   const user = getCurrentUser();
 
   useEffect(() => {
-    getGroupsMembers(user.access_token, id).then(res => setMembers(res));
+    setIsFetching(true);
+    getGroupsMembers(user.access_token, id).then(res => {
+      setMembers(res);
+      setIsFetching(false);
+    });
   }, []);
   useEffect(() => {
     document.title = "Group ";
@@ -64,7 +71,10 @@ function GroupMembers() {
             </thead>
             <tbody>
               {members.length > 0 &&
+                !isFetching &&
                 members.map(member => <MemberGroupItem setGroupList={setMembers} key={member.user_id} data={member} />)}
+
+              {isFetching && new Array(3).fill(0).map(() => <GroupMemberSkeleton key={uuid()} />)}
             </tbody>
           </Table>
         </div>

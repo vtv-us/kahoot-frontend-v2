@@ -40,19 +40,24 @@ const handleCreate = async (setGroupList, groupName, accessToken) => {
 function DashboardGroup() {
   const [filter, setFilter] = useState("");
   const [groupList, setGroupList] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const user = getCurrentUser();
   const handleSetFilter = debounce(e => setFilter(e.target.value), 500);
   const { id } = useParams();
   useEffect(() => {
     setIsFetching(true);
     if (id === OWNED) {
-      getGroupsCreatedByUser(user.access_token).then(res => setGroupList(res));
+      getGroupsCreatedByUser(user.access_token).then(res => {
+        setGroupList(res);
+        setIsFetching(false);
+      });
     }
     if (id === JOINED) {
-      getGroupsUserHasJoined(user.access_token).then(res => setGroupList(res));
+      getGroupsUserHasJoined(user.access_token).then(res => {
+        setGroupList(res);
+        setIsFetching(false);
+      });
     }
-    setIsFetching(false);
   }, [id]);
 
   const handleCreateGroup = text => {
@@ -64,7 +69,7 @@ function DashboardGroup() {
         <Search handleSetFilter={handleSetFilter} />
         <LeftOptionGroup handleCreateGroup={handleCreateGroup} />
       </div>
-      <GroupList groupList={groupList} />
+      <GroupList groupList={groupList} isFetching={isFetching} />
     </div>
   );
 }
