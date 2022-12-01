@@ -28,7 +28,7 @@ export default function useUploadImage() {
     };
 
     axios
-      .post(`/user/avatar`, formData, {
+      .post(`${process.env.REACT_APP_BE_ADDRESS}/user/avatar`, formData, {
         headers: { Authorization: `Bearer ${user.access_token}` },
       })
       .then(response => {
