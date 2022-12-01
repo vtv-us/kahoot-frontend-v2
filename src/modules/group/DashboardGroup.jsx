@@ -10,14 +10,14 @@ import { getCurrentUser, JOINED, OWNED } from "../../utils/constants";
 import GroupList from "./GroupList";
 
 const getGroupsCreatedByUser = async accessToken => {
-  const res = await axios.get("/group", {
+  const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group/`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   return res.data;
 };
 
 const getGroupsUserHasJoined = async accessToken => {
-  const res = await axios.get("/group/joined", {
+  const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group/joined`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   return res.data;
@@ -26,7 +26,9 @@ const createGroup = async (groupName, accessToken) => {
   const data = {
     group_name: groupName,
   };
-  const res = await axios.post("/group", data, { headers: { Authorization: `Bearer ${accessToken}` } });
+  const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/group/`, data, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
   // dispatch(createGroupSuccess());
   return res.data;
 };

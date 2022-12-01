@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-fragments */
 import { Button } from "@mui/material";
@@ -41,7 +43,12 @@ function HeaderMain() {
   return (
     <div className="flex items-center justify-between  px-4 py-3 fixed w-full z-50 bg-white shadow-[rgb(0_0_0_/_10%)_0px_2px_4px_0px]">
       <div className=" flex items-center gap-4">
-        <div className="w-[96px] mr-4">
+        <div
+          className="w-[96px] mr-4 cursor-pointer"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
           <img src="/logo.svg" alt="" />
         </div>
         <MenuBar />

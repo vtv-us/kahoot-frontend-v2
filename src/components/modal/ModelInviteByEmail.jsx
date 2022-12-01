@@ -16,7 +16,7 @@ const inviteViaEmail = async (groupId, email, accessToken) => {
       group_id: groupId,
       email: email,
     };
-    const res = await axios.post(`/group/invite`, data, {
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/group/invite`, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return res;

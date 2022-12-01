@@ -15,7 +15,7 @@ import {
 
 export const registerUser = async (user, dispatch, navigate) => {
   try {
-    await axios.post("/auth/register", user);
+    await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/auth/register`, user);
     dispatch(registerSuccess(user.email));
     toast.success("Sign up successfully");
     navigate("/verifyaccount");
@@ -46,7 +46,7 @@ export const loginGoogleUser = async (url, dispatch, navigate, setCookieAccess, 
 export const loginUser = async (user, dispatch, navigate, setCookieAccess, setCookieRefresh) => {
   dispatch(loginStart());
   try {
-    const res = await axios.post("/auth/login", user);
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/auth/login`, user);
 
     // toast.success("Login successfully");
     dispatch(loginSuccess(res.data));
@@ -65,7 +65,11 @@ export const logoutUser = dispatch => {
 
 export const responseInvite = async (id, accessToken, navigate) => {
   try {
-    await axios.post(`/group/${id}`, {}, { headers: { Authorization: `Bearer ${accessToken}` } });
+    await axios.post(
+      `${process.env.REACT_APP_BE_ADDRESS}/group/${id}`,
+      {},
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
     navigate(`/groups/${id}/members`);
   } catch (error) {
     console.log(error);
@@ -74,7 +78,7 @@ export const responseInvite = async (id, accessToken, navigate) => {
 
 export const getGroupsMembers = async (accessToken, groupIdBody) => {
   try {
-    const res = await axios.get(`/group/member/${groupIdBody}`, {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group/member/${groupIdBody}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return res.data;
@@ -86,7 +90,7 @@ export const getGroupsMembers = async (accessToken, groupIdBody) => {
 
 export const getGroupById = async (id, accessToken) => {
   try {
-    const res = await axios.get(`/group/${id}`, {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return res.data;
@@ -98,7 +102,7 @@ export const getGroupById = async (id, accessToken) => {
 
 export const getUserById = async (id, accessToken) => {
   try {
-    const res = await axios.get(`/user/profile/${id}`, {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/user/profile/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return res.data;
@@ -115,7 +119,7 @@ export const assign = async (user, groupId, role, accessToken, setData) => {
     role,
   };
   try {
-    await axios.post("/group/role", data, {
+    await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/group/role`, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     getGroupsMembers(accessToken, groupId).then(res => setData(res));
@@ -133,7 +137,7 @@ export const deleteUserOnGroup = async (userId, groupId, accessToken, setData) =
     user_id: userId,
   };
   try {
-    await axios.post("/group/kick", data, {
+    await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/group/kick`, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     getGroupsMembers(accessToken, groupId).then(res => setData(res));
@@ -147,7 +151,7 @@ export const deleteUserOnGroup = async (userId, groupId, accessToken, setData) =
 export const leaveGroup = async (groupId, accessToken, navigate) => {
   try {
     await axios.post(
-      `/group/${groupId}/leave`,
+      `${process.env.REACT_APP_BE_ADDRESS}/group/${groupId}/leave`,
       {},
       {
         headers: { Authorization: `Bearer ${accessToken}` },

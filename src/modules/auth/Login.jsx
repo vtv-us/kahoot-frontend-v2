@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
 
@@ -100,7 +101,7 @@ function Login() {
               or
             </b>
           </div>
-          <a href="http://localhost:8080/auth/google">
+          <a href={`${process.env.REACT_APP_BE_ADDRESS}/auth/google`}>
             <Button variant="outlined" className="w-full relative py-2">
               <img src="/google.svg" alt="" className="absolute left-1" />
               Continue with Google

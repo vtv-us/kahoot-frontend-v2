@@ -18,7 +18,7 @@ const changePassword = async (oldPassword, newPassword, accessToken, reset) => {
       old_password: oldPassword,
       new_password: newPassword,
     };
-    const res = await axios.post("/auth/change-password", data, {
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/auth/change-password`, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     reset({

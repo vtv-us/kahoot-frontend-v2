@@ -22,7 +22,9 @@ const updateUserInfo = async (username, accessToken) => {
     const data = {
       name: username,
     };
-    const res = await axios.post("/user/profile", data, { headers: { Authorization: `Bearer ${accessToken}` } });
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/user/profile`, data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
     return res.data.user;
   } catch (error) {
     console.log(error);
