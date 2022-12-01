@@ -58,7 +58,7 @@ function HeaderMain() {
             </Button>
 
             <DropdownMenu data={optionUserMenu}>
-              <User className="bg-green-600" />
+              <User avatar_url={user?.user?.avatar_url} className="bg-green-600" />
             </DropdownMenu>
 
             <Bell />

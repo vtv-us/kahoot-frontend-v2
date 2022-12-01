@@ -23,7 +23,12 @@ function MemberGroupItem({ data, setGroupList = () => {} }) {
   return (
     <tr>
       <td>
-        <Account username={member?.user?.name} isCurrent={isCurrent} type={data.role} />
+        <Account
+          username={member?.user?.name}
+          avatar_url={member?.user?.avatar_url}
+          isCurrent={isCurrent}
+          type={data.role}
+        />
       </td>
       <td>
         <LabelStatus type="success">{data.status}</LabelStatus>
