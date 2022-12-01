@@ -6,7 +6,6 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import useToggleModal from "../../hooks/useToggleModal";
-import { createGroup } from "../../redux/apiRequest";
 import { getCurrentUser } from "../../utils/constants";
 import ModalCreateGroup from "../modal/ModelCreateGroup";
 
