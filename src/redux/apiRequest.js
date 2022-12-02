@@ -31,6 +31,7 @@ export const registerUser = async (user, dispatch, navigate) => {
 export const loginGoogleUser = async (url, dispatch, navigate, setCookieAccess, setCookieRefresh) => {
   try {
     const res = await axios.get(url);
+    console.log("gg", res.data);
     // toast.success("Login successfully");
     dispatch(loginSuccess(res.data));
     setCookieAccess("accessToken", res.data?.access_token, { path: "/" });

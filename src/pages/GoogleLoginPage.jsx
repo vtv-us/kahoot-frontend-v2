@@ -7,7 +7,7 @@ import { loginGoogleUser } from "../redux/apiRequest";
 
 function GoogleLoginPage() {
   const callback = useParams();
-  const url = `/auth/callback/${callback.callback1}/${callback.callback2}`;
+  const url = `${process.env.REACT_APP_BE_ADDRESS}/auth/callback/${callback.callback1}/${callback.callback2}`;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [cookiesAccess, setCookieAccess] = useCookies(["accessToken"]);
