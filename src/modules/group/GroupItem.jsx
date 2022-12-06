@@ -49,11 +49,11 @@ function GroupItem({ to = "", groupName = "MUN", id = "" }) {
           {/* <User className="bg-gray-400" /> */}
           <User className="bg-gray-400" />
         </div>
-        <Icon onClick={e => e.stopPropagation()} className="hidden option-list-item relative">
+        {/* <Icon onClick={e => e.stopPropagation()} className="hidden option-list-item relative">
           <DropdownMenu data={optionGroupMenu}>
             <MoreVertOutlinedIcon />
           </DropdownMenu>
-        </Icon>
+        </Icon> */}
       </div>
       <div className="text-sm group-desc">
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Lorem, ipsum dolor sit amet consectetur adipisicing

@@ -10,7 +10,7 @@ import { getCurrentUser, JOINED, OWNED } from "../../utils/constants";
 import GroupList from "./GroupList";
 
 const getGroupsCreatedByUser = async accessToken => {
-  const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group/`, {
+  const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   return res.data;

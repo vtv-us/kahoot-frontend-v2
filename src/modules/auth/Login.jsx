@@ -16,6 +16,7 @@ import FormHideShowInput from "../../components/form_components/FormHideShowInpu
 import FormInputTextField from "../../components/form_components/FormInputTextField";
 
 import { loginUser } from "../../redux/apiRequest";
+import { resetLogin } from "../../redux/authSlice";
 
 function Login() {
   const [values, setValues] = React.useState({
@@ -24,9 +25,6 @@ function Login() {
   });
   const [cookiesAccess, setCookieAccess] = useCookies(["accessToken"]);
   const [cookiesRefresh, setCookieRefresh] = useCookies(["refreshToken"]);
-  useEffect(() => {
-    document.title = "Log In";
-  }, []);
   // console.log("accessToken", cookiesAccess);
   // console.log("refreshToken", cookiesRefresh);
   const navigate = useNavigate();
@@ -54,6 +52,12 @@ function Login() {
   function handleClick() {
     navigate("/signup");
   }
+  useEffect(() => {
+    document.title = "Log In";
+    return () => {
+      dispatch(resetLogin());
+    };
+  }, []);
   return (
     <div className="w-[420px] mx-auto mt-10">
       <Grid>

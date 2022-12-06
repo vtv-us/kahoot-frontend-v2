@@ -7,6 +7,7 @@ import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
 import Diversity1OutlinedIcon from "@mui/icons-material/Diversity1Outlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import { NavLink } from "react-router-dom";
+import { Topic } from "@mui/icons-material";
 import MenuItem from "./MenuItem";
 
 // eslint-disable-next-line react/function-component-definition
@@ -37,6 +38,11 @@ const MenuBar = () => {
       >
         <MenuItem title="Groups">
           <Diversity1OutlinedIcon />
+        </MenuItem>
+      </NavLink>
+      <NavLink to="/slides" className={({ isActive }) => (isActive ? "!text-purple-700" : "")} end>
+        <MenuItem title="Slides">
+          <Topic />
         </MenuItem>
       </NavLink>
       {/* <MenuItem title="Marketplace">

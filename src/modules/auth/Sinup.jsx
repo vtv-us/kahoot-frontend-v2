@@ -28,6 +28,7 @@ import { useCookies } from "react-cookie";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 import { registerUser } from "../../redux/apiRequest";
+import { resetRegister } from "../../redux/authSlice";
 
 const maxLength = 40;
 const minLength = 6;
@@ -67,6 +68,9 @@ function Signup() {
   };
   useEffect(() => {
     document.title = "Sign Up";
+    return () => {
+      dispatch(resetRegister());
+    };
   }, []);
   const handleClickShowPassword = () => {
     setValues({

@@ -59,15 +59,28 @@ const authSlice = createSlice({
     updateCurrentUser: (state, action) => {
       state.login.currentUser = action.payload;
     },
+    resetLogin: state => {
+      state.login.error = false;
+      state.login.errorMsg = null;
+      state.login.isFetching = false;
+    },
+    resetRegister: state => {
+      state.register.error = false;
+      state.register.isFetching = false;
+      state.register.errorMsg = null;
+      state.register.success = false;
+    },
   },
 });
 export const {
   loginStart,
   loginSuccess,
   loginFailed,
+  resetLogin,
   registerStart,
   registerSuccess,
   registerFailed,
+  resetRegister,
   logoutSuccess,
   updateCurrentUser,
 } = authSlice.actions;
