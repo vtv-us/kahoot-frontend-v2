@@ -11,6 +11,7 @@ import { LIMIT_NAME } from "../../utils/constants";
 const InputStyles = styled.div`
   position: relative;
   width: 400px;
+  transition: all;
   input {
     width: 100%;
     padding: 10px;
@@ -32,7 +33,16 @@ const InputStyles = styled.div`
   }
 `;
 
-const Input = ({ name = "", label = "", type = "text", limit = LIMIT_NAME, onChange, ...props }) => {
+const Input = ({
+  name = "",
+  label = "",
+  labelClassName = "",
+  type = "text",
+  limit = LIMIT_NAME,
+  onChange,
+  placeholder = "",
+  ...props
+}) => {
   const [countdown, setCountdown] = useState(limit);
   const handleChange = e => {
     const { length } = e.target.value;
@@ -44,13 +54,14 @@ const Input = ({ name = "", label = "", type = "text", limit = LIMIT_NAME, onCha
 
   return (
     <InputStyles>
-      <label className="font-semibold text-gray-800" htmlFor={name}>
+      <label className={`font-semibold text-gray-800 ${labelClassName}`} htmlFor={name}>
         {label}
       </label>
       <input
-        className="!border !border-gray-500 outline-purple-400"
+        className="!border !border-gray-200 outline-blue-400"
         id={name}
         type={type}
+        placeholder={placeholder}
         {...props}
         onChange={handleChange}
       />
@@ -71,6 +82,8 @@ Input.propTypes = {
   children: PropTypes.any,
   limit: PropTypes.number,
   onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  labelClassName: PropTypes.string,
 };
 
 export default Input;

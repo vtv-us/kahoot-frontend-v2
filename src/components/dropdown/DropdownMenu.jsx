@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import useClickOutside from "../../hooks/useClickOutSide";
 
 // eslint-disable-next-line no-unused-vars
-function Dropdown({ data, children }) {
+function Dropdown({ data, children, className = "" }) {
   const { show, setShow, nodeRef } = useClickOutside();
   return (
     <div className="relative" ref={nodeRef}>
@@ -16,7 +16,9 @@ function Dropdown({ data, children }) {
         {children}
       </div>
       {show && (
-        <div className=" p-3 rounded-lg absolute top-full w-[175px] z-10 bg-white right-[-15px] shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px]">
+        <div
+          className={`p-3 rounded-lg absolute top-full w-[175px] z-10 bg-white right-[-15px] shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px] ${className} `}
+        >
           {data.length > 0 &&
             data.map((item, index) => (
               <div
@@ -39,6 +41,7 @@ function Dropdown({ data, children }) {
 Dropdown.propTypes = {
   data: PropTypes.array,
   children: PropTypes.node,
+  className: PropTypes.string,
 };
 
 export default Dropdown;

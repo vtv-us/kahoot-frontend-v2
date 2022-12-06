@@ -12,6 +12,7 @@ import { store } from "./redux/store";
 import VerifyAccountPage from "./pages/VerifyAccountPage";
 import HomePage from "./pages/HomePage";
 import GoogleLoginPage from "./pages/GoogleLoginPage";
+import PresentationPage from "./pages/PresentationPage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/group/invite/:id/:userId" element={<InvitationPage />} />
           <Route path="/verifyaccount" element={<VerifyAccountPage />} />
           <Route path="/auth/callback/:callback1/:callback2" element={<GoogleLoginPage />} />
+          <Route path="/presentation/:id/edit" element={<PresentationPage />} />
         </Routes>
       </div>
     </Provider>

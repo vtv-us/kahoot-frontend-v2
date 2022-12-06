@@ -24,7 +24,7 @@ function ButtonMain({
       } ${className}`}
       {...props}
     >
-      <div className={`${textColor}`}>{children}</div>
+      <div className={`${textColor} flex items-center`}>{children}</div>
     </Button>
   );
 }

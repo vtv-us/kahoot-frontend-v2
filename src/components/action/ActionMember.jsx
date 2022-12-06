@@ -12,12 +12,12 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import DropdownMenu from "../dropdown/DropdownMenu";
 import ModalUserInfo from "../modal/ModalUserInfo";
 import useToggleModal from "../../hooks/useToggleModal";
 import { getCurrentUser } from "../../utils/constants";
-import { assign, deleteUserOnGroup, getGroupsMembers } from "../../redux/apiRequest";
+import { assign, deleteUserOnGroup, getGroupsMembers, leaveGroup } from "../../redux/apiRequest";
 import ModalDelete from "../modal/ModalDelete";
 
 function ActionMember({ data, setData = () => {}, member, isCurrent = false, isPending = false }) {
@@ -27,6 +27,7 @@ function ActionMember({ data, setData = () => {}, member, isCurrent = false, isP
   const { open: openDelete, handleClickOpen: handleOpenDelete, handleClose: handleCloseDelete } = useToggleModal();
   const { open: openLeave, handleClickOpen: handleOpenLeave, handleClose: handleCloseLeave } = useToggleModal();
   const user = getCurrentUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getGroupsMembers(user.access_token, id).then(res => setMembers(res));
@@ -118,6 +119,12 @@ function ActionMember({ data, setData = () => {}, member, isCurrent = false, isP
   }
   const args = { userId: data?.user_id, groupId: id, accessToken: user?.access_token, setData };
 
+  const handleDelete = () => {
+    deleteUserOnGroup(args.userId, args.groupId, args.accessToken, args.setData);
+  };
+  const handleLeave = () => {
+    leaveGroup(args.groupId, args.accessToken, navigate);
+  };
   const newListBtn = [...optionGroupManage, ...newOption];
   return (
     <div className="flex items-center justify-end">
@@ -133,10 +140,10 @@ function ActionMember({ data, setData = () => {}, member, isCurrent = false, isP
         <MoreVertOutlinedIcon />
       </DropdownMenu>
       <ModalUserInfo data={data} member={member} open={open} handleClose={handleClose} />
-      <ModalDelete open={openDelete} handleClose={handleCloseDelete} data={args}>
+      <ModalDelete open={openDelete} handleClose={handleCloseDelete} handleDelete={handleDelete}>
         Are you sure to delete <b> {member?.user?.name}</b>
       </ModalDelete>
-      <ModalDelete open={openLeave} handleClose={handleCloseLeave} data={args} isLeave>
+      <ModalDelete open={openLeave} handleClose={handleCloseLeave} handleDelete={handleLeave} isLeave>
         Are you sure to leave the group?
       </ModalDelete>
     </div>

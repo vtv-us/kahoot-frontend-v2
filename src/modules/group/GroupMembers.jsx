@@ -17,6 +17,7 @@ import { getGroupsMembers } from "../../redux/apiRequest";
 import { getCurrentUser } from "../../utils/constants";
 import MemberGroupItem from "./MemberGroupItem";
 import GroupMemberSkeleton from "../../components/skeleton/GroupMemberSkeletion";
+import BackButton from "../../components/button/BackButton";
 
 function GroupMembers() {
   const [members, setMembers] = useState([]);
@@ -42,13 +43,7 @@ function GroupMembers() {
         <GroupBar />
         <div className="px-32 py-8 flex-1 flex flex-col gap-4">
           <div className="flex gap-4">
-            <Button
-              variant="contained"
-              className="w-6 bg-white hover:bg-gray-100"
-              onClick={() => navigate("/groups/owned")}
-            >
-              <KeyboardBackspaceOutlinedIcon className="text-black" />
-            </Button>
+            <BackButton to="/groups/owned" />
             <div>
               <h1 className="font-bold text-2xl text-gray-800">Group members</h1>
             </div>

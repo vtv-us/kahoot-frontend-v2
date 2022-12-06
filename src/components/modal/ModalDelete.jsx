@@ -8,9 +8,7 @@ import uuid from "react-uuid";
 import { deleteUserOnGroup, leaveGroup } from "../../redux/apiRequest";
 import ModalMain from "./ModalMain";
 
-function ModalDelete({ children, open, handleClose = () => {}, data, isLeave = false }) {
-  const { userId, groupId, accessToken, setData } = data;
-  const navigate = useNavigate();
+function ModalDelete({ children, open, handleClose = () => {}, handleDelete = () => {}, isLeave = false }) {
   const buttonList = [
     {
       id: uuid(),
@@ -28,12 +26,10 @@ function ModalDelete({ children, open, handleClose = () => {}, data, isLeave = f
       bgColor: "bg-red-600",
       hoverColor: "!bg-red-600",
       textColor: "text-white",
-      onClick: () => {
-        if (isLeave) {
-          leaveGroup(groupId, accessToken, navigate);
-        } else {
-          deleteUserOnGroup(userId, groupId, accessToken, setData);
-        }
+      onClick: e => {
+        e.stopPropagation();
+
+        handleDelete();
         handleClose();
       },
     },
@@ -52,7 +48,7 @@ ModalDelete.propTypes = {
   open: PropTypes.bool.isRequired,
   isLeave: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired,
+  handleDelete: PropTypes.func.isRequired,
   children: PropTypes.node,
 };
 export default ModalDelete;

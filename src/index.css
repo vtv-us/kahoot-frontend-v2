@@ -21,7 +21,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .group-item:hover .option-list-item {
+  .group-item:hover .option-list-item,
+  .slide-menu-item:hover .ic-slide-menu-item {
     display: block;
   }
   .hidden-input {
@@ -43,5 +44,12 @@
   .img-user-invite img {
     width: 100%;
     height: 100%;
+  }
+  .title-slide-menu {
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
