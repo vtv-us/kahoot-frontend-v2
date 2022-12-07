@@ -17,7 +17,6 @@ import User from "../../components/user/User";
 import { getCurrentUser } from "../../utils/constants";
 
 function SlideMenuItem({
-  id = "asdasd",
   title = "Who's need asds adasda sdsda Ronaldo",
   isActive = false,
   onClick = () => {},
@@ -74,7 +73,6 @@ function SlideMenuItem({
   );
 }
 SlideMenuItem.propTypes = {
-  id: PropTypes.string,
   title: PropTypes.string,
   isActive: PropTypes.bool,
   onClick: PropTypes.func,

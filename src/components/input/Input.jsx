@@ -39,7 +39,8 @@ const Input = ({
   labelClassName = "",
   type = "text",
   limit = LIMIT_NAME,
-  onChange,
+  setText = () => {},
+  onChange = () => {},
   placeholder = "",
   ...props
 }) => {
@@ -47,6 +48,7 @@ const Input = ({
   const handleChange = e => {
     const { length } = e.target.value;
     if (length < limit) {
+      setText(e.target.value);
       onChange(e.target.value);
     }
     setCountdown(limit - length);
@@ -58,7 +60,7 @@ const Input = ({
         {label}
       </label>
       <input
-        className="!border !border-gray-200 outline-blue-400"
+        className="!border !border-gray-200 outline-blue-400 !pr-12"
         id={name}
         type={type}
         placeholder={placeholder}
@@ -82,6 +84,7 @@ Input.propTypes = {
   children: PropTypes.any,
   limit: PropTypes.number,
   onChange: PropTypes.func,
+  setText: PropTypes.func,
   placeholder: PropTypes.string,
   labelClassName: PropTypes.string,
 };

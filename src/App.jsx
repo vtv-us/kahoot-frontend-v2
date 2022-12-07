@@ -14,6 +14,7 @@ import HomePage from "./pages/HomePage";
 import GoogleLoginPage from "./pages/GoogleLoginPage";
 import PresentationPage from "./pages/PresentationPage";
 import SlidesPage from "./pages/SlidesPage";
+import SlideShowMemberPage from "./pages/SlideShowMemberPage";
 
 function App() {
   return (
@@ -30,8 +31,9 @@ function App() {
           <Route path="/group/invite/:id/:userId" element={<InvitationPage />} />
           <Route path="/verifyaccount" element={<VerifyAccountPage />} />
           <Route path="/auth/callback/:callback1/:callback2" element={<GoogleLoginPage />} />
-          <Route path="/presentation/:id/edit" element={<PresentationPage />} />
+          <Route path="/presentation/:idSlide/:idQuestion/edit" element={<PresentationPage />} />
           <Route path="/slides" element={<SlidesPage />} />
+          <Route path="/slides/member/:id" element={<SlideShowMemberPage />} />
         </Routes>
       </div>
     </Provider>

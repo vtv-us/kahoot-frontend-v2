@@ -5,35 +5,9 @@ import { debounce } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import LeftOptionSlide from "../../components/layout/LeftOptionSlide";
+import { createQuestion, createSlide, getAlllides } from "../../handleApi";
 import { getCurrentUser } from "../../utils/constants";
 import SlideList from "./SlideList";
-
-const createSlide = async (title, content, accessToken) => {
-  try {
-    const data = {
-      title,
-      content,
-    };
-    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/slide`, data, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    return res;
-  } catch (error) {
-    console.log(error);
-  }
-  return null;
-};
-const getAlllides = async accessToken => {
-  try {
-    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/slide`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    return res;
-  } catch (error) {
-    console.log(error);
-  }
-  return null;
-};
 
 function DashboardSlide() {
   const user = getCurrentUser();
@@ -43,6 +17,7 @@ function DashboardSlide() {
   const handleSetFilter = debounce(e => setFilter(e.target.value), 500);
   const handleCreateSlide = async text => {
     const res = await createSlide(text, "This is contentt", user.access_token);
+    await createQuestion(res.data?.id, user?.access_token);
     const newList = [res.data, ...slideList];
     setSlideList(newList);
   };

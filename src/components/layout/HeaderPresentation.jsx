@@ -1,25 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { useParams } from "react-router";
 import BackButton from "../button/BackButton";
 import User from "../user/User";
 import { getCurrentUser } from "../../utils/constants";
 import ButtonMain from "../button/ButtonMain";
+import { getSlideById, updateSlide } from "../../handleApi";
+import { getUserById } from "../../redux/apiRequest";
 
 function HeaderPresentation() {
-  const [isShown, setIsShown] = useState(false);
+  const { idSlide } = useParams();
   const user = getCurrentUser();
+  const [owner, setOwner] = useState({});
+  const [slide, setSlide] = useState({});
+  const [filter, setFilter] = useState({});
+  useEffect(() => {
+    getSlideById(idSlide, user?.access_token).then(res => setSlide(res));
+  }, []);
+  useEffect(() => {
+    getUserById(slide?.owner, user?.access_token).then(res => setOwner(res));
+    setFilter(slide?.title);
+  }, [slide]);
+  const handleUpdateTitle = () => {
+    updateSlide(slide, filter, user?.access_token, setSlide);
+  };
+  const [isShown, setIsShown] = useState(false);
   return (
     <div className="flex items-center justify-between w-full py-2 px-4 border-b-2 border-gray-200">
       <div className="flex gap-4">
-        <BackButton to="#" />
+        <BackButton to="/slides" />
         <div>
           {isShown ? (
             <input
-              value="Cristiano Ronaldo"
+              value={filter}
+              onChange={e => setFilter(e.target.value)}
               onFocus={() => setIsShown(true)}
-              onBlur={() => setIsShown(false)}
+              onBlur={() => {
+                setIsShown(false);
+                handleUpdateTitle();
+              }}
               className="p-[9px] w-[400px] border border-gray-200"
             />
           ) : (
@@ -28,8 +49,8 @@ function HeaderPresentation() {
               onMouseEnter={() => setIsShown(true)}
               onMouseLeave={() => setIsShown(false)}
             >
-              <h3 className="font-bold ">Cristiano Ronaldo</h3>
-              <div className="text-sm text-gray-600">Created by Nguyễn Trần Ngọc Tú</div>
+              <h3 className="font-bold ">{slide.title}</h3>
+              <div className="text-sm text-gray-600">Created by {owner?.user?.name || "user"}</div>
             </div>
           )}
         </div>

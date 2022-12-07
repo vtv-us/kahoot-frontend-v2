@@ -11,12 +11,15 @@ import { PlayCircleFilled } from "@mui/icons-material";
 import { useEffect, React, useState } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
+import axios from "axios";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { useNavigate } from "react-router";
 import Icon from "../../components/icon/Icon";
 import DropdownMenu from "../../components/dropdown/DropdownMenu";
 import useHover from "../../hooks/useHover";
+import { getAllQuestionByIdSlide } from "../../handleApi";
+import { getCurrentUser } from "../../utils/constants";
 
 function SlideList({ onSelectAll = value => {}, listItem }) {
   const [isSelectedAll, setIsSelectedAll] = useState(false);
@@ -33,19 +36,12 @@ function SlideList({ onSelectAll = value => {}, listItem }) {
           key={item.id}
           title={item.title}
           checked={!!isSelectedAll}
-          onEditSlide={() => {
-            navigate(`/presentation/${item.id}/edit`);
-          }}
+          idSlide={item.id}
           onShowSlide={() => {
             // show slide
           }}
         />
       ))}
-      {/* <ListItem checked={!!isSelectedAll} onShowSlide={onShowSlide} />
-      <ListItem checked={!!isSelectedAll} onShowSlide={onShowSlide} />
-      <ListItem checked={!!isSelectedAll} onShowSlide={onShowSlide} />
-      <ListItem checked={!!isSelectedAll} onShowSlide={onShowSlide} />
-      <ListItem checked={!!isSelectedAll} onShowSlide={onShowSlide} /> */}
     </div>
   );
 }
@@ -73,7 +69,7 @@ ListHeader.propTypes = {
   onSelectAll: PropTypes.func,
 };
 
-function ListItem({ title, checked, onShowSlide, onEditSlide }) {
+function ListItem({ title, checked, onShowSlide, idSlide }) {
   const optionGroupMenu = [
     {
       icon: <OpenInNewOutlinedIcon />,
@@ -94,8 +90,26 @@ function ListItem({ title, checked, onShowSlide, onEditSlide }) {
     },
   ];
   const [ref, hovered] = useHover();
+  const [questionList, setQuestionList] = useState({});
+  const navigate = useNavigate();
+  const user = getCurrentUser();
+
+  const getFirstQuestion = async (id, accessToken) => {
+    try {
+      const questions = await getAllQuestionByIdSlide(id, accessToken);
+      const [first, ...rest] = questions;
+      return first;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  };
+  useEffect(() => {
+    getAllQuestionByIdSlide(idSlide, user?.access_token).then(res => setQuestionList(res));
+  }, []);
+
   return (
-    <div className="w-full py-4 flex items-center hover:bg-gray-200">
+    <div className="w-full py-4 group-item flex items-center hover:bg-gray-200">
       <Checkbox checked={checked} />
       <div ref={ref}>
         <PlayButton
@@ -105,10 +119,16 @@ function ListItem({ title, checked, onShowSlide, onEditSlide }) {
         />
       </div>
       <div className="flex-1">
-        <h2 className="font-bold cursor-pointer" onClick={onEditSlide}>
+        <h2
+          className="font-bold cursor-pointer"
+          onClick={async () => {
+            const first = await getFirstQuestion(idSlide, user?.access_token);
+            navigate(`/presentation/${idSlide}/${first.id}/edit`);
+          }}
+        >
           {title}
         </h2>
-        <h3 className="font-light text-sm text-gray-400">3 SLIDES</h3>
+        <h3 className="font-light text-sm text-gray-400">{questionList.length || 0} SLIDES</h3>
       </div>
       <div className="text-gray-400 w-[244px]">me</div>
       <div className="text-gray-400 w-[244px]">about 19 hours ago</div>
@@ -125,7 +145,7 @@ ListItem.propTypes = {
   title: PropTypes.string,
   checked: PropTypes.bool,
   onShowSlide: PropTypes.func,
-  onEditSlide: PropTypes.func,
+  idSlide: PropTypes.string,
 };
 
 function PlayButton({ onClick, className, ...props }) {

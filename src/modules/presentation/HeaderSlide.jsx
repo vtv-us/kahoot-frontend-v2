@@ -3,17 +3,21 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function HeaderSlide({ metaField = "This is a meta field", question = "Who need Ronaldo" }) {
+function HeaderSlide({ meta = "This is a meta field", question = "Who need Ronaldo" }) {
   return (
     <div className="mt-10">
-      <p className="text-sm text-gray-400">{metaField}</p>
-      <h1 className="text-3xl font-bold text-gray-800">{question}</h1>
+      <p className="text-sm text-gray-400">{meta}</p>
+      <div
+        className={`w-[700px] flex flex-wrap text-3xl font-bold text-gray-800 ${question.length > 100 && "!text-xl"}`}
+      >
+        {question}
+      </div>
     </div>
   );
 }
 
 HeaderSlide.propTypes = {
-  metaField: PropTypes.string,
+  meta: PropTypes.string,
   question: PropTypes.string,
 };
 

@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
 
-function TextAreaAutoResize() {
-  const [text, setText] = useState("");
+function TextAreaAutoResize({ text = "", setText = () => {} }) {
   const textareaRef = useRef(null);
   const [height, setHeight] = useState("auto");
   //   const [parentHeight, setParentHeight] = useState("auto");
@@ -29,5 +29,9 @@ function TextAreaAutoResize() {
     </div>
   );
 }
+TextAreaAutoResize.propTypes = {
+  text: PropTypes.string.isRequired,
+  setText: PropTypes.func.isRequired,
+};
 
 export default TextAreaAutoResize;
