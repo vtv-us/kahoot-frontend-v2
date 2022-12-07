@@ -3,14 +3,24 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
+import { useParams } from "react-router";
 import ClickToShowInput from "../../components/input/ClickToShowInput";
 import Input from "../../components/input/Input";
 import TextAreaAutoResize from "../../components/textarea/TextAreaAutoResize";
 import OptionSlide from "./OptionSlide";
+import { getQuestionById, updateQuestion } from "../../handleApi";
+import { getCurrentUser } from "../../utils/constants";
 
+const getData = async (id, accessToken) => {
+  const data = await getQuestionById(id, accessToken);
+  return data;
+};
 function ContentSlideSetting({ data }) {
+  const { idQuestion } = useParams();
+  const user = getCurrentUser();
+
   return (
     <div className="p-4">
       <h3 className="text-md font-semibold mb-2">Content</h3>

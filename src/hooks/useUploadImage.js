@@ -16,7 +16,6 @@ export default function useUploadImage() {
   }, []);
   const dispatch = useDispatch();
   const handleChangeImage = files => {
-    console.log(files);
     const formData = new FormData();
     formData.append("file", files);
     const config = {

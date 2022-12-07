@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
@@ -20,7 +21,7 @@ function HeaderPresentation() {
     getSlideById(idSlide, user?.access_token).then(res => setSlide(res));
   }, []);
   useEffect(() => {
-    getUserById(slide?.owner, user?.access_token).then(res => setOwner(res));
+    if (slide?.owner) getUserById(slide?.owner, user?.access_token).then(res => setOwner(res));
     setFilter(slide?.title);
   }, [slide]);
   const handleUpdateTitle = () => {

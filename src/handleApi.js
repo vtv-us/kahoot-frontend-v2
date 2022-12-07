@@ -123,3 +123,86 @@ export const getQuestionById = async (id, accessToken) => {
   }
   return null;
 };
+
+export const updateQuestion = async (accessToken, data) => {
+  try {
+    await axios.put(`${process.env.REACT_APP_BE_ADDRESS}/question`, data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log("update successfull");
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+// answer
+export const getAllAnswersByIdQuestion = async (idQuestion, accessToken) => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/answer/question/${idQuestion}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const getAnswerById = async (idAnswer, accessToken) => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/answer/${idAnswer}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const createAnswer = async (question_id, index, raw_answer, accessToken) => {
+  try {
+    const data = {
+      question_id,
+      index,
+      raw_answer,
+    };
+    console.log("data", data);
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/answer`, data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const deleteAnswer = async (id, data, accessToken) => {
+  try {
+    await axios.delete(
+      `${process.env.REACT_APP_BE_ADDRESS}/answer/${id}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+      data
+    );
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const updateAnswer = async (accessToken, data) => {
+  try {
+    await axios.put(`${process.env.REACT_APP_BE_ADDRESS}/answer`, data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log("update successfull");
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};

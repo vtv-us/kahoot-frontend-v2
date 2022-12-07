@@ -74,7 +74,6 @@ function ChangePassword() {
   });
   const onSubmit = async formValues => {
     // TO DO
-    console.log(formValues);
     setIsFetching(true);
     const res = await changePassword(formValues.password, formValues.newPassword, user.access_token, reset);
     setIsFetching(false);
