@@ -18,7 +18,7 @@ import { useNavigate } from "react-router";
 import Icon from "../../components/icon/Icon";
 import DropdownMenu from "../../components/dropdown/DropdownMenu";
 import useHover from "../../hooks/useHover";
-import { getAllQuestionByIdSlide } from "../../handleApi";
+import { createQuestion, getAllQuestionByIdSlide } from "../../handleApi";
 import { getCurrentUser } from "../../utils/constants";
 
 function SlideList({ onSelectAll = value => {}, listItem }) {
@@ -93,6 +93,9 @@ function ListItem({ title, checked, onShowSlide, idSlide }) {
   const [questionList, setQuestionList] = useState({});
   const navigate = useNavigate();
   const user = getCurrentUser();
+  const createFirstQuestion = async (id, accessToken) => {
+    await createQuestion(id, accessToken);
+  };
 
   const getFirstQuestion = async (id, accessToken) => {
     try {
@@ -122,6 +125,7 @@ function ListItem({ title, checked, onShowSlide, idSlide }) {
         <h2
           className="font-bold cursor-pointer"
           onClick={async () => {
+            if (questionList.length === 0) await createFirstQuestion(idSlide, user?.access_token);
             const first = await getFirstQuestion(idSlide, user?.access_token);
             navigate(`/presentation/${idSlide}/${first.id}/edit`);
           }}

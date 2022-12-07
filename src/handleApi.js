@@ -31,31 +31,6 @@ export const updateSlide = async (slide, filter, accessToken, setSlide) => {
   return null;
 };
 
-export const createQuestion = async (
-  slide_id,
-  accessToken,
-  raw_question = "Multiple Choice",
-  meta = "",
-  long_description = ""
-) => {
-  try {
-    const data = {
-      slide_id,
-      raw_question,
-      meta,
-      long_description,
-    };
-    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/question`, data, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
-    return res;
-  } catch (error) {
-    console.log(error);
-  }
-  return null;
-};
-
 export const createSlide = async (title, content, accessToken) => {
   try {
     const data = {
@@ -86,6 +61,60 @@ export const getAlllides = async accessToken => {
 export const getAllQuestionByIdSlide = async (idSlide, accessToken) => {
   try {
     const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/question/slide/${idSlide}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+// question
+
+export const createQuestion = async (
+  slide_id,
+  accessToken,
+  raw_question = "Multiple Choice",
+  meta = "",
+  long_description = ""
+) => {
+  try {
+    const data = {
+      slide_id,
+      raw_question,
+      meta,
+      long_description,
+    };
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/question`, data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const deleteQuestion = async (id, data, accessToken) => {
+  try {
+    await axios.delete(
+      `${process.env.REACT_APP_BE_ADDRESS}/question/${id}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+      data
+    );
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const getQuestionById = async (id, accessToken) => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/question/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return res.data;

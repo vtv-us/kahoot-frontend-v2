@@ -17,7 +17,7 @@ function DashboardSlide() {
   const handleSetFilter = debounce(e => setFilter(e.target.value), 500);
   const handleCreateSlide = async text => {
     const res = await createSlide(text, "This is contentt", user.access_token);
-    await createQuestion(res.data?.id, user?.access_token);
+    // await createQuestion(res.data?.id, user?.access_token);
     const newList = [res.data, ...slideList];
     setSlideList(newList);
   };

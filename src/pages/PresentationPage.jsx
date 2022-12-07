@@ -40,7 +40,7 @@ function PresentationPage() {
       </div>
       <div className="flex w-full justify-between bg-gray-200">
         <SlideProvider>
-          <SlideListMenu data={questionList} />
+          <SlideListMenu data={questionList} setList={setQuestionList} />
           <SlideUI />
           <MenuPresentation />
         </SlideProvider>

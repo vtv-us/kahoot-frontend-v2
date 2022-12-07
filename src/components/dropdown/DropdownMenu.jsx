@@ -23,7 +23,9 @@ function Dropdown({ data, children, className = "" }) {
             data.map((item, index) => (
               <div
                 key={index}
-                className={`px-1 py-2 hover:bg-gray-200 cursor-pointer rounded-md text-black ${item.className}`}
+                className={`px-1 py-2 hover:bg-gray-200 cursor-pointer rounded-md text-black ${item.className} ${
+                  item.disable && "opacity-50"
+                }`}
                 onClick={() => {
                   item.onClick();
                   setShow(false);

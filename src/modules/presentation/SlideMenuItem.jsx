@@ -3,7 +3,8 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -15,26 +16,52 @@ import ModalDelete from "../../components/modal/ModalDelete";
 import useToggleModal from "../../hooks/useToggleModal";
 import User from "../../components/user/User";
 import { getCurrentUser } from "../../utils/constants";
+import { deleteQuestion, getAllQuestionByIdSlide, getQuestionById } from "../../handleApi";
 
 function SlideMenuItem({
+  id,
   title = "Who's need asds adasda sdsda Ronaldo",
   isActive = false,
   onClick = () => {},
   index = 1,
+  setList = () => {},
 }) {
   const { open: openDelete, handleClickOpen: handleOpenDelete, handleClose: handleCloseDelete } = useToggleModal();
+  const { idQuestion, idSlide } = useParams();
   const user = getCurrentUser();
+  const navigate = useNavigate();
+  const [questionList, setQuestionList] = useState([]);
+  useEffect(() => {
+    getAllQuestionByIdSlide(idSlide, user?.access_token).then(res => setQuestionList(res));
+  }, []);
   const optionSlideMenu = [
     {
       icon: <DeleteOutlinedIcon />,
-      title: "Delete",
+      title: questionList.length === 1 ? "Cant't delete" : "Delete",
+      disable: questionList.length === 1,
       onClick: () => {
-        handleOpenDelete();
+        if (questionList.length > 1) handleOpenDelete();
       },
     },
   ];
-  const handleDelete = () => {
-    console.log("delete slide");
+  const handleDelete = async () => {
+    const res = await getQuestionById(idQuestion, user?.access_token);
+    const data = {
+      slide_id: res?.slide_id,
+      title: res?.raw_question,
+      content: res?.long_description,
+    };
+    await deleteQuestion(id, data, user?.access_token);
+    const questions = await getAllQuestionByIdSlide(idSlide, user?.access_token);
+    setList(questions);
+    if (isActive) {
+      if (questions.length === 1) {
+        navigate(`/presentation/${idSlide}/${questions[0]?.id}/edit`);
+      } else {
+        const currentQuestion = questions[index - 1];
+        navigate(`/presentation/${idSlide}/${currentQuestion?.id}/edit`);
+      }
+    }
   };
   return (
     <div className={`flex  cursor-pointer ${isActive && "!bg-blue-100"} slide-menu-item`} onClick={onClick}>
@@ -46,7 +73,6 @@ function SlideMenuItem({
             <PlayArrowIcon
               onClick={e => {
                 e.stopPropagation();
-                console.log("play");
               }}
               className="text-blue-500"
             />
@@ -66,17 +92,19 @@ function SlideMenuItem({
         <div className="text-[12px] font-semibold h-[18px] mx-2 title-slide-menu">{title}</div>
         {isActive && <User avatar_url={user?.user?.avatar_url} className="absolute bottom-0 left-2 !w-5 !h-5" />}
       </div>
-      <ModalDelete open={openDelete} handleClose={handleCloseDelete}>
+      <ModalDelete open={openDelete} handleDelete={handleDelete} handleClose={handleCloseDelete}>
         Are you sure to delete this slide
       </ModalDelete>
     </div>
   );
 }
 SlideMenuItem.propTypes = {
+  id: PropTypes.string,
   title: PropTypes.string,
   isActive: PropTypes.bool,
   onClick: PropTypes.func,
   index: PropTypes.number,
+  setList: PropTypes.func,
 };
 
 export default SlideMenuItem;
