@@ -26,7 +26,7 @@ const createGroup = async (groupName, accessToken) => {
   const data = {
     group_name: groupName,
   };
-  const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/group/`, data, {
+  const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/group`, data, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   // dispatch(createGroupSuccess());

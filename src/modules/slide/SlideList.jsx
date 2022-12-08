@@ -13,41 +13,118 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
 import axios from "axios";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import Icon from "../../components/icon/Icon";
 import DropdownMenu from "../../components/dropdown/DropdownMenu";
 import useHover from "../../hooks/useHover";
-import { createQuestion, getAllQuestionByIdSlide } from "../../handleApi";
+import { createQuestion, getAllQuestionByIdSlide, updateSlideById } from "../../handleApi";
 import { getCurrentUser } from "../../utils/constants";
+import ModalDelete from "../../components/modal/ModalDelete";
+import useToggleModal from "../../hooks/useToggleModal";
+import ModalCreateGroup from "../../components/modal/ModelCreateGroup";
 
-function SlideList({ onSelectAll = value => {}, listItem }) {
+const deleteSlide = async (id, accessToken) => {
+  try {
+    const res = await axios.delete(`${process.env.REACT_APP_BE_ADDRESS}/slide/${id}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+function SlideList({ onSelected = value => {}, listItem, setSlideList }) {
   const [isSelectedAll, setIsSelectedAll] = useState(false);
+  const [selectedList, setSelectedList] = useState([]);
   const handleOnSelectAll = value => {
     setIsSelectedAll(value);
-    onSelectAll(value);
+    onSelected(value);
   };
+  const { open: openDelete, handleClickOpen: handleOpenDelete, handleClose: handleCloseDelete } = useToggleModal();
   const navigate = useNavigate();
+  const user = getCurrentUser();
+  const [selectedItem, setSelectedItem] = useState(null);
+  const { open, handleClickOpen, handleClose } = useToggleModal();
+  // const handleOnChecked = value => {
+  //   if(value)
+  // };
+  const handleDelete = async id => {
+    const res = await deleteSlide(id, user.access_token);
+    const newList = listItem.filter(e => e.id !== id);
+    setSlideList(newList);
+    toast.success("Delete slide successfully");
+  };
+  const handleRenameSlide = async (oldItem, newTitle) => {
+    const res = await updateSlideById(oldItem.id, newTitle, oldItem.content, user.access_token);
+    const newItem = res.data;
+    if (res === null) return;
+    const index = listItem.findIndex(e => e.id === oldItem.id);
+    const newList = listItem.filter(e => e.id !== oldItem.id);
+    newList.splice(index, 0, newItem);
+    setSlideList(newList);
+  };
   return (
     <div className="mt-8">
       <ListHeader onSelectAll={handleOnSelectAll} />
-      {listItem.map(item => (
-        <ListItem
-          key={item.id}
-          title={item.title}
-          checked={!!isSelectedAll}
-          idSlide={item.id}
-          onShowSlide={() => {
-            // show slide
-          }}
-        />
-      ))}
+      {listItem.length > 0 ? (
+        listItem.map(item => (
+          <ListItem
+            key={item.id}
+            title={item.title}
+            // checked={!!isSelectedAll}
+            idSlide={item.id}
+            onShowSlide={() => {
+              // show slide
+            }}
+            onDelete={() => {
+              handleOpenDelete();
+              setSelectedItem(item);
+            }}
+            onChecked={value => {
+              if (value === true) {
+                const newList = [...selectedList, item];
+                setSelectedList(newList);
+              }
+            }}
+            onRename={() => {
+              handleClickOpen();
+              setSelectedItem(item);
+            }}
+          />
+        ))
+      ) : (
+        <div className="w-full flex">
+          <h2 className="mx-auto mt-20 font-bold text-3xl text-gray-400">There is no slide here</h2>
+        </div>
+      )}
+      <ModalCreateGroup
+        handleClose={handleClose}
+        open={open}
+        handleAgree={value => {
+          handleRenameSlide(selectedItem, value);
+        }}
+      />
+      <ModalDelete
+        open={openDelete}
+        handleDelete={() => {
+          handleDelete(selectedItem.id);
+        }}
+        handleClose={handleCloseDelete}
+      >
+        Are you sure to delete this slide
+      </ModalDelete>
     </div>
   );
 }
 SlideList.propTypes = {
-  onSelectAll: PropTypes.func,
+  onSelected: PropTypes.func,
   listItem: PropTypes.array,
+  setSlideList: PropTypes.any,
 };
 
 function ListHeader({ onSelectAll = value => {} }) {
@@ -69,7 +146,7 @@ ListHeader.propTypes = {
   onSelectAll: PropTypes.func,
 };
 
-function ListItem({ title, checked, onShowSlide, idSlide }) {
+function ListItem({ title, onShowSlide, idSlide, onDelete, onChecked, onRename }) {
   const optionGroupMenu = [
     {
       icon: <OpenInNewOutlinedIcon />,
@@ -84,9 +161,19 @@ function ListItem({ title, checked, onShowSlide, idSlide }) {
       },
     },
     {
-      icon: <DeleteOutlinedIcon />,
+      icon: <EditIcon />,
+      title: "Rename",
+      onClick: () => {
+        onRename();
+      },
+    },
+    {
+      icon: <DeleteOutlinedIcon color="error" />,
       title: "Delete",
-      onClick: () => {},
+      textColor: "text-red-500",
+      onClick: () => {
+        onDelete();
+      },
     },
   ];
   const [ref, hovered] = useHover();
@@ -107,13 +194,13 @@ function ListItem({ title, checked, onShowSlide, idSlide }) {
     }
     return null;
   };
+  const handleOnChecked = e => onChecked(e.target.checked);
   useEffect(() => {
     getAllQuestionByIdSlide(idSlide, user?.access_token).then(res => setQuestionList(res));
   }, []);
-
   return (
     <div className="w-full py-4 group-item flex items-center hover:bg-gray-200">
-      <Checkbox checked={checked} />
+      <Checkbox onChange={handleOnChecked} />
       <div ref={ref}>
         <PlayButton
           onClick={onShowSlide}
@@ -123,7 +210,7 @@ function ListItem({ title, checked, onShowSlide, idSlide }) {
       </div>
       <div className="flex-1">
         <h2
-          className="font-bold cursor-pointer"
+          className="font-bold cursor-pointer hover:text-gray-500"
           onClick={async () => {
             if (questionList.length === 0) await createFirstQuestion(idSlide, user?.access_token);
             const first = await getFirstQuestion(idSlide, user?.access_token);
@@ -137,7 +224,7 @@ function ListItem({ title, checked, onShowSlide, idSlide }) {
       <div className="text-gray-400 w-[244px]">me</div>
       <div className="text-gray-400 w-[244px]">about 19 hours ago</div>
       <div className="text-gray-400 w-[244px]">about 19 hours ago</div>
-      <Icon onClick={e => e.stopPropagation()} className="hidden option-list-item relative">
+      <Icon onClick={e => e.stopPropagation()}>
         <DropdownMenu data={optionGroupMenu}>
           <MoreHorizIcon className="mr-4" />
         </DropdownMenu>
@@ -147,9 +234,11 @@ function ListItem({ title, checked, onShowSlide, idSlide }) {
 }
 ListItem.propTypes = {
   title: PropTypes.string,
-  checked: PropTypes.bool,
   onShowSlide: PropTypes.func,
   idSlide: PropTypes.string,
+  onDelete: PropTypes.func,
+  onChecked: PropTypes.func,
+  onRename: PropTypes.func,
 };
 
 function PlayButton({ onClick, className, ...props }) {

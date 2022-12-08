@@ -32,7 +32,7 @@ function Dropdown({ data, children, className = "" }) {
                   // e.stopPropagation();
                 }}
               >
-                {item.icon} <span className="text-sm">{item.title}</span>
+                {item.icon} <span className={`text-sm ${item?.textColor ? item.textColor : ""}`}>{item.title}</span>
               </div>
             ))}
         </div>

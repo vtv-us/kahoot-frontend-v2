@@ -34,7 +34,7 @@ function DashboardSlide() {
         <LeftOptionSlide handleCreateSlide={handleCreateSlide} isSelectedAll={isSelectedAll} />
       </div>
       {/* <GroupList groupList={groupList} isFetching={isFetching} /> */}
-      <SlideList onSelectAll={handleOnSelectAll} listItem={slideList} />
+      <SlideList onSelected={handleOnSelectAll} listItem={slideList} setSlideList={setSlideList} />
     </div>
   );
 }

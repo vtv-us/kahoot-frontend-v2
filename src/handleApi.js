@@ -31,6 +31,24 @@ export const updateSlide = async (slide, filter, accessToken, setSlide) => {
   return null;
 };
 
+export const updateSlideById = async (slideId, title, content, accessToken) => {
+  try {
+    const data = {
+      slide_id: slideId,
+      title,
+      content,
+    };
+    const res = await axios.put(`${process.env.REACT_APP_BE_ADDRESS}/slide`, data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+    toast.error("Error updating");
+  }
+  return null;
+};
+
 export const createSlide = async (title, content, accessToken) => {
   try {
     const data = {
