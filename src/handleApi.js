@@ -103,8 +103,10 @@ export const createQuestion = async (
   long_description = ""
 ) => {
   const questions = await getAllQuestionByIdSlide(slide_id, accessToken);
-
-  const index = questions[questions.length - 1].index + 1;
+  let index = 1;
+  if (questions.length > 0) {
+    index = questions[questions.length - 1].index + 1 || 1;
+  }
   try {
     const data = {
       slide_id,
