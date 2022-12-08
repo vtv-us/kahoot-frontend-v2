@@ -21,12 +21,15 @@ function SlideProvider(props) {
   const [question, setQuestion] = useState("");
   const [description, setDescription] = useState("");
   const [answers, setAnswers] = useState([]);
+  const [index, setIndex] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await getData(idQuestion, user?.access_token);
+      setIndex(res.index);
       setMeta(res.meta);
       setQuestion(res.raw_question);
+      setDescription(res.long_description);
       const resAnswers = await getAllAnswersByIdQuestion(idQuestion, user?.access_token);
       setAnswers(resAnswers.sort());
     };
@@ -38,10 +41,12 @@ function SlideProvider(props) {
       question_id: idQuestion,
       raw_question: question,
       meta,
+      index,
       long_description: description,
     };
     updateQuestion(user?.access_token, questionData);
-  }, [meta, question]);
+  }, [meta, question, description]);
+  console.log("context", meta, question, description);
 
   const value = { meta, setMeta, question, setQuestion, description, setDescription, answers, setAnswers };
   return <SlideContext.Provider value={value} {...props} />;

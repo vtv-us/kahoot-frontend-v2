@@ -33,7 +33,7 @@ function SlideMenuItem({
   const [questionList, setQuestionList] = useState([]);
   useEffect(() => {
     getAllQuestionByIdSlide(idSlide, user?.access_token).then(res => setQuestionList(res));
-  }, []);
+  }, [idQuestion]);
   const optionSlideMenu = [
     {
       icon: <DeleteOutlinedIcon />,
@@ -59,7 +59,12 @@ function SlideMenuItem({
         navigate(`/presentation/${idSlide}/${questions[0]?.id}/edit`);
       } else {
         const currentQuestion = questions[index - 1];
-        navigate(`/presentation/${idSlide}/${currentQuestion?.id}/edit`);
+        if (currentQuestion) {
+          navigate(`/presentation/${idSlide}/${currentQuestion?.id}/edit`);
+        } else {
+          const currentId = questions[questions.length - 1].id;
+          navigate(`/presentation/${idSlide}/${currentId}/edit`);
+        }
       }
     }
   };

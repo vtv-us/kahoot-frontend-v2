@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable default-param-last */
 /* eslint-disable camelcase */
 import axios from "axios";
@@ -81,6 +82,10 @@ export const getAllQuestionByIdSlide = async (idSlide, accessToken) => {
     const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/question/slide/${idSlide}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+    // res.data.forEach((element, index) => {
+    //   element.index = index + 1;
+    // });
+    // console.log("all question", res.data);
     return res.data;
   } catch (error) {
     console.log(error);
@@ -97,9 +102,13 @@ export const createQuestion = async (
   meta = "",
   long_description = ""
 ) => {
+  const questions = await getAllQuestionByIdSlide(slide_id, accessToken);
+
+  const index = questions[questions.length - 1].index + 1;
   try {
     const data = {
       slide_id,
+      index,
       raw_question,
       meta,
       long_description,
@@ -185,7 +194,6 @@ export const createAnswer = async (question_id, index, raw_answer, accessToken) 
       index,
       raw_answer,
     };
-    console.log("data", data);
     const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/answer`, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
