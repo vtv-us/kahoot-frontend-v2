@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import BackButton from "../button/BackButton";
 import User from "../user/User";
 import { getCurrentUser } from "../../utils/constants";
@@ -14,6 +14,7 @@ import { getUserById } from "../../redux/apiRequest";
 function HeaderPresentation() {
   const { idSlide } = useParams();
   const user = getCurrentUser();
+  const navigate = useNavigate();
   const [owner, setOwner] = useState({});
   const [slide, setSlide] = useState({});
   const [filter, setFilter] = useState({});
@@ -69,7 +70,14 @@ function HeaderPresentation() {
           <span className="text-lg font-thin"> Share</span>
         </ButtonMain>
 
-        <ButtonMain bgColor="bg-blue-600" textColor="text-white" hoverColor="bg-blue-700">
+        <ButtonMain
+          bgColor="bg-blue-600"
+          textColor="text-white"
+          hoverColor="bg-blue-700"
+          onClick={() => {
+            navigate(`/slides/host/${idSlide}`);
+          }}
+        >
           <PlayArrowIcon className="w-5" />
           <span className="text-lg font-thin"> Present</span>
         </ButtonMain>

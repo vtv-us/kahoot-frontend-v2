@@ -15,6 +15,7 @@ import GoogleLoginPage from "./pages/GoogleLoginPage";
 import PresentationPage from "./pages/PresentationPage";
 import SlidesPage from "./pages/SlidesPage";
 import SlideShowMemberPage from "./pages/SlideShowMemberPage";
+import SlideShowHostPage from "./pages/SlideShowHostPage";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/presentation/:idSlide/:idQuestion/edit" element={<PresentationPage />} />
           <Route path="/slides" element={<SlidesPage />} />
           <Route path="/slides/member/:id" element={<SlideShowMemberPage />} />
+          <Route path="/slides/host/:id" element={<SlideShowHostPage />} />
         </Routes>
       </div>
     </Provider>
