@@ -6,12 +6,14 @@ import { useParams } from "react-router";
 import CloseIcon from "@mui/icons-material/Close";
 import { deleteAnswer, getAllAnswersByIdQuestion, getAnswerById, getSlideById, updateAnswer } from "../../handleApi";
 import { getCurrentUser } from "../../utils/constants";
+import { useSlide } from "../../contexts/slideContext";
 
 function OptionInput({ data, setList = () => {} }) {
   const [slide, setSlide] = useState({});
   const [filter, setFilter] = useState(data.raw_answer);
   const user = getCurrentUser();
   const { idSlide, idQuestion } = useParams();
+  const slideContext = useSlide();
   useEffect(() => {
     getSlideById(idSlide, user?.access_token).then(res => setSlide(res));
   }, []);
@@ -22,7 +24,10 @@ function OptionInput({ data, setList = () => {} }) {
       content: slide?.long_description,
     };
     await deleteAnswer(data?.id, dataAnswer, user?.access_token);
-    await getAllAnswersByIdQuestion(idQuestion, user?.access_token).then(res => setList(res));
+    await getAllAnswersByIdQuestion(idQuestion, user?.access_token).then(res => {
+      setList(res);
+      slideContext.setAnswers(res);
+    });
   };
   const handleChangeAnswer = async value => {
     const currentAnswer = await getAnswerById(data.id, user?.access_token);
@@ -34,6 +39,11 @@ function OptionInput({ data, setList = () => {} }) {
     };
     await updateAnswer(user?.access_token, updateData);
     setFilter(value);
+    await getAllAnswersByIdQuestion(idQuestion, user?.access_token).then(res => {
+      console.log("res", res);
+      setList(res);
+      slideContext.setAnswers(res);
+    });
   };
   return (
     <div className="flex gap-4 items-center">

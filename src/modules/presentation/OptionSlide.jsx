@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import ButtonMain from "../../components/button/ButtonMain";
 import OptionInputList from "../../components/input/OptionInputList";
+import { useSlide } from "../../contexts/slideContext";
 import { createAnswer, getAllAnswersByIdQuestion } from "../../handleApi";
 import { getCurrentUser } from "../../utils/constants";
 
@@ -11,6 +12,7 @@ function OptionSlide() {
   const user = getCurrentUser();
   // eslint-disable-next-line no-unused-vars
   const [optionList, setOptionList] = useState([]);
+  const { setAnswers } = useSlide();
   useEffect(() => {
     const fetchData = async () => {
       const res = await getAllAnswersByIdQuestion(idQuestion, user?.access_token);
@@ -23,6 +25,7 @@ function OptionSlide() {
     const index = optionList.length + 1;
     const res = await createAnswer(idQuestion, index, `Option ${index}`, user.access_token);
     setOptionList([...optionList, res]);
+    setAnswers([...optionList, res]);
   };
 
   return (

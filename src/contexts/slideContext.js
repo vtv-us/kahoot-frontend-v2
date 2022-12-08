@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/jsx-no-constructed-context-values */
 import { createContext, useContext, useState, useEffect } from "react";
 import { useParams } from "react-router";
-import { getQuestionById, updateQuestion } from "../handleApi";
+import { getAllAnswersByIdQuestion, getQuestionById, updateQuestion } from "../handleApi";
 import { getCurrentUser } from "../utils/constants";
 
 const getData = async (id, accessToken) => {
@@ -19,11 +20,15 @@ function SlideProvider(props) {
   const [meta, setMeta] = useState("");
   const [question, setQuestion] = useState("");
   const [description, setDescription] = useState("");
+  const [answers, setAnswers] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await getData(idQuestion, user?.access_token);
       setMeta(res.meta);
       setQuestion(res.raw_question);
+      const resAnswers = await getAllAnswersByIdQuestion(idQuestion, user?.access_token);
+      setAnswers(resAnswers.sort());
     };
     fetchData();
   }, [idQuestion]);
@@ -38,7 +43,7 @@ function SlideProvider(props) {
     updateQuestion(user?.access_token, questionData);
   }, [meta, question]);
 
-  const value = { meta, setMeta, question, setQuestion, description, setDescription };
+  const value = { meta, setMeta, question, setQuestion, description, setDescription, answers, setAnswers };
   return <SlideContext.Provider value={value} {...props} />;
 }
 

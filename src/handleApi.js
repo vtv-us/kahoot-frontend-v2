@@ -129,7 +129,6 @@ export const updateQuestion = async (accessToken, data) => {
     await axios.put(`${process.env.REACT_APP_BE_ADDRESS}/question`, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log("update successfull");
   } catch (error) {
     console.log(error);
   }
