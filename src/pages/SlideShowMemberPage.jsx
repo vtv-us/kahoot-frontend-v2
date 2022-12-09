@@ -1,19 +1,30 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Radio, RadioGroup } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import ButtonMain from "../components/button/ButtonMain";
 import RadioItem from "../components/radio/RadioItem";
+import { SocketContext } from "../contexts/socketContext";
 
 function SlideShowMemberPage({
   meta = "This is a meta description",
   question = "Who need Ronaldo",
   description = "This is long description",
 }) {
+  const socket = useContext(SocketContext);
+
   const [value, setValue] = useState("");
+
+  useEffect(() => {
+    socket.emit("join", "goxanh", "ansckasncksja");
+    socket.on("connect", msg => {
+      console.log("member connected");
+    });
+  }, []);
 
   const handleChange = e => {
     setValue(e.target.value);

@@ -16,28 +16,31 @@ import PresentationPage from "./pages/PresentationPage";
 import SlidesPage from "./pages/SlidesPage";
 import SlideShowMemberPage from "./pages/SlideShowMemberPage";
 import SlideShowHostPage from "./pages/SlideShowHostPage";
+import { socket, SocketContext } from "./contexts/socketContext";
 
 function App() {
   return (
     <Provider store={store}>
-      <div>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/signup" element={<RegisterPage />} />
-          <Route path="/login" element={<LogInPage />} />
-          <Route path="/groups/:id" element={<GroupPage />} />
-          <Route path="/groups/:role" element={<GroupPage />} />
-          <Route path="/groups/:id/members" element={<GroupMembers />} />
-          <Route path="/user/profile" element={<UserPage />} />
-          <Route path="/group/invite/:id/:userId" element={<InvitationPage />} />
-          <Route path="/verifyaccount" element={<VerifyAccountPage />} />
-          <Route path="/auth/callback/:callback1/:callback2" element={<GoogleLoginPage />} />
-          <Route path="/presentation/:idSlide/:idQuestion/edit" element={<PresentationPage />} />
-          <Route path="/slides" element={<SlidesPage />} />
-          <Route path="/slides/member/:id" element={<SlideShowMemberPage />} />
-          <Route path="/slides/host/:id" element={<SlideShowHostPage />} />
-        </Routes>
-      </div>
+      <SocketContext.Provider value={socket}>
+        <div>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/signup" element={<RegisterPage />} />
+            <Route path="/login" element={<LogInPage />} />
+            <Route path="/groups/:id" element={<GroupPage />} />
+            <Route path="/groups/:role" element={<GroupPage />} />
+            <Route path="/groups/:id/members" element={<GroupMembers />} />
+            <Route path="/user/profile" element={<UserPage />} />
+            <Route path="/group/invite/:id/:userId" element={<InvitationPage />} />
+            <Route path="/verifyaccount" element={<VerifyAccountPage />} />
+            <Route path="/auth/callback/:callback1/:callback2" element={<GoogleLoginPage />} />
+            <Route path="/presentation/:idSlide/:idQuestion/edit" element={<PresentationPage />} />
+            <Route path="/slides" element={<SlidesPage />} />
+            <Route path="/slides/member/:id" element={<SlideShowMemberPage />} />
+            <Route path="/presentation/:idSlide/:idQuestion" element={<SlideShowHostPage />} />
+          </Routes>
+        </div>
+      </SocketContext.Provider>
     </Provider>
   );
 }

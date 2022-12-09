@@ -6,41 +6,70 @@
 import PropTypes from "prop-types";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Navigate, useNavigate, useParams } from "react-router";
+import * as io from "socket.io-client";
 import HeaderSlide from "../modules/presentation/HeaderSlide";
 import BarChartPre from "../components/chart/BarChartPre";
 import FooterSlide from "../modules/presentation/FooterSlide";
-import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide } from "../handleApi";
+import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getQuestionById } from "../handleApi";
 import { getCurrentUser } from "../utils/constants";
+import { SocketContext } from "../contexts/socketContext";
 
 const getData = async (id, accessToken) => {
   const data = await getAllQuestionByIdSlide(id, accessToken);
   return data;
 };
 
+// const socket = io.connect(process.env.REACT_APP_BE_ADDRESS);
 function SlideShowHostPage({ slide = "Slide" }) {
-  const { id } = useParams();
+  const socket = useContext(SocketContext);
+
+  const { idSlide, idQuestion } = useParams();
   const user = getCurrentUser();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const handleOnClickNext = () => {
     setCurrentQuestion(currentQuestion + 1);
+    questions.forEach((item, index) => {
+      if (currentQuestion + 1 === index) {
+        navigate(`/presentation/${idSlide}/${item.id}`);
+      }
+    });
   };
   const handleOnClickPre = () => {
     setCurrentQuestion(currentQuestion - 1);
+    questions.forEach((item, index) => {
+      if (currentQuestion - 1 === index) {
+        navigate(`/presentation/${idSlide}/${item.id}`);
+      }
+    });
   };
   const handleOnBack = () => {
-    navigate(`/presentation/${id}/${questions[0].id}/edit`);
+    navigate(`/presentation/${idSlide}/${idQuestion}/edit`);
   };
+
   useEffect(() => {
-    getData(id, user.access_token).then(res => {
+    questions?.forEach((item, index) => {
+      if (item.id === idQuestion) {
+        setCurrentQuestion(index);
+      }
+    });
+  }, [idQuestion, questions]);
+  useEffect(() => {
+    getData(idSlide, user.access_token).then(res => {
       setQuestions(res);
     });
-  }, [id]);
+  }, [idSlide]);
+  useEffect(() => {
+    socket.emit("host", "tuxinhtrai", "haixinhgai");
+    socket.on("connect", msg => {
+      console.log("host connected");
+    });
+  }, []);
   return (
     <div className="bg-black w-full h-screen flex relative">
       <div
@@ -51,7 +80,7 @@ function SlideShowHostPage({ slide = "Slide" }) {
       </div>
       <div className="m-auto w-[90%] h-[80%] bg-white flex">
         <div className="w-full h-full">
-          <SlideUI question={questions[currentQuestion]} />
+          <SlideUI />
         </div>
       </div>
       <div
@@ -79,35 +108,26 @@ SlideShowHostPage.propTypes = {
   slide: PropTypes.any,
 };
 
-function SlideUI({ question }) {
+function SlideUI() {
+  const { idQuestion } = useParams();
   const user = getCurrentUser();
+  const [question, setQuestion] = useState([]);
   const [dataChart, setDataChart] = useState([]);
   useEffect(() => {
-    getAllAnswersByIdQuestion(question?.id, user.access_token).then(res => {
+    const fetchData = async () => {
+      const res = await getAllAnswersByIdQuestion(idQuestion, user?.access_token);
       const newDataChart = res?.map(item => {
         return { name: item.raw_answer, quantity: 2 };
       });
-      setDataChart(newDataChart);
-    });
-  });
-  //   const dataChart = [
-  //     {
-  //       name: "Real Madrid",
-  //       quantity: 5,
-  //     },
-  //     {
-  //       name: "Chelsea",
-  //       quantity: 7,
-  //     },
-  //     {
-  //       name: "Bayern Munich",
-  //       quantity: 4,
-  //     },
-  //   ];
-  //   const dataChart = data.answers?.map(item => {
-  //     return { name: item.raw_answer, quantity: 2 };
-  //   });
 
+      const resQuestion = await getQuestionById(idQuestion, user?.access_token);
+      setQuestion(resQuestion);
+
+      setDataChart(newDataChart);
+    };
+    fetchData();
+  }, [idQuestion]);
+  console.log("questions", question);
   return (
     <div className="p-4 bg-white m-10 flex-1 flex-flex-col relative max-h-[748px] overflow-auto">
       <HeaderSlide meta={question?.meta} question={question?.raw_question} />
@@ -116,9 +136,6 @@ function SlideUI({ question }) {
     </div>
   );
 }
-SlideUI.propTypes = {
-  question: PropTypes.object,
-};
 
 function NoneBarChart() {
   return (

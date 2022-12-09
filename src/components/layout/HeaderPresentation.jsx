@@ -12,7 +12,7 @@ import { getSlideById, updateSlide } from "../../handleApi";
 import { getUserById } from "../../redux/apiRequest";
 
 function HeaderPresentation() {
-  const { idSlide } = useParams();
+  const { idSlide, idQuestion } = useParams();
   const user = getCurrentUser();
   const navigate = useNavigate();
   const [owner, setOwner] = useState({});
@@ -75,7 +75,7 @@ function HeaderPresentation() {
           textColor="text-white"
           hoverColor="bg-blue-700"
           onClick={() => {
-            navigate(`/slides/host/${idSlide}`);
+            navigate(`/presentation/${idSlide}/${idQuestion}`);
           }}
         >
           <PlayArrowIcon className="w-5" />
