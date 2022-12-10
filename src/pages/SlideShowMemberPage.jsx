@@ -6,23 +6,50 @@
 import { Radio, RadioGroup } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
+import { useParams } from "react-router";
 import ButtonMain from "../components/button/ButtonMain";
 import RadioItem from "../components/radio/RadioItem";
 import { SocketContext } from "../contexts/socketContext";
+import { getCurrentUser } from "../utils/constants";
+import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getAnswerById, getQuestionById } from "../handleApi";
 
-function SlideShowMemberPage({
-  meta = "This is a meta description",
-  question = "Who need Ronaldo",
-  description = "This is long description",
-}) {
+function SlideShowMemberPage() {
   const socket = useContext(SocketContext);
-
+  const user = getCurrentUser();
+  const { idSlide, idQuestion } = useParams();
   const [value, setValue] = useState("");
+  const [question, setQuesion] = useState(null);
+  const [answers, setAnswers] = useState([]);
 
   useEffect(() => {
-    socket.emit("join", "goxanh", "ansckasncksja");
     socket.on("connect", msg => {
+      socket.emit("join", `dinhvan1`, `${idSlide}`);
       console.log("member connected");
+    });
+    // getAllQuestionByIdSlide(idSlide, user.access_token).then(data => {
+    //   setQuesions(data);
+    // });
+    socket.on("error", err => {
+      console.log("received socket error:");
+      console.log(err);
+    });
+    socket.on("getRoomActive", msg => {
+      console.log(msg);
+    });
+    socket.on("getActiveParticipants", msg => {
+      console.log(msg);
+    });
+    socket.on("showStatistic", msg => {
+      console.log(msg);
+    });
+    socket.on("getRoomState", msg => {
+      console.log(msg);
+    });
+    getQuestionById(idQuestion, user.access_token).then(res => {
+      setQuesion(res);
+    });
+    getAllAnswersByIdQuestion(idQuestion, user.access_token).then(res => {
+      setAnswers(res);
     });
   }, []);
 
@@ -31,7 +58,7 @@ function SlideShowMemberPage({
   };
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(value);
+    socket.emit("submitAnswer", 1, "A");
   };
   return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
@@ -39,9 +66,9 @@ function SlideShowMemberPage({
         <img src="/logo.svg" className="w-full" alt="logo" />
       </div>
       <div className="flex flex-col items-start w-full gap-2">
-        <p className="text-gray-400">{meta}</p>
-        <h2 className="text-3xl font-bold">{question}</h2>
-        <p className="text-sm text-gray-400">{description}</p>
+        <p className="text-gray-400">{question?.meta}</p>
+        <h2 className="text-3xl font-bold">{question?.raw_question}</h2>
+        {/* <p className="text-sm text-gray-400">{question?.raw_question}</p> */}
       </div>
       <div className="w-full mt-4">
         <RadioGroup
@@ -51,9 +78,12 @@ function SlideShowMemberPage({
           value={value}
           defaultValue="first"
         >
-          <RadioItem value="first" label="Lionel Messi" control={<Radio />} />
+          {answers.map(item => (
+            <RadioItem key={item.id} value={`${item.id}`} label={`${item.raw_answer}`} control={<Radio />} />
+          ))}
+          {/* <RadioItem value="first" label="Lionel Messi" control={<Radio />} />
           <RadioItem value="second" label="Bruno Fernandes" control={<Radio />} />
-          <RadioItem value="third" label="Mason Greenwood" control={<Radio />} />
+          <RadioItem value="third" label="Mason Greenwood" control={<Radio />} /> */}
         </RadioGroup>
 
         <ButtonMain
@@ -68,10 +98,6 @@ function SlideShowMemberPage({
     </div>
   );
 }
-SlideShowMemberPage.propTypes = {
-  meta: PropTypes.string,
-  question: PropTypes.string,
-  description: PropTypes.string,
-};
+SlideShowMemberPage.propTypes = {};
 
 export default SlideShowMemberPage;

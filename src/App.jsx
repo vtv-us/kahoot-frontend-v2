@@ -36,7 +36,7 @@ function App() {
             <Route path="/auth/callback/:callback1/:callback2" element={<GoogleLoginPage />} />
             <Route path="/presentation/:idSlide/:idQuestion/edit" element={<PresentationPage />} />
             <Route path="/slides" element={<SlidesPage />} />
-            <Route path="/slides/member/:id" element={<SlideShowMemberPage />} />
+            <Route path="/slides/member/:idSlide/:idQuestion" element={<SlideShowMemberPage />} />
             <Route path="/presentation/:idSlide/:idQuestion" element={<SlideShowHostPage />} />
           </Routes>
         </div>

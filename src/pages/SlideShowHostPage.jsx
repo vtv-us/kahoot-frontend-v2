@@ -26,7 +26,6 @@ const getData = async (id, accessToken) => {
 // const socket = io.connect(process.env.REACT_APP_BE_ADDRESS);
 function SlideShowHostPage({ slide = "Slide" }) {
   const socket = useContext(SocketContext);
-
   const { idSlide, idQuestion } = useParams();
   const user = getCurrentUser();
   const navigate = useNavigate();
@@ -65,11 +64,32 @@ function SlideShowHostPage({ slide = "Slide" }) {
     });
   }, [idSlide]);
   useEffect(() => {
-    socket.emit("host", "tuxinhtrai", "haixinhgai");
+    if (!socket) return;
     socket.on("connect", msg => {
+      socket.emit("host", `dinhvan`, `${idSlide}`);
       console.log("host connected");
     });
-  }, []);
+    socket.on("error", err => {
+      console.log("received socket error:");
+      console.log(err);
+    });
+    socket.on("getRoomActive", msg => {
+      console.log(msg);
+    });
+    socket.on("getActiveParticipants", msg => {
+      console.log(msg);
+    });
+    socket.on("showStatistic", msg => {
+      console.log(msg);
+    });
+    socket.on("getRoomState", msg => {
+      console.log(msg);
+    });
+    socket.on("notify", msg => {
+      console.log(msg);
+      console.log("notify");
+    });
+  }, [socket]);
   return (
     <div className="bg-black w-full h-screen flex relative">
       <div
@@ -97,8 +117,8 @@ function SlideShowHostPage({ slide = "Slide" }) {
       </div>
       <div className="absolute text-center bottom-8 left-0 right-0 text-white">
         {questions?.length > 0 &&
-          questions.map((e, index) => (
-            <FiberManualRecordIcon sx={{ color: `${currentQuestion === index ? "white" : "gray"}` }} />
+          questions.map((element, index) => (
+            <FiberManualRecordIcon key={element.id} sx={{ color: `${currentQuestion === index ? "white" : "gray"}` }} />
           ))}
       </div>
     </div>
