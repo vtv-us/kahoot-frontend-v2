@@ -45,7 +45,7 @@ function SlideMenuItem({
     },
   ];
   const handleDelete = async () => {
-    const res = await getQuestionById(idQuestion, user?.access_token);
+    const res = await getQuestionById(idQuestion);
     const data = {
       slide_id: res?.slide_id,
       title: res?.raw_question,

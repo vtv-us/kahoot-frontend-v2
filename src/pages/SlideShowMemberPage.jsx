@@ -7,6 +7,7 @@ import { Radio, RadioGroup } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { useParams } from "react-router";
+import uuid from "react-uuid";
 import ButtonMain from "../components/button/ButtonMain";
 import RadioItem from "../components/radio/RadioItem";
 import { SocketContext } from "../contexts/socketContext";
@@ -15,15 +16,17 @@ import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getAnswerById, getQ
 
 function SlideShowMemberPage() {
   const socket = useContext(SocketContext);
-  const user = getCurrentUser();
   const { idSlide, idQuestion } = useParams();
   const [value, setValue] = useState("");
   const [question, setQuesion] = useState(null);
   const [answers, setAnswers] = useState([]);
+  const [username, setUsername] = useState("");
 
+  useEffect(() => setUsername(uuid()), [idSlide]);
+  console.log("username", username);
   useEffect(() => {
     socket.on("connect", msg => {
-      socket.emit("join", `dinhvan1`, `${idSlide}`);
+      socket.emit("join", uuid(), `${idSlide}`);
       console.log("member connected");
     });
     // getAllQuestionByIdSlide(idSlide, user.access_token).then(data => {
@@ -45,10 +48,10 @@ function SlideShowMemberPage() {
     socket.on("getRoomState", msg => {
       console.log(msg);
     });
-    getQuestionById(idQuestion, user.access_token).then(res => {
+    getQuestionById(idQuestion).then(res => {
       setQuesion(res);
     });
-    getAllAnswersByIdQuestion(idQuestion, user.access_token).then(res => {
+    getAllAnswersByIdQuestion(idQuestion).then(res => {
       setAnswers(res);
     });
   }, []);
@@ -58,7 +61,8 @@ function SlideShowMemberPage() {
   };
   const handleSubmit = e => {
     e.preventDefault();
-    socket.emit("submitAnswer", 1, "A");
+    console.log("question", question);
+    socket.emit("submitAnswer", Number(question.index), Number(value));
   };
   return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
@@ -79,7 +83,7 @@ function SlideShowMemberPage() {
           defaultValue="first"
         >
           {answers.map(item => (
-            <RadioItem key={item.id} value={`${item.id}`} label={`${item.raw_answer}`} control={<Radio />} />
+            <RadioItem key={item.id} value={`${item.index}`} label={`${item.raw_answer}`} control={<Radio />} />
           ))}
           {/* <RadioItem value="first" label="Lionel Messi" control={<Radio />} />
           <RadioItem value="second" label="Bruno Fernandes" control={<Radio />} />

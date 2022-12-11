@@ -15,7 +15,7 @@ function OptionSlide() {
   const { setAnswers } = useSlide();
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getAllAnswersByIdQuestion(idQuestion, user?.access_token);
+      const res = await getAllAnswersByIdQuestion(idQuestion);
       setOptionList(res);
     };
     fetchData();

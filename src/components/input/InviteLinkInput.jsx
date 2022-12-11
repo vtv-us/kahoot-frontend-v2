@@ -11,7 +11,6 @@ import useToggleModal from "../../hooks/useToggleModal";
 import { getCurrentUser } from "../../utils/constants";
 
 const getLink = async (idGroup, accessToken) => {
-  console.log("address", process.env.REACT_APP_BE_ADDRESS);
   try {
     const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group/link/${idGroup}`, {
       headers: { Authorization: `Bearer ${accessToken}` },

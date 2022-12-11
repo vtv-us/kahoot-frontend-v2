@@ -24,7 +24,7 @@ function OptionInput({ data, setList = () => {} }) {
       content: slide?.long_description,
     };
     await deleteAnswer(data?.id, dataAnswer, user?.access_token);
-    await getAllAnswersByIdQuestion(idQuestion, user?.access_token).then(res => {
+    await getAllAnswersByIdQuestion(idQuestion).then(res => {
       setList(res);
       slideContext.setAnswers(res);
     });

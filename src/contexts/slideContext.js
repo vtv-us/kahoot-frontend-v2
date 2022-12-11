@@ -8,8 +8,8 @@ import { useParams } from "react-router";
 import { getAllAnswersByIdQuestion, getQuestionById, updateQuestion } from "../handleApi";
 import { getCurrentUser } from "../utils/constants";
 
-const getData = async (id, accessToken) => {
-  const data = await getQuestionById(id, accessToken);
+const getData = async id => {
+  const data = await getQuestionById(id);
   return data;
 };
 const SlideContext = createContext();
@@ -25,7 +25,7 @@ function SlideProvider(props) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getData(idQuestion, user?.access_token);
+      const res = await getData(idQuestion);
       setIndex(res.index);
       setMeta(res.meta);
       setQuestion(res.raw_question);
@@ -46,7 +46,6 @@ function SlideProvider(props) {
     };
     updateQuestion(user?.access_token, questionData);
   }, [meta, question, description]);
-  console.log("context", meta, question, description);
 
   const value = { meta, setMeta, question, setQuestion, description, setDescription, answers, setAnswers };
   return <SlideContext.Provider value={value} {...props} />;

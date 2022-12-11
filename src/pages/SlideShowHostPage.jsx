@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-unused-vars */
@@ -9,8 +10,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import React, { useState, useEffect, useContext } from "react";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Navigate, useNavigate, useParams } from "react-router";
-import * as io from "socket.io-client";
+import { useNavigate, useParams } from "react-router";
 import HeaderSlide from "../modules/presentation/HeaderSlide";
 import BarChartPre from "../components/chart/BarChartPre";
 import FooterSlide from "../modules/presentation/FooterSlide";
@@ -24,9 +24,10 @@ const getData = async (id, accessToken) => {
 };
 
 // const socket = io.connect(process.env.REACT_APP_BE_ADDRESS);
-function SlideShowHostPage({ slide = "Slide" }) {
+function SlideShowHostPage() {
   const socket = useContext(SocketContext);
   const { idSlide, idQuestion } = useParams();
+  const [statistic, setStatistic] = useState();
   const user = getCurrentUser();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
@@ -65,30 +66,37 @@ function SlideShowHostPage({ slide = "Slide" }) {
   }, [idSlide]);
   useEffect(() => {
     if (!socket) return;
-    socket.on("connect", msg => {
-      socket.emit("host", `dinhvan`, `${idSlide}`);
+    const logConnect = msg => {
+      socket.emit("host", user?.user?.name, `${idSlide}`);
       console.log("host connected");
-    });
-    socket.on("error", err => {
-      console.log("received socket error:");
+      socket.emit("showStatistic", currentQuestion.index);
+    };
+    const logError = err => {
       console.log(err);
-    });
-    socket.on("getRoomActive", msg => {
+    };
+    const logMsg = msg => {
       console.log(msg);
-    });
-    socket.on("getActiveParticipants", msg => {
+    };
+    const logStatistic = msg => {
+      setStatistic(msg);
       console.log(msg);
-    });
-    socket.on("showStatistic", msg => {
-      console.log(msg);
-    });
-    socket.on("getRoomState", msg => {
-      console.log(msg);
-    });
-    socket.on("notify", msg => {
-      console.log(msg);
-      console.log("notify");
-    });
+    };
+    socket.on("connect", logConnect);
+    socket.on("error", logError);
+    socket.on("getRoomActive", logMsg);
+    socket.on("getActiveParticipants", logMsg);
+    socket.on("showStatistic", logStatistic);
+    socket.on("getRoomState", logMsg);
+    socket.on("notify", logMsg);
+    return () => {
+      socket.off("connect", logConnect);
+      socket.off("error", logError);
+      socket.off("getRoomActive", logMsg);
+      socket.off("getActiveParticipants", logMsg);
+      socket.off("showStatistic", logStatistic);
+      socket.off("getRoomState", logMsg);
+      socket.off("notify", logMsg);
+    };
   }, [socket]);
   return (
     <div className="bg-black w-full h-screen flex relative">
@@ -100,7 +108,7 @@ function SlideShowHostPage({ slide = "Slide" }) {
       </div>
       <div className="m-auto w-[90%] h-[80%] bg-white flex">
         <div className="w-full h-full">
-          <SlideUI />
+          <SlideUI statistic={statistic} />
         </div>
       </div>
       <div
@@ -124,30 +132,27 @@ function SlideShowHostPage({ slide = "Slide" }) {
     </div>
   );
 }
-SlideShowHostPage.propTypes = {
-  slide: PropTypes.any,
-};
 
-function SlideUI() {
+function SlideUI({ statistic }) {
   const { idQuestion } = useParams();
-  const user = getCurrentUser();
   const [question, setQuestion] = useState([]);
   const [dataChart, setDataChart] = useState([]);
+  console.log("statistic in slideUI", statistic);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getAllAnswersByIdQuestion(idQuestion, user?.access_token);
+      const res = await getAllAnswersByIdQuestion(idQuestion);
+      console.log("question in slideUI", res);
       const newDataChart = res?.map(item => {
-        return { name: item.raw_answer, quantity: 2 };
+        return { name: item.raw_answer, quantity: statistic[item.index] };
       });
 
-      const resQuestion = await getQuestionById(idQuestion, user?.access_token);
+      const resQuestion = await getQuestionById(idQuestion);
       setQuestion(resQuestion);
 
       setDataChart(newDataChart);
     };
     fetchData();
-  }, [idQuestion]);
-  console.log("questions", question);
+  }, [idQuestion, statistic]);
   return (
     <div className="p-4 bg-white m-10 flex-1 flex-flex-col relative max-h-[748px] overflow-auto">
       <HeaderSlide meta={question?.meta} question={question?.raw_question} />
@@ -156,6 +161,9 @@ function SlideUI() {
     </div>
   );
 }
+SlideUI.propTypes = {
+  statistic: PropTypes.any,
+};
 
 function NoneBarChart() {
   return (

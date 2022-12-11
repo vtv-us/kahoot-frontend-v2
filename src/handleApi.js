@@ -82,10 +82,7 @@ export const getAllQuestionByIdSlide = async (idSlide, accessToken) => {
     const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/question/slide/${idSlide}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    // res.data.forEach((element, index) => {
-    //   element.index = index + 1;
-    // });
-    // console.log("all question", res.data);
+
     return res.data;
   } catch (error) {
     console.log(error);
@@ -141,11 +138,9 @@ export const deleteQuestion = async (id, data, accessToken) => {
   return null;
 };
 
-export const getQuestionById = async (id, accessToken) => {
+export const getQuestionById = async id => {
   try {
-    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/question/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/question/${id}`);
     return res.data;
   } catch (error) {
     console.log(error);
@@ -165,11 +160,9 @@ export const updateQuestion = async (accessToken, data) => {
 };
 
 // answer
-export const getAllAnswersByIdQuestion = async (idQuestion, accessToken) => {
+export const getAllAnswersByIdQuestion = async idQuestion => {
   try {
-    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/answer/question/${idQuestion}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/answer/question/${idQuestion}`);
     return res.data;
   } catch (error) {
     console.log(error);

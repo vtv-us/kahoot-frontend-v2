@@ -13,10 +13,6 @@ import OptionSlide from "./OptionSlide";
 import { getQuestionById, updateQuestion } from "../../handleApi";
 import { getCurrentUser } from "../../utils/constants";
 
-const getData = async (id, accessToken) => {
-  const data = await getQuestionById(id, accessToken);
-  return data;
-};
 function ContentSlideSetting({ data }) {
   const { idQuestion } = useParams();
   const user = getCurrentUser();

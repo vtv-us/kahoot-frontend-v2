@@ -12,10 +12,6 @@ import { getCurrentUser } from "../../utils/constants";
 import ContentSlideSetting from "./ContentSlideSetting";
 import SlideMenuSettingHeader from "./SlideMenuSettingHeader";
 
-const getData = async (id, accessToken) => {
-  const data = await getQuestionById(id, accessToken);
-  return data;
-};
 function MenuPresentation() {
   const data = useSlide();
 

@@ -9,25 +9,7 @@ import BarChartPre from "../../components/chart/BarChartPre";
 import FooterSlide from "./FooterSlide";
 import HeaderSlide from "./HeaderSlide";
 
-const getData = async (id, accessToken) => {
-  const data = await getQuestionById(id, accessToken);
-  return data;
-};
 function SlideUI() {
-  // const dataChart = [
-  //   {
-  //     name: "Real Madrid",
-  //     quantity: 5,
-  //   },
-  //   {
-  //     name: "Chelsea",
-  //     quantity: 7,
-  //   },
-  //   {
-  //     name: "Bayern Munich",
-  //     quantity: 4,
-  //   },
-  // ];
   const data = useSlide();
   const dataChart = data.answers?.map(item => {
     return { name: item.raw_answer, quantity: 2 };
