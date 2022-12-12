@@ -16,7 +16,7 @@ function PresentationPage() {
   const navigate = useNavigate();
   const user = getCurrentUser();
   useEffect(() => {
-    getAllQuestionByIdSlide(idSlide, user?.access_token).then(res => setQuestionList(res));
+    getAllQuestionByIdSlide(idSlide).then(res => setQuestionList(res));
   }, []);
 
   const handleCreateQuestion = async () => {

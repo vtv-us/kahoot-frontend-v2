@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/forbid-prop-types */
@@ -11,14 +13,15 @@ import uuid from "react-uuid";
 import ButtonMain from "../components/button/ButtonMain";
 import RadioItem from "../components/radio/RadioItem";
 import { SocketContext } from "../contexts/socketContext";
-import { getCurrentUser } from "../utils/constants";
 import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getAnswerById, getQuestionById } from "../handleApi";
 
 function SlideShowMemberPage() {
   const socket = useContext(SocketContext);
-  const { idSlide, idQuestion } = useParams();
+  const { idSlide } = useParams();
+  const [idQuestion, setIdQuestion] = useState("");
   const [value, setValue] = useState("");
   const [question, setQuesion] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [username, setUsername] = useState("");
 
@@ -27,11 +30,10 @@ function SlideShowMemberPage() {
   useEffect(() => {
     socket.on("connect", msg => {
       socket.emit("join", uuid(), `${idSlide}`);
+      socket.emit("getRoomState");
       console.log("member connected");
     });
-    // getAllQuestionByIdSlide(idSlide, user.access_token).then(data => {
-    //   setQuesions(data);
-    // });
+
     socket.on("error", err => {
       console.log("received socket error:");
       console.log(err);
@@ -46,15 +48,25 @@ function SlideShowMemberPage() {
       console.log(msg);
     });
     socket.on("getRoomState", msg => {
+      getAllQuestionByIdSlide(idSlide).then(data => {
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].index === msg) {
+            console.log("idQuestion in getRoomState", data[i].id);
+            setIdQuestion(data[i].id);
+          }
+        }
+        setQuestions(data);
+      });
       console.log(msg);
     });
+    console.log("idQuestion", idQuestion);
     getQuestionById(idQuestion).then(res => {
       setQuesion(res);
     });
     getAllAnswersByIdQuestion(idQuestion).then(res => {
       setAnswers(res);
     });
-  }, []);
+  }, [socket, idQuestion]);
 
   const handleChange = e => {
     setValue(e.target.value);
@@ -82,7 +94,7 @@ function SlideShowMemberPage() {
           value={value}
           defaultValue="first"
         >
-          {answers.map(item => (
+          {answers?.map(item => (
             <RadioItem key={item.id} value={`${item.index}`} label={`${item.raw_answer}`} control={<Radio />} />
           ))}
           {/* <RadioItem value="first" label="Lionel Messi" control={<Radio />} />

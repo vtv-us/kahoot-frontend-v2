@@ -32,7 +32,7 @@ function SlideMenuItem({
   const navigate = useNavigate();
   const [questionList, setQuestionList] = useState([]);
   useEffect(() => {
-    getAllQuestionByIdSlide(idSlide, user?.access_token).then(res => setQuestionList(res));
+    getAllQuestionByIdSlide(idSlide).then(res => setQuestionList(res));
   }, [idQuestion]);
   const optionSlideMenu = [
     {
@@ -52,7 +52,7 @@ function SlideMenuItem({
       content: res?.long_description,
     };
     await deleteQuestion(id, data, user?.access_token);
-    const questions = await getAllQuestionByIdSlide(idSlide, user?.access_token);
+    const questions = await getAllQuestionByIdSlide(idSlide);
     setList(questions);
     if (isActive) {
       if (questions.length === 1) {

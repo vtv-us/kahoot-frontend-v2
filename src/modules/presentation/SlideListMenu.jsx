@@ -5,14 +5,12 @@ import { useNavigate, useParams } from "react-router";
 import PropTypes from "prop-types";
 import SlideMenuItem from "./SlideMenuItem";
 import { getAllQuestionByIdSlide } from "../../handleApi";
-import { getCurrentUser } from "../../utils/constants";
 
 function SlideListMenu({ data, setList = () => {} }) {
   const { idSlide, idQuestion } = useParams();
   const navigate = useNavigate();
-  const user = getCurrentUser();
   useEffect(() => {
-    getAllQuestionByIdSlide(idSlide, user?.access_token).then(res => setList(res));
+    getAllQuestionByIdSlide(idSlide).then(res => setList(res));
   }, [idQuestion]);
   return (
     <div className="flex flex-col max-h-[600px] overflow-auto border-r bg-white border-gray-200">

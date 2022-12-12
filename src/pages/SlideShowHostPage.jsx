@@ -1,3 +1,5 @@
+/* eslint-disable spaced-comment */
+/* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -19,7 +21,7 @@ import { getCurrentUser } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
 
 const getData = async (id, accessToken) => {
-  const data = await getAllQuestionByIdSlide(id, accessToken);
+  const data = await getAllQuestionByIdSlide(id);
   return data;
 };
 
@@ -31,19 +33,24 @@ function SlideShowHostPage() {
   const user = getCurrentUser();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(1);
   const handleOnClickNext = () => {
+    socket.emit("showStatistic", currentQuestion + 1);
     setCurrentQuestion(currentQuestion + 1);
+    socket.emit("next");
     questions.forEach((item, index) => {
-      if (currentQuestion + 1 === index) {
+      if (currentQuestion === index) {
+        //index cua question lon hon index 1 so
         navigate(`/presentation/${idSlide}/${item.id}`);
       }
     });
   };
   const handleOnClickPre = () => {
+    socket.emit("showStatistic", currentQuestion - 1);
     setCurrentQuestion(currentQuestion - 1);
+    socket.emit("prev");
     questions.forEach((item, index) => {
-      if (currentQuestion - 1 === index) {
+      if (currentQuestion - 1 === index + 1) {
         navigate(`/presentation/${idSlide}/${item.id}`);
       }
     });
@@ -51,25 +58,49 @@ function SlideShowHostPage() {
   const handleOnBack = () => {
     navigate(`/presentation/${idSlide}/${idQuestion}/edit`);
   };
+  const getIndexInQuestionList = questionList => {
+    for (let i = 0; i < questionList.length; i++) {
+      if (idQuestion === questionList[i].id) {
+        return questionList[i].index;
+      }
+    }
+    return 1;
+  };
 
   useEffect(() => {
     questions?.forEach((item, index) => {
       if (item.id === idQuestion) {
-        setCurrentQuestion(index);
+        setCurrentQuestion(item.index);
       }
     });
+    socket.emit("getRoomState");
   }, [idQuestion, questions]);
   useEffect(() => {
     getData(idSlide, user.access_token).then(res => {
       setQuestions(res);
     });
   }, [idSlide]);
+
   useEffect(() => {
     if (!socket) return;
-    const logConnect = msg => {
+    const getQuestionList = async () => {
+      let currentIndex = 0;
+      const questionList = await getData(idSlide, user?.access_token);
+      currentIndex = getIndexInQuestionList(questionList);
+      socket.emit("showStatistic", currentIndex);
+      socket.emit("setRoomState", currentIndex);
+    };
+    getQuestionList();
+    // const currentIndex = getQuestionList();
+    // console.log("currentIndex: ", currentIndex);
+    const logConnect = async msg => {
+      // const questionList = await getData(idSlide, user?.access_token);
+      // const currentIndex = getIndexInQuestionList(questionList);
       socket.emit("host", user?.user?.name, `${idSlide}`);
+
+      // socket.emit("showStatistic", currentIndex);
       console.log("host connected");
-      socket.emit("showStatistic", currentQuestion.index);
+      // setCurrentQuestion(currentIndex);
     };
     const logError = err => {
       console.log(err);
@@ -77,16 +108,18 @@ function SlideShowHostPage() {
     const logMsg = msg => {
       console.log(msg);
     };
+    const logCurrentRoom = msg => {
+      console.log("current question", msg);
+    };
     const logStatistic = msg => {
       setStatistic(msg);
-      console.log(msg);
     };
     socket.on("connect", logConnect);
     socket.on("error", logError);
     socket.on("getRoomActive", logMsg);
     socket.on("getActiveParticipants", logMsg);
     socket.on("showStatistic", logStatistic);
-    socket.on("getRoomState", logMsg);
+    socket.on("getRoomState", logCurrentRoom);
     socket.on("notify", logMsg);
     return () => {
       socket.off("connect", logConnect);
@@ -98,11 +131,12 @@ function SlideShowHostPage() {
       socket.off("notify", logMsg);
     };
   }, [socket]);
+
   return (
     <div className="bg-black w-full h-screen flex relative">
       <div
         className="my-auto ml-4 p-2 rounded-full cursor-pointer hover:bg-gray-700 items-center"
-        onClick={currentQuestion > 0 ? handleOnClickPre : null}
+        onClick={currentQuestion - 1 > 0 ? handleOnClickPre : null}
       >
         <ArrowBackIosIcon sx={{ color: "white" }} />
       </div>
@@ -113,7 +147,7 @@ function SlideShowHostPage() {
       </div>
       <div
         className="my-auto mr-4 p-2 rounded-full cursor-pointer hover:bg-gray-700 items-center"
-        onClick={currentQuestion < questions.length - 1 ? handleOnClickNext : null}
+        onClick={currentQuestion < questions.length ? handleOnClickNext : null}
       >
         <ArrowForwardIosIcon sx={{ color: "white" }} />
       </div>
@@ -126,7 +160,10 @@ function SlideShowHostPage() {
       <div className="absolute text-center bottom-8 left-0 right-0 text-white">
         {questions?.length > 0 &&
           questions.map((element, index) => (
-            <FiberManualRecordIcon key={element.id} sx={{ color: `${currentQuestion === index ? "white" : "gray"}` }} />
+            <FiberManualRecordIcon
+              key={element.id}
+              sx={{ color: `${currentQuestion - 1 === index ? "white" : "gray"}` }}
+            />
           ))}
       </div>
     </div>
@@ -137,13 +174,11 @@ function SlideUI({ statistic }) {
   const { idQuestion } = useParams();
   const [question, setQuestion] = useState([]);
   const [dataChart, setDataChart] = useState([]);
-  console.log("statistic in slideUI", statistic);
   useEffect(() => {
     const fetchData = async () => {
       const res = await getAllAnswersByIdQuestion(idQuestion);
-      console.log("question in slideUI", res);
       const newDataChart = res?.map(item => {
-        return { name: item.raw_answer, quantity: statistic[item.index] };
+        return { name: item.raw_answer, quantity: (statistic && statistic[item.index]) || 0 };
       });
 
       const resQuestion = await getQuestionById(idQuestion);

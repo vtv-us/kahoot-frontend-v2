@@ -186,7 +186,7 @@ function ListItem({ title, onShowSlide, idSlide, onDelete, onChecked, onRename }
 
   const getFirstQuestion = async (id, accessToken) => {
     try {
-      const questions = await getAllQuestionByIdSlide(id, accessToken);
+      const questions = await getAllQuestionByIdSlide(id);
       const [first, ...rest] = questions;
       return first;
     } catch (error) {
@@ -196,7 +196,7 @@ function ListItem({ title, onShowSlide, idSlide, onDelete, onChecked, onRename }
   };
   const handleOnChecked = e => onChecked(e.target.checked);
   useEffect(() => {
-    getAllQuestionByIdSlide(idSlide, user?.access_token).then(res => setQuestionList(res));
+    getAllQuestionByIdSlide(idSlide).then(res => setQuestionList(res));
   }, []);
   return (
     <div className="w-full py-4 group-item flex items-center hover:bg-gray-200">

@@ -69,19 +69,19 @@ function HeaderPresentation() {
           <ShareOutlinedIcon className="w-5" />
           <span className="text-lg font-thin"> Share</span>
         </ButtonMain>
-        <a href={`/presentation/${idSlide}/${idQuestion}`}>
-          <ButtonMain
-            bgColor="bg-blue-600"
-            textColor="text-white"
-            hoverColor="bg-blue-700"
-            // onClick={() => {
-            //   navigate(`/presentation/${idSlide}/${idQuestion}`);
-            // }}
-          >
-            <PlayArrowIcon className="w-5" />
-            <span className="text-lg font-thin"> Present</span>
-          </ButtonMain>
-        </a>
+        {/* <a href={`/presentation/${idSlide}/${idQuestion}`}> */}
+        <ButtonMain
+          bgColor="bg-blue-600"
+          textColor="text-white"
+          hoverColor="bg-blue-700"
+          onClick={() => {
+            navigate(`/presentation/${idSlide}/${idQuestion}`);
+          }}
+        >
+          <PlayArrowIcon className="w-5" />
+          <span className="text-lg font-thin"> Present</span>
+        </ButtonMain>
+        {/* </a> */}
       </div>
     </div>
   );

@@ -77,11 +77,9 @@ export const getAlllides = async accessToken => {
   return null;
 };
 
-export const getAllQuestionByIdSlide = async (idSlide, accessToken) => {
+export const getAllQuestionByIdSlide = async idSlide => {
   try {
-    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/question/slide/${idSlide}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/question/slide/${idSlide}`);
 
     return res.data;
   } catch (error) {
@@ -99,7 +97,7 @@ export const createQuestion = async (
   meta = "",
   long_description = ""
 ) => {
-  const questions = await getAllQuestionByIdSlide(slide_id, accessToken);
+  const questions = await getAllQuestionByIdSlide(slide_id);
   let index = 1;
   if (questions.length > 0) {
     index = questions[questions.length - 1].index + 1 || 1;
