@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-plusplus */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
@@ -9,6 +11,7 @@ import { Radio, RadioGroup } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { useParams } from "react-router";
+import MessageIcon from "@mui/icons-material/Message";
 import uuid from "react-uuid";
 import ButtonMain from "../components/button/ButtonMain";
 import RadioItem from "../components/radio/RadioItem";
@@ -17,6 +20,9 @@ import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getAnswerById, getQ
 import HeaderSlide from "../modules/presentation/HeaderSlide";
 import FooterSlide from "../modules/presentation/FooterSlide";
 import BarChartPre from "../components/chart/BarChartPre";
+import ListReactIcon from "../components/icon/ListReactIcon";
+import IconReactQuestion from "../components/icon/IconReactQuestion";
+import ChatBox from "../components/chat/ChatBox";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -34,6 +40,7 @@ function SlideShowMemberPage() {
   const [answers, setAnswers] = useState([]);
   const [username, setUsername] = useState("");
   const [isAnswered, setIsAnswered] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
   const getIndexInQuestionList = questionList => {
     for (let i = 0; i < questionList.length; i++) {
       if (idQuestion === questionList[i].id) {
@@ -156,6 +163,15 @@ function SlideShowMemberPage() {
           </div>
         </div>
       )}
+      <div className="absolute bottom-10 mx-auto">
+        <ListReactIcon />
+      </div>
+      <div className="absolute bottom-20 right-10" onClick={() => setShowMessage(!showMessage)}>
+        <IconReactQuestion className="border boder-gray-100">
+          <MessageIcon fontSize="large" />
+        </IconReactQuestion>
+      </div>
+      {showMessage && <ChatBox setShowMessage={setShowMessage} />}
     </div>
   );
 }
