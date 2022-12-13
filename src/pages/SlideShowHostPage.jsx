@@ -20,7 +20,7 @@ import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getQuestionById } f
 import { getCurrentUser } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
 
-const getData = async (id, accessToken) => {
+const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
   return data;
 };
@@ -56,6 +56,7 @@ function SlideShowHostPage() {
     });
   };
   const handleOnBack = () => {
+    socket.emit("manualDisconnect");
     navigate(`/presentation/${idSlide}/${idQuestion}/edit`);
   };
   const getIndexInQuestionList = questionList => {
@@ -76,18 +77,20 @@ function SlideShowHostPage() {
     socket.emit("getRoomState");
   }, [idQuestion, questions]);
   useEffect(() => {
-    getData(idSlide, user.access_token).then(res => {
+    getData(idSlide).then(res => {
       setQuestions(res);
     });
   }, [idSlide]);
 
   useEffect(() => {
     if (!socket) return;
+    socket.emit("host", user?.user?.name, `${idSlide}`);
     const getQuestionList = async () => {
       let currentIndex = 0;
-      const questionList = await getData(idSlide, user?.access_token);
+      const questionList = await getData(idSlide);
       currentIndex = getIndexInQuestionList(questionList);
       socket.emit("showStatistic", currentIndex);
+      socket.emit("getRoomAcitve");
       socket.emit("setRoomState", currentIndex);
     };
     getQuestionList();
@@ -130,7 +133,7 @@ function SlideShowHostPage() {
       socket.off("getRoomState", logMsg);
       socket.off("notify", logMsg);
     };
-  }, [socket]);
+  }, [socket, idSlide]);
 
   return (
     <div className="bg-black w-full h-screen flex relative">
