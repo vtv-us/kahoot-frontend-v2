@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-boolean-value */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable react/forbid-prop-types */
@@ -41,6 +42,7 @@ const deleteSlide = async (id, accessToken) => {
 function SlideList({ onSelected = value => {}, listItem, setSlideList }) {
   const [isSelectedAll, setIsSelectedAll] = useState(false);
   const [selectedList, setSelectedList] = useState([]);
+  const [isChanged, setIsChanged] = useState(false);
   const handleOnSelectAll = value => {
     setIsSelectedAll(value);
     onSelected(value);
@@ -59,7 +61,17 @@ function SlideList({ onSelected = value => {}, listItem, setSlideList }) {
     setSlideList(newList);
     toast.success("Delete slide successfully");
   };
+  const handleOnChangeTitleSlide = txt => {
+    if (selectedItem.title !== txt) {
+      setIsChanged(true);
+      return;
+    }
+    setIsChanged(false);
+  };
   const handleRenameSlide = async (oldItem, newTitle) => {
+    if (oldItem.title === newTitle) {
+      return;
+    }
     const res = await updateSlideById(oldItem.id, newTitle, oldItem.content, user.access_token);
     const newItem = res.data;
     if (res === null) return;
@@ -106,10 +118,12 @@ function SlideList({ onSelected = value => {}, listItem, setSlideList }) {
         handleClose={handleClose}
         open={open}
         title="Rename slide"
-        defaultValue={selectedItem.title}
+        defaultValue={selectedItem?.title}
+        agreeButtonDisabled={!isChanged}
         handleAgree={value => {
           handleRenameSlide(selectedItem, value);
         }}
+        onChange={handleOnChangeTitleSlide}
       />
       <ModalDelete
         open={openDelete}

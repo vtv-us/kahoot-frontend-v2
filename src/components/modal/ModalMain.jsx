@@ -40,6 +40,7 @@ export default function ModalMain({ open, children, handleClose, title, buttonLi
                   bgColor={item.bgColor}
                   className={item.className || ""}
                   onClick={item.onClick}
+                  disabled={item.disabled != null ? item.disabled : false}
                 >
                   {item.title}
                 </ButtonMain>

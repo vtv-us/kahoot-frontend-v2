@@ -12,6 +12,7 @@ function ButtonMain({
   bgColor,
   hoverColor,
   className = "",
+  disabled = false,
   onClick = () => {},
   ...props
 }) {
@@ -19,6 +20,7 @@ function ButtonMain({
     <Button
       variant="contained"
       onClick={onClick}
+      disabled={!!disabled}
       className={`${bgColor ?? "bg-blue-700"} normal-case font-semibold hover:${
         hoverColor ?? "bg-blue-800"
       } ${className}`}
@@ -33,6 +35,7 @@ ButtonMain.propTypes = {
   className: PropTypes.string,
   onClick: PropTypes.func,
   props: PropTypes.any,
+  disabled: PropTypes.bool,
 };
 
 export default ButtonMain;

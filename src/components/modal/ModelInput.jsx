@@ -7,9 +7,18 @@ import uuid from "react-uuid";
 import Input from "../input/Input";
 import ModalMain from "./ModalMain";
 
-export default function ModalInput({ open, handleClose, handleAgree, title = "Create group", defaultValue = "" }) {
+export default function ModalInput({
+  open,
+  handleClose,
+  handleAgree,
+  title = "Create group",
+  defaultValue = "",
+  agreeButtonDisabled = false,
+  onChange = txt => {},
+}) {
   const [textFieldValue, setTextFieldValue] = React.useState("");
   const handleOnChange = text => {
+    onChange(text);
     setTextFieldValue(text);
   };
   const buttonList = [
@@ -29,6 +38,7 @@ export default function ModalInput({ open, handleClose, handleAgree, title = "Cr
         handleAgree(textFieldValue);
         handleClose();
       },
+      disabled: agreeButtonDisabled,
       className: "font-bold px-8 normal-case",
       bgColor: "bg-green-700",
       hoverColor: "bg-green-800",
@@ -47,4 +57,6 @@ ModalInput.propTypes = {
   handleAgree: PropTypes.func,
   title: PropTypes.string,
   defaultValue: PropTypes.string,
+  agreeButtonDisabled: PropTypes.bool,
+  onChange: PropTypes.func,
 };
