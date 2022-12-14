@@ -7,7 +7,7 @@ import uuid from "react-uuid";
 import Input from "../input/Input";
 import ModalMain from "./ModalMain";
 
-export default function ModalCreateGroup({ open, handleClose, handleAgree, title = "Create group" }) {
+export default function ModalInput({ open, handleClose, handleAgree, title = "Create group", defaultValue = "" }) {
   const [textFieldValue, setTextFieldValue] = React.useState("");
   const handleOnChange = text => {
     setTextFieldValue(text);
@@ -37,13 +37,14 @@ export default function ModalCreateGroup({ open, handleClose, handleAgree, title
   ];
   return (
     <ModalMain open={open} handleClose={handleClose} title={title} buttonList={buttonList}>
-      <Input name="name" label="Name" onChange={handleOnChange} />
+      <Input name="name" label="Name" onChange={handleOnChange} defaultValue={defaultValue} />
     </ModalMain>
   );
 }
-ModalCreateGroup.propTypes = {
+ModalInput.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   handleAgree: PropTypes.func,
   title: PropTypes.string,
+  defaultValue: PropTypes.string,
 };

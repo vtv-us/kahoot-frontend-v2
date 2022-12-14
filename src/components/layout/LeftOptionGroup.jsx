@@ -4,7 +4,7 @@ import React from "react";
 import DnsOutlinedIcon from "@mui/icons-material/DnsOutlined";
 import HorizontalSplitOutlinedIcon from "@mui/icons-material/HorizontalSplitOutlined";
 import Icon from "../icon/Icon";
-import ModalCreateGroup from "../modal/ModelCreateGroup";
+import ModalCreateGroup from "../modal/ModelInput";
 import useToggleModal from "../../hooks/useToggleModal";
 
 function LeftOptionGroup({ handleCreateGroup }) {

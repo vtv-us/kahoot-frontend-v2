@@ -5,7 +5,7 @@ import DnsOutlinedIcon from "@mui/icons-material/DnsOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import HorizontalSplitOutlinedIcon from "@mui/icons-material/HorizontalSplitOutlined";
 import Icon from "../icon/Icon";
-import ModalCreateGroup from "../modal/ModelCreateGroup";
+import ModalInput from "../modal/ModelInput";
 import useToggleModal from "../../hooks/useToggleModal";
 
 function LeftOptionSlide({ handleCreateSlide, isSelectedAll, onDelete }) {
@@ -36,12 +36,7 @@ function LeftOptionSlide({ handleCreateSlide, isSelectedAll, onDelete }) {
           </h2>
         </Button>
       )}
-      <ModalCreateGroup
-        title="Create new slide"
-        handleClose={handleClose}
-        open={open}
-        handleAgree={handleCreateSlide}
-      />
+      <ModalInput title="Create new slide" handleClose={handleClose} open={open} handleAgree={handleCreateSlide} />
     </div>
   );
 }

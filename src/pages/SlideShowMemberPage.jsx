@@ -39,8 +39,9 @@ function SlideShowMemberPage() {
   const [statistic, setStatistic] = useState();
   const [answers, setAnswers] = useState([]);
   const [username, setUsername] = useState("");
-  const [isAnswered, setIsAnswered] = useState(false);
+  // const [isAnswered, setIsAnswered] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState([]);
   const getIndexInQuestionList = questionList => {
     for (let i = 0; i < questionList.length; i++) {
       if (idQuestion === questionList[i].id) {
@@ -77,6 +78,7 @@ function SlideShowMemberPage() {
   };
   useEffect(() => setUsername(uuid()), [idSlide]);
   useEffect(() => {
+    // setIsAnswered(false);
     socket.on("connect", msg => {
       socket.emit("join", uuid(), `${idSlide}`);
       getQuestionList();
@@ -106,11 +108,13 @@ function SlideShowMemberPage() {
   const handleSubmit = e => {
     e.preventDefault();
     socket.emit("submitAnswer", Number(question.index), Number(value));
-    setIsAnswered(true);
+    const newList = [...answeredQuestions, question.index];
+    setAnsweredQuestions(newList);
+    // setIsAnswered(true);
   };
   return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
-      {isAnswered === false ? (
+      {answeredQuestions.includes(question?.index) === false ? (
         <>
           <div className="max-w-[200px] mb-10">
             <img src="/logo.svg" className="w-full" alt="logo" />

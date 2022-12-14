@@ -24,7 +24,7 @@ import { createQuestion, getAllQuestionByIdSlide, updateSlideById } from "../../
 import { getCurrentUser } from "../../utils/constants";
 import ModalDelete from "../../components/modal/ModalDelete";
 import useToggleModal from "../../hooks/useToggleModal";
-import ModalCreateGroup from "../../components/modal/ModelCreateGroup";
+import ModalInput from "../../components/modal/ModelInput";
 
 const deleteSlide = async (id, accessToken) => {
   try {
@@ -102,9 +102,11 @@ function SlideList({ onSelected = value => {}, listItem, setSlideList }) {
           <h2 className="mx-auto mt-20 font-bold text-3xl text-gray-400">There is no slide here</h2>
         </div>
       )}
-      <ModalCreateGroup
+      <ModalInput
         handleClose={handleClose}
         open={open}
+        title="Rename slide"
+        defaultValue={selectedItem.title}
         handleAgree={value => {
           handleRenameSlide(selectedItem, value);
         }}
