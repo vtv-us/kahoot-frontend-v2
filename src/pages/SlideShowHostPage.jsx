@@ -145,7 +145,7 @@ function SlideShowHostPage() {
       </div>
       <div className="m-auto w-[90%] h-[80%] bg-white flex">
         <div className="w-full h-full">
-          <SlideUI statistic={statistic} />
+          <SlideUI statistic={statistic} idQuestion={idQuestion} />
         </div>
       </div>
       <div
@@ -173,8 +173,7 @@ function SlideShowHostPage() {
   );
 }
 
-function SlideUI({ statistic }) {
-  const { idQuestion } = useParams();
+function SlideUI({ statistic, idQuestion }) {
   const [question, setQuestion] = useState([]);
   const [dataChart, setDataChart] = useState([]);
   useEffect(() => {
@@ -201,6 +200,7 @@ function SlideUI({ statistic }) {
 }
 SlideUI.propTypes = {
   statistic: PropTypes.any,
+  idQuestion: PropTypes.string,
 };
 
 function NoneBarChart() {

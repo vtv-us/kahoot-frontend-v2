@@ -16,30 +16,12 @@ import MenuBar from "../menu/MenuBar";
 import User from "../user/User";
 import { logoutSuccess } from "../../redux/authSlice";
 import { logoutUser } from "../../redux/apiRequest";
+import DropdownUser from "../dropdown/DropdownUser";
 
 function HeaderMain() {
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.login.currentUser);
-  const dispatch = useDispatch();
-  const { open, handleClickOpen, handleClose } = useToggleModal();
-  const optionUserMenu = [
-    {
-      icon: <AccountCircleIcon />,
-      title: "Setting profile",
-      onClick: () => {
-        navigate("/user/profile");
-      },
-    },
-    {
-      icon: <LogoutIcon />,
-      title: "Log out",
-      onClick: () => {
-        logoutUser(dispatch);
-        navigate(`/login`);
-      },
-      className: "text-red-500",
-    },
-  ];
+
   return (
     <div className="flex items-center justify-between  px-4 py-3 fixed w-full z-50 bg-white shadow-[rgb(0_0_0_/_10%)_0px_2px_4px_0px]">
       <div className=" flex items-center gap-4">
@@ -60,9 +42,7 @@ function HeaderMain() {
               Create
             </Button>
 
-            <DropdownMenu data={optionUserMenu}>
-              <User avatar_url={user?.user?.avatar_url} className="bg-green-600" />
-            </DropdownMenu>
+            <DropdownUser />
 
             <Bell />
           </>

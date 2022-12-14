@@ -16,6 +16,7 @@ import Icon from "../../components/icon/Icon";
 import DropdownMenu from "../../components/dropdown/DropdownMenu";
 import ModalInvite from "../../components/modal/ModalInvite";
 import useToggleModal from "../../hooks/useToggleModal";
+import InviteLinkInput from "../../components/input/InviteLinkInput";
 
 function GroupItem({ to = "", groupName = "MUN", id = "" }) {
   const navigate = useNavigate();
@@ -63,12 +64,13 @@ function GroupItem({ to = "", groupName = "MUN", id = "" }) {
       <ModalInvite
         open={open}
         onClick={e => e.stopPropagation()}
-        idGroup={id}
         handleClose={e => {
           e.stopPropagation();
           handleClose();
         }}
-      />
+      >
+        <InviteLinkInput idGroup={id} />
+      </ModalInvite>
     </div>
   );
 }

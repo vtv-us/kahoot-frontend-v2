@@ -18,6 +18,7 @@ import { getCurrentUser } from "../../utils/constants";
 import MemberGroupItem from "./MemberGroupItem";
 import GroupMemberSkeleton from "../../components/skeleton/GroupMemberSkeletion";
 import BackButton from "../../components/button/BackButton";
+import InviteLinkInput from "../../components/input/InviteLinkInput";
 
 function GroupMembers() {
   const [members, setMembers] = useState([]);
@@ -55,7 +56,9 @@ function GroupMembers() {
             Invite
           </Button>
 
-          <ModalInvite open={open} handleClose={handleClose} idGroup={id} />
+          <ModalInvite open={open} handleClose={handleClose}>
+            <InviteLinkInput idGroup={id} />
+          </ModalInvite>
           <Table>
             <thead>
               <tr>

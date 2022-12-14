@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable no-unused-vars */
 import { Button } from "@mui/material";
 import PropTypes from "prop-types";
@@ -21,11 +22,15 @@ const getLink = async (idGroup, accessToken) => {
   }
   return null;
 };
-function InviteLinkInput({ idGroup }) {
+function InviteLinkInput({ idGroup, idSlide }) {
   const user = getCurrentUser();
   const [link, setLink] = useState("");
   useEffect(() => {
-    const inviteLink = getLink(idGroup, user.access_token).then(res => setLink(res.data.group_link));
+    if (idSlide) {
+      setLink(`${process.env.REACT_APP_FE_ADDRESS}/slides/member/${idSlide}`);
+    } else {
+      const inviteLink = getLink(idGroup, user.access_token).then(res => setLink(res.data.group_link));
+    }
   }, [link]);
 
   const [copied, setCopied] = useState(false);
@@ -52,15 +57,18 @@ function InviteLinkInput({ idGroup }) {
           )}
         </CopyToClipboard>
       </div>
-      <button type="submit" className="text-blue-500 text-center w-full mt-4" onClick={handleClickOpen}>
-        <EmailOutlinedIcon /> <span>Invite via email</span>
-      </button>
+      {!idSlide && (
+        <button type="submit" className="text-blue-500 text-center w-full mt-4" onClick={handleClickOpen}>
+          <EmailOutlinedIcon /> <span>Invite via email</span>
+        </button>
+      )}
       <ModalInviteByEmail handleClose={handleClose} open={open} groupId={idGroup} />
     </div>
   );
 }
 InviteLinkInput.propTypes = {
-  idGroup: PropTypes.string.isRequired,
+  idGroup: PropTypes.string,
+  idSlide: PropTypes.string,
 };
 
 export default InviteLinkInput;

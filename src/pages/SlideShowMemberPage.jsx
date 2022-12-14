@@ -62,7 +62,6 @@ function SlideShowMemberPage() {
       }
       setQuestions(data);
     });
-    console.log(msg);
   };
   const logRoomActive = msg => {
     console.log(msg);
