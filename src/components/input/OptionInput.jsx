@@ -40,7 +40,6 @@ function OptionInput({ data, setList = () => {} }) {
     await updateAnswer(user?.access_token, updateData);
     setFilter(value);
     await getAllAnswersByIdQuestion(idQuestion, user?.access_token).then(res => {
-      console.log("res", res);
       setList(res);
       slideContext.setAnswers(res);
     });

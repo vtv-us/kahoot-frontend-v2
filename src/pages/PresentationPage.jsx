@@ -20,7 +20,7 @@ function PresentationPage() {
   const [statistic, setStatistic] = useState();
   // ****** */
 
-  const [questionList, setQuestionList] = useState({});
+  const [questionList, setQuestionList] = useState([]);
   const { idSlide, idQuestion } = useParams();
   const navigate = useNavigate();
   const user = getCurrentUser();

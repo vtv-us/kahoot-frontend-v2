@@ -39,7 +39,7 @@ function SlideProvider(props) {
   useEffect(() => {
     const questionData = {
       question_id: idQuestion,
-      raw_question: question,
+      raw_question: question || "Multiple choice question",
       meta,
       index,
       long_description: description,

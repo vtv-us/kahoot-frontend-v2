@@ -30,7 +30,7 @@ function DashboardSlide() {
   return (
     <div className="p-8 px-10 flex-1 bg-gray-50">
       <div className="flex justify-between">
-        <Search handleSetFilter={handleSetFilter} />
+        <Search />
         <LeftOptionSlide handleCreateSlide={handleCreateSlide} isSelectedAll={isSelectedAll} />
       </div>
       {/* <GroupList groupList={groupList} isFetching={isFetching} /> */}

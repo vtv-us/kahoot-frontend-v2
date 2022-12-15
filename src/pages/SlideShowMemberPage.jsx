@@ -23,6 +23,7 @@ import BarChartPre from "../components/chart/BarChartPre";
 import ListReactIcon from "../components/icon/ListReactIcon";
 import IconReactQuestion from "../components/icon/IconReactQuestion";
 import ChatBox from "../components/chat/ChatBox";
+import RadioInputSkeletion from "../components/skeleton/RadioInputSkeletion";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -39,6 +40,7 @@ function SlideShowMemberPage() {
   const [statistic, setStatistic] = useState();
   const [answers, setAnswers] = useState([]);
   const [username, setUsername] = useState("");
+  const [isFetching, setIsFetching] = useState(true);
   // const [isAnswered, setIsAnswered] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
@@ -83,19 +85,25 @@ function SlideShowMemberPage() {
       socket.emit("join", uuid(), `${idSlide}`);
       getQuestionList();
       socket.emit("getRoomState");
-      // console.log("member connected");
+      console.log("member connected");
+    });
+    socket.on("disconnect", () => {
+      console.log("disconnect");
     });
 
     socket.on("error", logError);
     socket.on("getRoomActive", logRoomActive);
     socket.on("showStatistic", logStatistic);
     socket.on("getRoomState", logRoomState);
-    getQuestionById(idQuestion).then(res => {
-      setQuesion(res);
-    });
-    getAllAnswersByIdQuestion(idQuestion).then(res => {
-      setAnswers(res);
-    });
+    if (idQuestion) {
+      getQuestionById(idQuestion).then(res => {
+        setQuesion(res);
+      });
+      getAllAnswersByIdQuestion(idQuestion).then(res => {
+        setIsFetching(false);
+        setAnswers(res);
+      });
+    }
     return () => {
       socket.off("showStatistic", logStatistic);
       socket.off("getRoomActive");
@@ -124,31 +132,37 @@ function SlideShowMemberPage() {
             <h2 className="text-3xl font-bold">{question?.raw_question}</h2>
             {/* <p className="text-sm text-gray-400">{question?.raw_question}</p> */}
           </div>
-          <div className="w-full mt-4">
-            <RadioGroup
-              className="flex flex-col gap-4"
-              name="answer"
-              onChange={handleChange}
-              value={value}
-              defaultValue="first"
-            >
-              {answers?.map(item => (
-                <RadioItem key={item.id} value={`${item.index}`} label={`${item.raw_answer}`} control={<Radio />} />
-              ))}
-              {/* <RadioItem value="first" label="Lionel Messi" control={<Radio />} />
+          {!isFetching ? (
+            <div className="w-full mt-4">
+              <RadioGroup
+                className="flex flex-col gap-4"
+                name="answer"
+                onChange={handleChange}
+                value={value}
+                defaultValue="first"
+              >
+                {answers?.map(item => (
+                  <RadioItem key={item.id} value={`${item.index}`} label={`${item.raw_answer}`} control={<Radio />} />
+                ))}
+                {/* <RadioItem value="first" label="Lionel Messi" control={<Radio />} />
           <RadioItem value="second" label="Bruno Fernandes" control={<Radio />} />
           <RadioItem value="third" label="Mason Greenwood" control={<Radio />} /> */}
-            </RadioGroup>
+              </RadioGroup>
 
-            <ButtonMain
-              className="w-full mt-4 text-lg py-3"
-              bgColor="bg-blue-500 hover:!bg-blue-600"
-              textColor="text-white-800"
-              onClick={handleSubmit}
-            >
-              Submit
-            </ButtonMain>
-          </div>
+              <ButtonMain
+                className="w-full mt-4 text-lg py-3"
+                bgColor="bg-blue-500 hover:!bg-blue-600"
+                textColor="text-white-800"
+                onClick={handleSubmit}
+              >
+                Submit
+              </ButtonMain>
+            </div>
+          ) : (
+            <div>
+              <RadioInputSkeletion />
+            </div>
+          )}
         </>
       ) : (
         <div className="flex flex-col items-center">

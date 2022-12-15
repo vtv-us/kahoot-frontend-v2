@@ -27,7 +27,7 @@ function SlideUI({ statistic, idQuestion }) {
       setDataChart(newDataChart);
     };
     fetchData();
-  }, [idQuestion, statistic]);
+  }, [idQuestion, statistic, data]);
   return (
     <div className="p-4 bg-white m-10 flex-1 flex-flex-col relative max-h-[748px] overflow-auto">
       <HeaderSlide meta={data?.meta} question={data?.question} />
