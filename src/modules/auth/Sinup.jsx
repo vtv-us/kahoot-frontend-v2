@@ -29,6 +29,9 @@ import FormInputTextField from "../../components/form_components/FormInputTextFi
 import FormHideShowInput from "../../components/form_components/FormHideShowInput";
 import { registerUser } from "../../redux/apiRequest";
 import { resetRegister } from "../../redux/authSlice";
+import DevideLine from "../../components/line/DevideLine";
+import LoginSocial from "../user/LoginSocial";
+import ChangeAuthen from "../user/ChangeAuthen";
 
 const maxLength = 40;
 const minLength = 6;
@@ -140,38 +143,11 @@ function Signup() {
             >
               Sign up
             </Button>
-            <FormGroup>
-              <FormControlLabel
-                control={<Checkbox defaultChecked />}
-                label="I wish to receive information, offers, recommendations, and updates from Kahoot!"
-                classes={{ root: "custom-checkbox-label" }}
-              />
-            </FormGroup>
           </form>
-          <div className="w-full float-left border-t-[1px] mt-4 text-center ">
-            <b className="w-10 h-10 text-sm text-center bg-white inline-block  rounded-full leading-10 relative -top-5">
-              or
-            </b>
-          </div>
-          <a href={`${process.env.REACT_APP_BE_ADDRESS}/auth/google`}>
-            <Button variant="outlined" className="w-full relative py-2">
-              <img src="/google.svg" alt="" className="absolute left-1" />
-              Continue with Google
-            </Button>
-          </a>
+          <DevideLine />
 
-          <div className="text-center mt-4">
-            Already have an account?{" "}
-            <span
-              role="button"
-              tabIndex={0}
-              onKeyDown={() => navigate("/login")}
-              className="cursor-pointer text-blue-500 hover:text-blue-600 underline decoration-1"
-              onClick={() => navigate("/login")}
-            >
-              Log in
-            </span>
-          </div>
+          <LoginSocial />
+          <ChangeAuthen title="Already have an account? " page="Log in" to="/login" />
         </Paper>
       </Grid>
     </div>

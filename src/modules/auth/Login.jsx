@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable no-console */
@@ -17,6 +19,9 @@ import FormInputTextField from "../../components/form_components/FormInputTextFi
 
 import { loginUser } from "../../redux/apiRequest";
 import { resetLogin } from "../../redux/authSlice";
+import LoginSocial from "../user/LoginSocial";
+import DevideLine from "../../components/line/DevideLine";
+import ChangeAuthen from "../user/ChangeAuthen";
 
 function Login() {
   const [values, setValues] = React.useState({
@@ -85,7 +90,12 @@ function Login() {
               control={control}
               icon={values.showPassword ? <VisibilityOff /> : <Visibility />}
             ></FormHideShowInput>
-
+            <div
+              className="-mt-2 ml-auto mr-2 text-sm cursor-pointer text-blue-500 underline decoration-1"
+              onClick={() => navigate("/reset-password")}
+            >
+              Forget password
+            </div>
             {errorMessage && (
               <div className="bg-red-100 rounded-sm px-4 py-2 text-red-600">
                 <h3>{errorMessage}</h3>
@@ -100,30 +110,10 @@ function Login() {
               {isFetching ? <CircularProgress /> : "Log in"}
             </Button>
           </form>
-          <div className="w-full float-left border-t-[1px] mt-10 text-center ">
-            <b className="w-10 h-10 text-sm text-center bg-white inline-block  rounded-full leading-10 relative -top-5">
-              or
-            </b>
-          </div>
-          <a href={`${process.env.REACT_APP_BE_ADDRESS}/auth/google`}>
-            <Button variant="outlined" className="w-full relative py-2">
-              <img src="/google.svg" alt="" className="absolute left-1" />
-              Continue with Google
-            </Button>
-          </a>
+          <DevideLine />
+          <LoginSocial />
 
-          <div className="text-center mt-4">
-            Dont have an account?{" "}
-            <span
-              role="button"
-              tabIndex={0}
-              onKeyDown={handleClick}
-              className="cursor-pointer text-blue-500 hover:text-blue-600 underline decoration-1"
-              onClick={handleClick}
-            >
-              Sign up
-            </span>
-          </div>
+          <ChangeAuthen title="Dont have an account? " page="Sign up" to="/signup" />
         </Paper>
       </Grid>
     </div>
