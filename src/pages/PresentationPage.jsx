@@ -1,8 +1,12 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 import React, { useState, useEffect, useContext } from "react";
+import EqualizerIcon from "@mui/icons-material/Equalizer";
 import AddIcon from "@mui/icons-material/Add";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import { useNavigate, useParams } from "react-router";
+import PropTypes from "prop-types";
 import ButtonMain from "../components/button/ButtonMain";
 import LayoutPresentation from "../components/layout/LayoutPresentation";
 import SlideListMenu from "../modules/presentation/SlideListMenu";
@@ -13,7 +17,7 @@ import { createQuestion, getAllQuestionByIdSlide, getAnswerById, getQuestionById
 import { getCurrentUser } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
 
-function PresentationPage() {
+function PresentationPage({ defaultType = 1 }) {
   // ****** */
   const socket = useContext(SocketContext);
 
@@ -22,8 +26,24 @@ function PresentationPage() {
 
   const [questionList, setQuestionList] = useState([]);
   const { idSlide, idQuestion } = useParams();
+  const [selectedType, setSelectedType] = useState(defaultType);
   const navigate = useNavigate();
   const user = getCurrentUser();
+  const listTypeSLide = [
+    {
+      icon: <EqualizerIcon />,
+      value: 1,
+      label: "Multi choice",
+    },
+    {
+      icon: <ChatBubbleIcon />,
+      value: 2,
+      label: "Q&A",
+    },
+  ];
+  const handleSelectType = value => {
+    setSelectedType(value);
+  };
   useEffect(() => {
     getAllQuestionByIdSlide(idSlide).then(res => setQuestionList(res));
   }, []);
@@ -97,11 +117,14 @@ function PresentationPage() {
         <SlideProvider>
           <SlideListMenu data={questionList} setList={setQuestionList} />
           <SlideUI statistic={statistic} idQuestion={idQuestion} />
-          <MenuPresentation />
+          <MenuPresentation selectedValue={selectedType} listItem={listTypeSLide} handleOnSelect={handleSelectType} />
         </SlideProvider>
       </div>
     </LayoutPresentation>
   );
 }
+PresentationPage.propTypes = {
+  defaultType: PropTypes.number,
+};
 
 export default PresentationPage;
