@@ -4,6 +4,31 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+// groups
+export const getGroupsCreatedByUser = async accessToken => {
+  const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return res.data;
+};
+
+export const getGroupsUserHasJoined = async accessToken => {
+  const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group/joined`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return res.data;
+};
+export const createGroup = async (groupName, accessToken) => {
+  const data = {
+    group_name: groupName,
+  };
+  const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/group`, data, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  // dispatch(createGroupSuccess());
+  return res.data;
+};
+
 /* eslint-disable import/prefer-default-export */
 export const getSlideById = async (id, accessToken) => {
   try {
