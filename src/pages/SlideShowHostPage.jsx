@@ -191,7 +191,7 @@ function SlideUI({ statistic, idQuestion }) {
     fetchData();
   }, [idQuestion, statistic]);
   return (
-    <div className="p-4 bg-white m-10 flex-1 flex-flex-col relative max-h-[748px] overflow-auto">
+    <div className="p-4 bg-white m-10 flex-1 flex-flex-col max-h-[748px] overflow-auto">
       <HeaderSlide meta={question?.meta} question={question?.raw_question} />
       {dataChart.length > 0 ? <BarChartPre data={dataChart} /> : <NoneBarChart />}
       <FooterSlide />
