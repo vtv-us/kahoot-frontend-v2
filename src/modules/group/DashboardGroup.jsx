@@ -6,32 +6,9 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import Search from "../../components/input/Search";
 import LeftOptionGroup from "../../components/layout/LeftOptionGroup";
+import { createGroup, getGroupsCreatedByUser, getGroupsUserHasJoined } from "../../handleApi";
 import { getCurrentUser, JOINED, OWNED } from "../../utils/constants";
 import GroupList from "./GroupList";
-
-const getGroupsCreatedByUser = async accessToken => {
-  const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  return res.data;
-};
-
-const getGroupsUserHasJoined = async accessToken => {
-  const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/group/joined`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  return res.data;
-};
-const createGroup = async (groupName, accessToken) => {
-  const data = {
-    group_name: groupName,
-  };
-  const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/group`, data, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  // dispatch(createGroupSuccess());
-  return res.data;
-};
 
 const handleCreate = async (setGroupList, groupName, accessToken) => {
   await createGroup(groupName, accessToken);
