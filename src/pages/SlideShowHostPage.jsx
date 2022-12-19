@@ -85,6 +85,8 @@ function SlideShowHostPage() {
   useEffect(() => {
     if (!socket) return;
     socket.emit("host", user?.user?.name, `${idSlide}`);
+    socket.emit("chatHistory");
+
     const getQuestionList = async () => {
       let currentIndex = 0;
       const questionList = await getData(idSlide);
@@ -117,6 +119,7 @@ function SlideShowHostPage() {
     const logStatistic = msg => {
       setStatistic(msg);
     };
+
     socket.on("connect", logConnect);
     socket.on("error", logError);
     socket.on("getRoomActive", logMsg);

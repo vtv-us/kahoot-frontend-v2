@@ -10,42 +10,44 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconReactQuestion from "../icon/IconReactQuestion";
 import MessageList from "./MessageList";
 
-function ChatBox({ setShowMessage = () => {} }) {
-  const list = [
-    { name: "username", message: "Xin chào tất cả ", isCurrent: false },
-    { name: "username", message: "Xin chào tất cả ", isCurrent: true },
-    { name: "username", message: "Xin chào tất cả ", isCurrent: false },
-    { name: "username", message: "Xin chào tất cả ", isCurrent: true },
-    { name: "username", message: "Xin chào tất cả ", isCurrent: false },
-    { name: "username", message: "Xin chào tất cả ", isCurrent: true },
-    { name: "username", message: "Xin chào tất cả ", isCurrent: false },
-    { name: "username", message: "Xin chào tất cả ", isCurrent: true },
-    {
-      name: "username",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis dolore nesciunt, rerum dicta nisi est velit. Cupiditate, quae adipisci? At ab sapiente labore velit eaque! Fugiat expedita aliquam voluptas iste!",
-      isCurrent: false,
-    },
-    {
-      name: "username",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis dolore nesciunt, rerum dicta nisi est velit. Cupiditate, quae adipisci? At ab sapiente labore velit eaque! Fugiat expedita aliquam voluptas iste!",
-      isCurrent: true,
-    },
-  ];
-  const [messageList, setMessageList] = useState(list);
+function ChatBox({ socket, username = "", setShowMessage = () => {} }) {
+  const [messageList, setMessageList] = useState([]);
+  useEffect(() => {
+    socket.on("chat", (urs, msg) => {
+      setMessageList([
+        ...messageList,
+        {
+          name: urs,
+          message: msg,
+          isCurrent: urs === username,
+        },
+      ]);
+    });
+    socket.on("chatHistory", msg => {
+      const newMsg = msg?.map(item => {
+        return {
+          message: item.Message,
+          name: item.Username,
+          isCurrent: username === item.Username,
+        };
+      });
+      setMessageList([...newMsg]);
+    });
+  }, [socket, messageList]);
   return (
     <div className="absolute bottom-5 right-28 transition-all">
       <div className="w-[480px] h-[560px] rounded-lg bg-white shadow-[0_7px_40px_2px_rgb(148_149_150_/_30%)] flex flex-col justify-between">
         <Header setShowMessage={setShowMessage} />
         <Content list={messageList} />
-        <Footer list={messageList} setList={setMessageList} />
+        <Footer socket={socket} username={username} list={messageList} setList={setMessageList} />
       </div>
     </div>
   );
 }
 ChatBox.propTypes = {
   setShowMessage: PropTypes.func.isRequired,
+  socket: PropTypes.any.isRequired,
+  username: PropTypes.string.isRequired,
 };
 const Header = ({ setShowMessage = () => {} }) => {
   return (
@@ -66,20 +68,14 @@ Header.propTypes = {
   setShowMessage: PropTypes.func.isRequired,
 };
 
-const Footer = ({ list = [], setList = () => {} }) => {
+const Footer = ({ socket, username, list = [], setList = () => {} }) => {
   const [filter, setFilter] = useState("");
 
   const handleSendMessage = () => {
-    // todo
-    setList([
-      ...list,
-      {
-        name: "tushimon",
-        message: filter,
-        isCurrent: true,
-      },
-    ]);
-    setFilter("");
+    if (filter) {
+      socket.emit("chat", filter);
+      setFilter("");
+    }
   };
   const handleKeyDown = event => {
     if (event.key === "Enter") {
@@ -106,6 +102,8 @@ const Footer = ({ list = [], setList = () => {} }) => {
 Footer.propTypes = {
   setList: PropTypes.func.isRequired,
   list: PropTypes.array.isRequired,
+  socket: PropTypes.any.isRequired,
+  username: PropTypes.string.isRequired,
 };
 
 const Content = ({ list }) => {

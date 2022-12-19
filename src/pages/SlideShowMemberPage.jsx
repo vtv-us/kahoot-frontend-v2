@@ -24,6 +24,8 @@ import ListReactIcon from "../components/icon/ListReactIcon";
 import IconReactQuestion from "../components/icon/IconReactQuestion";
 import ChatBox from "../components/chat/ChatBox";
 import RadioInputSkeletion from "../components/skeleton/RadioInputSkeletion";
+import { getCurrentUser } from "../utils/constants";
+import MessageNotify from "../components/chat/MessageNotify";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -40,9 +42,13 @@ function SlideShowMemberPage() {
   const [statistic, setStatistic] = useState();
   const [answers, setAnswers] = useState([]);
   const [username, setUsername] = useState("");
+  const user = getCurrentUser();
+  const [newMessage, setNewMessage] = useState({});
+  const [countMessages, setCountMessages] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
   // const [isAnswered, setIsAnswered] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [showNewMessage, setShowNewMessage] = useState(false);
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
   const getIndexInQuestionList = questionList => {
     for (let i = 0; i < questionList.length; i++) {
@@ -73,6 +79,14 @@ function SlideShowMemberPage() {
     console.log("received socket error:");
     console.log(err);
   };
+  const handleNewMessage = (urs, msg) => {
+    console.log("new message", msg);
+    if (!showMessage) {
+      setCountMessages(countMessages + 1);
+      setNewMessage({ username: urs, message: msg });
+      setShowNewMessage(true);
+    }
+  };
   const getQuestionList = async () => {
     let currentIndex = 0;
     const questionList = await getData(idSlide);
@@ -82,7 +96,9 @@ function SlideShowMemberPage() {
   useEffect(() => {
     // setIsAnswered(false);
     socket.on("connect", msg => {
-      socket.emit("join", uuid(), `${idSlide}`);
+      const name = user?.user?.name || uuid();
+      setUsername(name);
+      socket.emit("join", name, `${idSlide}`);
       getQuestionList();
       socket.emit("getRoomState");
       console.log("member connected");
@@ -95,6 +111,11 @@ function SlideShowMemberPage() {
     socket.on("getRoomActive", logRoomActive);
     socket.on("showStatistic", logStatistic);
     socket.on("getRoomState", logRoomState);
+    socket.on("chat", handleNewMessage);
+
+    socket.on("reply", function (msg) {
+      console.log("reply", msg);
+    });
     if (idQuestion) {
       getQuestionById(idQuestion).then(res => {
         setQuesion(res);
@@ -107,8 +128,9 @@ function SlideShowMemberPage() {
     return () => {
       socket.off("showStatistic", logStatistic);
       socket.off("getRoomActive");
+      socket.off("chat", handleNewMessage);
     };
-  }, [socket, idQuestion]);
+  }, [socket, idQuestion, countMessages]);
 
   const handleChange = e => {
     setValue(e.target.value);
@@ -120,6 +142,7 @@ function SlideShowMemberPage() {
     setAnsweredQuestions(newList);
     // setIsAnswered(true);
   };
+  console.log("show", showMessage);
   return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
       {answeredQuestions.includes(question?.index) === false ? (
@@ -183,12 +206,35 @@ function SlideShowMemberPage() {
       <div className="absolute bottom-10 mx-auto">
         <ListReactIcon />
       </div>
-      <div className="absolute bottom-20 right-10" onClick={() => setShowMessage(!showMessage)}>
-        <IconReactQuestion className="border boder-gray-100">
-          <MessageIcon fontSize="large" />
-        </IconReactQuestion>
+      <div
+        className="absolute bottom-20 right-10"
+        onClick={() => {
+          socket.emit("getChatHistory");
+          setCountMessages(0);
+          setShowMessage(!showMessage);
+          if (!showMessage) setShowNewMessage(false);
+        }}
+      >
+        <div className="relative">
+          <IconReactQuestion className="border boder-gray-100">
+            <MessageIcon fontSize="large" />
+          </IconReactQuestion>
+          {countMessages > 0 && (
+            <span className="absolute rounded-full text-sm text-white bg-red-500 py-1 px-2 -top-2 right-0 font-bold">
+              {countMessages}
+            </span>
+          )}
+        </div>
       </div>
-      {showMessage && <ChatBox setShowMessage={setShowMessage} />}
+      {showNewMessage && (
+        <MessageNotify
+          message={newMessage}
+          onClose={() => {
+            setShowNewMessage(false);
+          }}
+        />
+      )}
+      {showMessage && <ChatBox socket={socket} username={username} setShowMessage={setShowMessage} />}
     </div>
   );
 }
