@@ -81,6 +81,8 @@ function SlideShowMemberPage() {
   };
   const handleNewMessage = (urs, msg) => {
     console.log("new message", msg);
+    console.log("show", showMessage);
+    console.log("coount +1 ", countMessages + 1);
     if (!showMessage) {
       setCountMessages(countMessages + 1);
       setNewMessage({ username: urs, message: msg });
@@ -92,6 +94,13 @@ function SlideShowMemberPage() {
     const questionList = await getData(idSlide);
     currentIndex = getIndexInQuestionList(questionList);
   };
+  useEffect(() => {
+    setCountMessages(Number(localStorage.getItem(username)));
+  }, [username]);
+  useEffect(() => {
+    console.log("vo");
+    localStorage.setItem(username, JSON.stringify(countMessages));
+  }, [username, countMessages]);
   useEffect(() => setUsername(uuid()), [idSlide]);
   useEffect(() => {
     // setIsAnswered(false);
@@ -130,7 +139,7 @@ function SlideShowMemberPage() {
       socket.off("getRoomActive");
       socket.off("chat", handleNewMessage);
     };
-  }, [socket, idQuestion, countMessages]);
+  }, [socket, idQuestion, showMessage, countMessages]);
 
   const handleChange = e => {
     setValue(e.target.value);
@@ -142,7 +151,6 @@ function SlideShowMemberPage() {
     setAnsweredQuestions(newList);
     // setIsAnswered(true);
   };
-  console.log("show", showMessage);
   return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
       {answeredQuestions.includes(question?.index) === false ? (
@@ -212,14 +220,14 @@ function SlideShowMemberPage() {
           socket.emit("getChatHistory");
           setCountMessages(0);
           setShowMessage(!showMessage);
-          if (!showMessage) setShowNewMessage(false);
+          setShowNewMessage(false);
         }}
       >
         <div className="relative">
           <IconReactQuestion className="border boder-gray-100">
             <MessageIcon fontSize="large" />
           </IconReactQuestion>
-          {countMessages > 0 && (
+          {countMessages > 0 && !showMessage && (
             <span className="absolute rounded-full text-sm text-white bg-red-500 py-1 px-2 -top-2 right-0 font-bold">
               {countMessages}
             </span>
