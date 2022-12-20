@@ -6,6 +6,20 @@ export const OWNED = "owned";
 export const JOINED = "joined";
 export const PENDING = "pending";
 
+export const REACTION = {
+  HEART: 1,
+  QUESTION: 2,
+  LIKE: 3,
+  DISLIKE: 4,
+  ANGRY: 5,
+};
+export const QUESTION_TYPE = {
+  MULTIPLE_CHOICE: 1,
+  HEADING: 2,
+  PARAGRAPH: 3,
+  QA: 4,
+};
+
 export const getCurrentUser = () => useSelector(state => state.auth.login.currentUser);
 
 export const validateEmail = email => {

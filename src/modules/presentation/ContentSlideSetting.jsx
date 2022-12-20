@@ -11,7 +11,8 @@ import Input from "../../components/input/Input";
 import TextAreaAutoResize from "../../components/textarea/TextAreaAutoResize";
 import OptionSlide from "./OptionSlide";
 import { getQuestionById, updateQuestion } from "../../handleApi";
-import { getCurrentUser } from "../../utils/constants";
+import { getCurrentUser, QUESTION_TYPE } from "../../utils/constants";
+import ReactionQuestion from "./ReactionQuestion";
 
 function ContentSlideSetting({ data }) {
   const { idQuestion } = useParams();
@@ -49,7 +50,7 @@ function ContentSlideSetting({ data }) {
             <TextAreaAutoResize text={data.description} setText={data.setDescription} />
           </div>
         </ClickToShowInput>
-        <OptionSlide />
+        {data.type === QUESTION_TYPE.MULTIPLE_CHOICE ? <OptionSlide /> : <ReactionQuestion />}
       </div>
     </div>
   );

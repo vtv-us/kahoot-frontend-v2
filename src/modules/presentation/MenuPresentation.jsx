@@ -15,20 +15,18 @@ import { getCurrentUser } from "../../utils/constants";
 import ContentSlideSetting from "./ContentSlideSetting";
 import DropdownMain from "./DropdownMain";
 
-function MenuPresentation({ selectedValue, listItem, handleOnSelect }) {
+function MenuPresentation({ listItem }) {
   const data = useSlide();
-
+  console.log("type of slide", data.type);
   return (
     <div className="w-[460px] max-h-[600px] overflow-auto border-l border-gray-200 bg-white">
-      <DropdownMain selectedValue={selectedValue} handleOnSelect={handleOnSelect} listItem={listItem} />
+      <DropdownMain selectedValue={data.type} handleOnSelect={data.setType} listItem={listItem} />
       <ContentSlideSetting data={data} />
     </div>
   );
 }
 MenuPresentation.propTypes = {
-  selectedValue: PropTypes.number,
   listItem: PropTypes.array,
-  handleOnSelect: PropTypes.func,
 };
 
 export default MenuPresentation;

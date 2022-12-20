@@ -98,7 +98,7 @@ function HeaderPresentation({ socket }) {
       }
       setChoosed([...choosed]);
     } else {
-      setChoosed([...choosed, id]);
+      setChoosed([id]);
     }
   };
   return (
@@ -208,7 +208,7 @@ function GroupShareItem({ data, onClick = () => {} }) {
         data.isChecked && "bg-slate-300"
       }`}
     >
-      <h3>{data.name}</h3>
+      <p>{data.name}</p>
       <span className="text-sm text-gray-400 bg-gray-100 rounded-md p-1">{data.role}</span>
     </div>
   );

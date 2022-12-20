@@ -6,7 +6,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { getAllAnswersByIdQuestion, getQuestionById, updateQuestion } from "../handleApi";
-import { getCurrentUser } from "../utils/constants";
+import { getCurrentUser, QUESTION_TYPE } from "../utils/constants";
 
 const getData = async id => {
   const data = await getQuestionById(id);
@@ -17,10 +17,12 @@ function SlideProvider(props) {
   const { idQuestion } = useParams();
   const user = getCurrentUser();
 
+  const [type, setType] = useState(QUESTION_TYPE.MULTIPLE_CHOICE);
   const [meta, setMeta] = useState("");
   const [question, setQuestion] = useState("");
   const [description, setDescription] = useState("");
   const [answers, setAnswers] = useState([]);
+  const [checkedReactionList, setCheckedReactionList] = useState([]);
   const [index, setIndex] = useState(1);
 
   useEffect(() => {
@@ -47,7 +49,20 @@ function SlideProvider(props) {
     updateQuestion(user?.access_token, questionData);
   }, [meta, question, description]);
 
-  const value = { meta, setMeta, question, setQuestion, description, setDescription, answers, setAnswers };
+  const value = {
+    meta,
+    setMeta,
+    question,
+    setQuestion,
+    description,
+    setDescription,
+    answers,
+    setAnswers,
+    checkedReactionList,
+    setCheckedReactionList,
+    type,
+    setType,
+  };
   return <SlideContext.Provider value={value} {...props} />;
 }
 

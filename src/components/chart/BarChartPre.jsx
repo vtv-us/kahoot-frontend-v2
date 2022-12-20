@@ -5,10 +5,11 @@
 import React from "react";
 import { BarChart, Bar, XAxis, LabelList, YAxis, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
+import { QUESTION_TYPE } from "../../utils/constants";
 
-export default function BarChartPre({ data }) {
+export default function BarChartPre({ data, isMultiple = true }) {
   return (
-    <ResponsiveContainer className="mt-10 mx-auto" height={300}>
+    <ResponsiveContainer className={`mt-10 mx-auto ${!isMultiple && "hidden"}`} height={300}>
       <BarChart data={data}>
         <Bar dataKey="quantity" fill="#8884d8">
           <img src="/" alt="logo_kahoot.png" />
@@ -22,4 +23,5 @@ export default function BarChartPre({ data }) {
 }
 BarChartPre.propTypes = {
   data: PropTypes.array,
+  isMultiple: PropTypes.bool,
 };

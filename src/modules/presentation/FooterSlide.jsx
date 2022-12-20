@@ -16,24 +16,19 @@ import ReactDOM from "react-dom";
 import useHover from "../../hooks/useHover";
 import useToggleModal from "../../hooks/useToggleModal";
 import ModalMain from "../../components/modal/ModalMain";
+import ReationInSlideUI from "../../components/icon/ReationInSlideUI";
+import ReactionListInSlideUI from "./ReactionListInSlideUI";
+import { useSlide } from "../../contexts/slideContext";
+import { QUESTION_TYPE } from "../../utils/constants";
 
 function FooterSlide({ quantity = 0 }) {
   const [ref, hovered] = useHover();
+  const { type } = useSlide();
   const { open, handleClickOpen, handleClose } = useToggleModal();
   return (
-    // <div className="absolute bottom-8 right-4 flex">
-    //   <div>
-    //   <ChatBubbleIcon />
-    // </div>
-    //   <div className=" relative flex-1 flex justify-end items-start mt-8">
-    //     <AccountCircleIcon className="text-gray-700 absolute" />
-    //     <span className="text-white text-[10px] w-2 h-2 flex items-center justify-center bg-blue-600 p-2 rounded-full absolute -top-2 right-0">
-    //       {quantity}
-    //     </span>
-    //   </div>
-    // </div>
     <>
       <div className="flex justify-end gap-4 mt-5">
+        {type !== QUESTION_TYPE.MULTIPLE_CHOICE && <ReactionListInSlideUI />}
         <div
           ref={ref}
           className={`p-2 rounded-full relative cursor-pointer ${hovered ? "bg-gray-300" : "bg-gray-200"}`}

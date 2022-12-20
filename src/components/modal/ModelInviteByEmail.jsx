@@ -85,5 +85,5 @@ export default function ModalInviteByEmail({ groupId, open, handleClose }) {
 ModalInviteByEmail.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  groupId: PropTypes.string.isRequired,
+  groupId: PropTypes.string,
 };
