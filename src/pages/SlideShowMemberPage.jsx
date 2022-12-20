@@ -1,3 +1,4 @@
+/* eslint-disable react/no-typos */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-plusplus */
@@ -7,11 +8,13 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-props-no-spreading */
-import { Radio, RadioGroup } from "@mui/material";
+import { Button, Radio, RadioGroup } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { useParams } from "react-router";
 import MessageIcon from "@mui/icons-material/Message";
+import CloseIcon from "@mui/icons-material/Close";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import uuid from "react-uuid";
 import ButtonMain from "../components/button/ButtonMain";
 import RadioItem from "../components/radio/RadioItem";
@@ -26,11 +29,32 @@ import ChatBox from "../components/chat/ChatBox";
 import RadioInputSkeletion from "../components/skeleton/RadioInputSkeletion";
 import { getCurrentUser } from "../utils/constants";
 import MessageNotify from "../components/chat/MessageNotify";
+import DropdownMain from "../modules/presentation/DropdownMain";
+import useToggleModal from "../hooks/useToggleModal";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
   return data;
 };
+
+const listQAQuestion = [
+  {
+    description: "Hello my is Lionel Messvan",
+    vote: 1,
+  },
+  {
+    description: "Messi vô địchhhhhhhhhhhhhhhhh",
+    vote: 56,
+  },
+  {
+    description: "Messi vô địchhhhhhhhhhhhhhhhh",
+    vote: 56,
+  },
+  {
+    description: "Messi vô địchhhhhhhhhhhhhhhhh",
+    vote: 56,
+  },
+];
 
 function SlideShowMemberPage() {
   const socket = useContext(SocketContext);
@@ -39,6 +63,7 @@ function SlideShowMemberPage() {
   const [value, setValue] = useState("");
   const [question, setQuesion] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [qaQuestions, setQAQuestions] = useState(listQAQuestion);
   const [statistic, setStatistic] = useState();
   const [answers, setAnswers] = useState([]);
   const [username, setUsername] = useState("");
@@ -50,6 +75,7 @@ function SlideShowMemberPage() {
   const [showMessage, setShowMessage] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
+  const { open, handleClickOpen, handleClose } = useToggleModal();
   const getIndexInQuestionList = questionList => {
     for (let i = 0; i < questionList.length; i++) {
       if (idQuestion === questionList[i].id) {
@@ -209,11 +235,18 @@ function SlideShowMemberPage() {
               <SlideUI statistic={statistic} question={question} />
             </div>
           </div>
+          <div className="absolute bottom-10 mx-auto w-full  flex justify-center">
+            <div
+              className="px-4 py-2 bg-gray-200 font-bold w-[40%] text-center cursor-pointer hover:bg-gray-300"
+              onClick={() => {
+                handleClickOpen();
+              }}
+            >
+              Open Q&A
+            </div>
+          </div>
         </div>
       )}
-      <div className="absolute bottom-10 mx-auto">
-        <ListReactIcon />
-      </div>
       <div
         className="absolute bottom-20 right-10"
         onClick={() => {
@@ -242,10 +275,70 @@ function SlideShowMemberPage() {
           }}
         />
       )}
+      {open && <ModalQAUser qaQuestions={qaQuestions} handleClose={handleClose} />}
       {showMessage && <ChatBox socket={socket} username={username} setShowMessage={setShowMessage} />}
     </div>
   );
 }
+ListReactIcon.propTypes = {
+  handleClick: PropTypes.func,
+};
+
+function ModalQAUser({ qaQuestions, handleClose }) {
+  const [selectedSortOption, setSelectedSortOption] = useState(0);
+  const handleOnSelectSortOption = sortOption => {
+    setSelectedSortOption(sortOption);
+  };
+  const listItem = [
+    {
+      value: 0,
+      label: "Recent",
+    },
+    {
+      value: 1,
+      label: "Top questions",
+    },
+  ];
+  return (
+    <div className="absolute w-full left-0  top-0 bottom-0  flex items-center justify-center bg-[rgba(0,0,0,0.5)] z-10">
+      <div className="relative bg-white rounded-lg w-[40%] h-[60%]">
+        <div className="px-4 py-8 flex flex-col gap-4">
+          <div
+            className="p-2 rounded-full absolute top-4 right-4 cursor-pointer hover:bg-gray-100"
+            onClick={() => {
+              handleClose();
+            }}
+          >
+            <CloseIcon />
+          </div>
+          <h1 className="ml-4 font-bold">Questions from audience</h1>
+          <DropdownMain
+            listItem={listItem}
+            selectedValue={selectedSortOption}
+            handleOnSelect={handleOnSelectSortOption}
+          />
+          <div className={`h-[200px] ${qaQuestions.length > 3 ? "overflow-y-scroll" : ""}`}>
+            {qaQuestions.map(e => (
+              <>
+                <div className="mx-4 my-4 flex justify-between">
+                  {e.description}
+                  <div className="p-2 bg-gray-200 cursor-pointer hover:bg-gray-100 rounded-full ">
+                    <ThumbUpIcon />
+                  </div>
+                </div>
+                <div className="h-[1px] bg-gray-300 w-full" />
+              </>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+ModalQAUser.propTypes = {
+  qaQuestions: PropTypes.array,
+  handleClose: PropTypes.func,
+};
 
 function SlideUI({ statistic, question }) {
   const [dataChart, setDataChart] = useState([]);
@@ -264,7 +357,7 @@ function SlideUI({ statistic, question }) {
     <div className=" bg-white flex-1 flex-flex-col relative max-h-[748px] overflow-auto">
       <HeaderSlide meta={question?.meta} question={question?.raw_question} />
       {dataChart.length > 0 ? <BarChartPre data={dataChart} /> : <NoneBarChart />}
-      <FooterSlide />
+      {/* <FooterSlide /> */}
     </div>
   );
 }

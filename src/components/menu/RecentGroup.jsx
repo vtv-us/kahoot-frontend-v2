@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import useToggleModal from "../../hooks/useToggleModal";
 import { getCurrentUser } from "../../utils/constants";
-import ModalCreateGroup from "../modal/ModelCreateGroup";
+import ModelInput from "../modal/ModelInput";
 
 function RecentGroup() {
   const { open, handleClickOpen, handleClose } = useToggleModal();
@@ -47,7 +47,7 @@ function RecentGroup() {
         <span>Create group</span>
         <span>+</span>
       </Button>
-      <ModalCreateGroup handleClose={handleClose} open={open} />
+      <ModelInput handleClose={handleClose} open={open} />
     </div>
   );
 }

@@ -11,7 +11,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ReactDOM from "react-dom";
 import useClickOutside from "../../hooks/useClickOutSide";
 
-function DropdownMain({ selectedValue, listItem, handleOnSelect }) {
+function DropdownMain({ title, selectedValue, listItem, handleOnSelect }) {
   const { show, setShow, nodeRef } = useClickOutside();
   const [coords, setCoords] = useState({});
   // const [selectedValue, setSelectedValue] = useState(null);
@@ -27,14 +27,14 @@ function DropdownMain({ selectedValue, listItem, handleOnSelect }) {
   // ];
   return (
     <div className="p-4 border-b border-gray-200">
-      <h3 className="text-md font-semibold mb-2">Slide type</h3>
+      {title && <h3 className="text-md font-semibold mb-2">{title}</h3>}
       <div className="w-full relative" ref={nodeRef}>
         <div
           className="text-gray-700 border border-gray-200 p-2 rounded-sm flex justify-between cursor-pointer"
           onClick={handleClick}
         >
           <div className="">
-            {selectedItem.icon} {selectedItem.label}
+            {selectedItem?.icon} {selectedItem.label}
           </div>
           <KeyboardArrowDownIcon />
         </div>
@@ -51,6 +51,7 @@ function DropdownMain({ selectedValue, listItem, handleOnSelect }) {
   );
 }
 DropdownMain.propTypes = {
+  title: PropTypes.string,
   selectedValue: PropTypes.number,
   listItem: PropTypes.array,
   handleOnSelect: PropTypes.func,
@@ -60,21 +61,22 @@ function DropdownList({ selectedValue, coords, listItem = [], handleOnSelect = v
   if (typeof document === "undefined") return null;
   return ReactDOM.createPortal(
     <div
-      className="border border-gray-200 rounded-sm absolute top-full left-0 w-full bg-white"
+      className="border border-gray-200 rounded-sm absolute top-full left-0 w-full bg-white z-20"
       style={{ left: coords.left, top: coords.top + coords.height, width: coords.width }}
     >
       {listItem.map(e => (
         <div
+          key={e.value}
           value={e.value}
           className={`${
             selectedValue === e.value ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-200"
           } flex justify-between p-3 cursor-pointer `}
           onClick={() => {
-            handleOnSelect(e.value);
+            handleOnSelect(e?.value);
           }}
         >
           <div>
-            {e.icon} {e.label}
+            {e?.icon} {e?.label}
           </div>
           <div>{selectedValue === e.value && <CheckIcon />}</div>
         </div>
