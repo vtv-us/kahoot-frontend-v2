@@ -19,7 +19,7 @@ function HeaderSlide({
       >
         {question}
       </div>
-      <p className="text-md text-gray-400  text-center">{description}</p>
+      {!isMultiple && <p className="text-md text-gray-400  text-center">{description}</p>}
     </div>
   );
 }

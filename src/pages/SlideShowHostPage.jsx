@@ -17,7 +17,7 @@ import HeaderSlide from "../modules/presentation/HeaderSlide";
 import BarChartPre from "../components/chart/BarChartPre";
 import FooterSlide from "../modules/presentation/FooterSlide";
 import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getQuestionById } from "../handleApi";
-import { getCurrentUser } from "../utils/constants";
+import { getCurrentUser, QUESTION_TYPE } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
 
 const getData = async id => {
@@ -193,10 +193,18 @@ function SlideUI({ statistic, idQuestion }) {
     };
     fetchData();
   }, [idQuestion, statistic]);
+  const isMultiple = true;
+  console.log("question", question);
   return (
     <div className="p-4 bg-white m-10 flex-1 flex-flex-col max-h-[748px] overflow-auto">
-      <HeaderSlide meta={question?.meta} question={question?.raw_question} />
-      {dataChart.length > 0 ? <BarChartPre data={dataChart} /> : <NoneBarChart />}
+      <HeaderSlide
+        meta={question?.meta}
+        question={question?.raw_question}
+        description={question.long_description}
+        isMultiple={isMultiple}
+      />
+      {dataChart.length > 0 ? <BarChartPre data={dataChart} isMultiple={isMultiple} /> : <NoneBarChart />}
+      {/* <FooterSlide type={QUESTION_TYPE.HEADING} checkedList={[1, 2, 3]} /> */}
       <FooterSlide />
     </div>
   );

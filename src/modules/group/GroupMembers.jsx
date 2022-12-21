@@ -1,16 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { Button } from "@mui/material";
-import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import React, { useEffect, useState } from "react";
 import uuid from "react-uuid";
 import { useNavigate, useParams } from "react-router-dom";
+import Button from "@mui/material/Button";
 import LayoutMain from "../../components/layout/LayoutMain";
 import GroupBar from "../../components/menu/GroupBar";
 import Table from "../../components/table/Table";
-import Account from "../../components/user/Account";
-import LabelStatus from "../../components/label/LabelStatus";
-import ActionMember from "../../components/action/ActionMember";
 import ModalInvite from "../../components/modal/ModalInvite";
 import useToggleModal from "../../hooks/useToggleModal";
 import { getGroupsMembers } from "../../redux/apiRequest";
@@ -19,6 +15,7 @@ import MemberGroupItem from "./MemberGroupItem";
 import GroupMemberSkeleton from "../../components/skeleton/GroupMemberSkeletion";
 import BackButton from "../../components/button/BackButton";
 import InviteLinkInput from "../../components/input/InviteLinkInput";
+import AlertPresent from "../../components/alert/AlertPresent";
 
 function GroupMembers() {
   const [members, setMembers] = useState([]);
@@ -55,10 +52,11 @@ function GroupMembers() {
           >
             Invite
           </Button>
-
+          <AlertPresent name="Argentina is the Champion" />
           <ModalInvite open={open} handleClose={handleClose}>
             <InviteLinkInput idGroup={id} />
           </ModalInvite>
+
           <Table>
             <thead>
               <tr>

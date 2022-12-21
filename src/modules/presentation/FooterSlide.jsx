@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-unused-vars */
@@ -21,14 +22,15 @@ import ReactionListInSlideUI from "./ReactionListInSlideUI";
 import { useSlide } from "../../contexts/slideContext";
 import { QUESTION_TYPE } from "../../utils/constants";
 
-function FooterSlide({ quantity = 0 }) {
+function FooterSlide({ quantity = 0, type = QUESTION_TYPE.MULTIPLE_CHOICE, checkedList = [] }) {
   const [ref, hovered] = useHover();
-  const { type } = useSlide();
   const { open, handleClickOpen, handleClose } = useToggleModal();
   return (
     <>
       <div className="flex justify-end gap-4 mt-5">
-        {type !== QUESTION_TYPE.MULTIPLE_CHOICE && <ReactionListInSlideUI />}
+        {type !== QUESTION_TYPE.MULTIPLE_CHOICE && (
+          <ReactionListInSlideUI type={type} checkedReactionList={checkedList} />
+        )}
         <div
           ref={ref}
           className={`p-2 rounded-full relative cursor-pointer ${hovered ? "bg-gray-300" : "bg-gray-200"}`}
@@ -59,6 +61,8 @@ function FooterSlide({ quantity = 0 }) {
 }
 FooterSlide.propTypes = {
   quantity: PropTypes.number,
+  type: PropTypes.number,
+  checkedList: PropTypes.array,
 };
 
 function ModalQuestions({ handleClose }) {

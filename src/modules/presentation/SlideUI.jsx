@@ -38,7 +38,7 @@ function SlideUI({ statistic, idQuestion }) {
         isMultiple={isMultiple}
       />
       {dataChart.length > 0 ? <BarChartPre data={dataChart} isMultiple={isMultiple} /> : <NoneBarChart />}
-      <FooterSlide />
+      <FooterSlide type={data?.type} checkedList={data.checkedReactionList} />
     </div>
   );
 }

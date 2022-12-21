@@ -1,17 +1,16 @@
+/* eslint-disable react/forbid-prop-types */
 import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import uuid from "react-uuid";
+import PropTypes from "prop-types";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import ReationInSlideUI from "../../components/icon/ReationInSlideUI";
 import { REACTION } from "../../utils/constants";
-import { useSlide } from "../../contexts/slideContext";
 
-function ReactionListInSlideUI() {
-  const { checkedReactionList } = useSlide();
-
+function ReactionListInSlideUI({ checkedReactionList }) {
   const reactionList = [
     {
       id: uuid(),
@@ -60,5 +59,8 @@ function ReactionListInSlideUI() {
     </div>
   );
 }
+ReactionListInSlideUI.propTypes = {
+  checkedReactionList: PropTypes.array.isRequired,
+};
 
 export default ReactionListInSlideUI;

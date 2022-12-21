@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 import { useParams } from "react-router";
 import MessageIcon from "@mui/icons-material/Message";
 import CloseIcon from "@mui/icons-material/Close";
+import { toast } from "react-toastify";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import uuid from "react-uuid";
 import ButtonMain from "../components/button/ButtonMain";
@@ -31,6 +32,8 @@ import { getCurrentUser } from "../utils/constants";
 import MessageNotify from "../components/chat/MessageNotify";
 import DropdownMain from "../modules/presentation/DropdownMain";
 import useToggleModal from "../hooks/useToggleModal";
+import QAButton from "../components/button/QAButton";
+import ListReactSlideMember from "../modules/presentation/ListReactSlideMember";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -71,11 +74,15 @@ function SlideShowMemberPage() {
   const [newMessage, setNewMessage] = useState({});
   const [countMessages, setCountMessages] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
+  const [reactCheck, setReactCheck] = useState(0);
   // const [isAnswered, setIsAnswered] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
   const { open, handleClickOpen, handleClose } = useToggleModal();
+
+  const isMultiple = true;
+
   const getIndexInQuestionList = questionList => {
     for (let i = 0; i < questionList.length; i++) {
       if (idQuestion === questionList[i].id) {
@@ -124,7 +131,6 @@ function SlideShowMemberPage() {
     setCountMessages(Number(localStorage.getItem(username)));
   }, [username]);
   useEffect(() => {
-    console.log("vo");
     localStorage.setItem(username, JSON.stringify(countMessages));
   }, [username, countMessages]);
   useEffect(() => setUsername(uuid()), [idSlide]);
@@ -172,11 +178,23 @@ function SlideShowMemberPage() {
   };
   const handleSubmit = e => {
     e.preventDefault();
+    if (!value) {
+      toast.error("Please enter your option");
+      return;
+    }
     socket.emit("submitAnswer", Number(question.index), Number(value));
     const newList = [...answeredQuestions, question.index];
     setAnsweredQuestions(newList);
     // setIsAnswered(true);
   };
+
+  const handleReaction = () => {
+    console.log("Reaction", reactCheck);
+    // todo
+  };
+  useEffect(() => {
+    handleReaction();
+  }, [reactCheck]);
   return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
       {answeredQuestions.includes(question?.index) === false ? (
@@ -187,34 +205,45 @@ function SlideShowMemberPage() {
           <div className="flex flex-col items-start w-full gap-2">
             <p className="text-gray-400">{question?.meta}</p>
             <h2 className="text-3xl font-bold">{question?.raw_question}</h2>
-            {/* <p className="text-sm text-gray-400">{question?.raw_question}</p> */}
+            <p className="text-md text-gray-400">{question?.long_description}</p>
           </div>
           {!isFetching ? (
-            <div className="w-full mt-4">
-              <RadioGroup
-                className="flex flex-col gap-4"
-                name="answer"
-                onChange={handleChange}
-                value={value}
-                defaultValue="first"
-              >
-                {answers?.map(item => (
-                  <RadioItem key={item.id} value={`${item.index}`} label={`${item.raw_answer}`} control={<Radio />} />
-                ))}
-                {/* <RadioItem value="first" label="Lionel Messi" control={<Radio />} />
-          <RadioItem value="second" label="Bruno Fernandes" control={<Radio />} />
-          <RadioItem value="third" label="Mason Greenwood" control={<Radio />} /> */}
-              </RadioGroup>
-
-              <ButtonMain
-                className="w-full mt-4 text-lg py-3"
-                bgColor="bg-blue-500 hover:!bg-blue-600"
-                textColor="text-white-800"
-                onClick={handleSubmit}
-              >
-                Submit
-              </ButtonMain>
-            </div>
+            <>
+              {isMultiple ? (
+                <div className="w-full mt-4">
+                  <RadioGroup
+                    className="flex flex-col gap-4"
+                    name="answer"
+                    onChange={handleChange}
+                    value={value}
+                    defaultValue="first"
+                  >
+                    {answers?.map(item => (
+                      <RadioItem
+                        key={item.id}
+                        value={`${item.index}`}
+                        label={`${item.raw_answer}`}
+                        control={<Radio />}
+                      />
+                    ))}
+                    {/* <RadioItem value="first" label="Lionel Messi" control={<Radio />} />
+                        <RadioItem value="second" label="Bruno Fernandes" control={<Radio />} />
+                        <RadioItem value="third" label="Mason Greenwood" control={<Radio />} /> */}
+                  </RadioGroup>
+                  <ButtonMain
+                    className="w-full mt-4 text-lg py-3"
+                    bgColor="bg-blue-500 hover:!bg-blue-600"
+                    textColor="text-white-800"
+                    onClick={handleSubmit}
+                  >
+                    Submit
+                  </ButtonMain>
+                </div>
+              ) : (
+                <ListReactSlideMember checked={reactCheck} setChecked={setReactCheck} />
+              )}
+              <QAButton handleClickOpen={handleClickOpen} />
+            </>
           ) : (
             <div>
               <RadioInputSkeletion />
@@ -235,16 +264,7 @@ function SlideShowMemberPage() {
               <SlideUI statistic={statistic} question={question} />
             </div>
           </div>
-          <div className="absolute bottom-10 mx-auto w-full  flex justify-center">
-            <div
-              className="px-4 py-2 bg-gray-200 font-bold w-[40%] text-center cursor-pointer hover:bg-gray-300"
-              onClick={() => {
-                handleClickOpen();
-              }}
-            >
-              Open Q&A
-            </div>
-          </div>
+          <QAButton handleClickOpen={handleClickOpen} />
         </div>
       )}
       <div
