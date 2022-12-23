@@ -11,6 +11,7 @@ import Diversity1Icon from "@mui/icons-material/Diversity1";
 import { useNavigate, useParams } from "react-router";
 
 import PeopleIcon from "@mui/icons-material/People";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PropTypes from "prop-types";
 import BackButton from "../button/BackButton";
 import User from "../user/User";
@@ -26,6 +27,7 @@ import DropdownUser from "../dropdown/DropdownUser";
 import { SocketContext } from "../../contexts/socketContext";
 import ModalMain from "../modal/ModalMain";
 import ModalShareToGroup from "../modal/ModalShareToGroup";
+import ModalManagementCollab from "../modal/ModalManagementCollab";
 
 function HeaderPresentation({ socket }) {
   const { idSlide, idQuestion } = useParams();
@@ -63,6 +65,11 @@ function HeaderPresentation({ socket }) {
     handleClickOpen: handleClickOpenShareGroup,
     handleClose: handleCloseShareGroup,
   } = useToggleModal();
+  const {
+    open: openManageCollab,
+    handleClickOpen: handleClickOpenManageCollab,
+    handleClose: handleCloseManageCollab,
+  } = useToggleModal();
   const optionShareMenu = [
     {
       icon: <PeopleIcon />,
@@ -76,6 +83,13 @@ function HeaderPresentation({ socket }) {
       title: "Share to group",
       onClick: () => {
         handleClickOpenShareGroup();
+      },
+    },
+    {
+      icon: <ManageAccountsIcon />,
+      title: "Manage collaborators",
+      onClick: () => {
+        handleClickOpenManageCollab();
       },
     },
   ];
@@ -143,7 +157,7 @@ function HeaderPresentation({ socket }) {
 
         <DropdownUser />
 
-        <DropdownMenu data={optionShareMenu}>
+        <DropdownMenu className="!w-[200px] mt-2" data={optionShareMenu}>
           <ButtonMain bgColor="bg-white" textColor="text-gray-800" hoverColor="bg-gray-100">
             <ShareOutlinedIcon className="w-5" />
             <span className="text-lg font-thin"> Share</span>
@@ -193,6 +207,12 @@ function HeaderPresentation({ socket }) {
               ))}
           </div>
         </ModalShareToGroup>
+        <ModalManagementCollab
+          open={openManageCollab}
+          handleClose={e => {
+            handleCloseManageCollab();
+          }}
+        />
       </div>
     </div>
   );

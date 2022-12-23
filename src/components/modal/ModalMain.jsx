@@ -22,7 +22,7 @@ export default function ModalMain({ open, children, handleClose, title, buttonLi
         maxWidth={maxWidth}
       >
         {title && (
-          <DialogTitle id="alert-dialog-title" className="font-bold" {...props}>
+          <DialogTitle id="alert-dialog-title" className="!font-bold" sx={{ fontWeight: 600 }} {...props}>
             {title}
           </DialogTitle>
         )}
