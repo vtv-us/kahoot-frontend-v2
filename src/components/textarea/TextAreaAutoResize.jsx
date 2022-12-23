@@ -19,7 +19,7 @@ function TextAreaAutoResize({ text = "", setText = () => {} }) {
   return (
     <div className="mt-2">
       <textarea
-        className="w-full max-w-[400px] p-5 rounded-lg border border-gray-300 focus:border-blue-400 resize-none overflow-hidden transition-all outline-none leading-normal"
+        className="w-full p-5 rounded-lg border border-gray-300 focus:border-blue-400 resize-none overflow-hidden transition-all outline-none leading-normal"
         placeholder="Please enter your content..."
         value={text}
         ref={textareaRef}

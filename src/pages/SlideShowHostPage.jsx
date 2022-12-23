@@ -51,6 +51,7 @@ function SlideShowHostPage() {
     setShowNewMessage,
     handleNewMessage,
   } = useChat(user?.user?.name);
+  const [listQAQuestion, setListQAQuestion] = useState([]);
   const handleOnClickNext = () => {
     socket.emit("showStatistic", currentQuestion + 1);
     setCurrentQuestion(currentQuestion + 1);
@@ -102,8 +103,8 @@ function SlideShowHostPage() {
   useEffect(() => {
     if (!socket) return;
     socket.emit("host", user?.user?.name, `${idSlide}`);
+    socket.emit("listUserQuestion");
     socket.emit("chatHistory");
-
     const getQuestionList = async () => {
       let currentIndex = 0;
       const questionList = await getData(idSlide);
@@ -121,6 +122,7 @@ function SlideShowHostPage() {
       socket.emit("host", user?.user?.name, `${idSlide}`);
 
       // socket.emit("showStatistic", currentIndex);
+      socket.emit("listUserQuestion");
       console.log("host connected");
       // setCurrentQuestion(currentIndex);
     };
@@ -136,6 +138,14 @@ function SlideShowHostPage() {
     const logStatistic = msg => {
       setStatistic(msg);
     };
+    const logQA = msg => {
+      socket.emit("listUserQuestion");
+      // setListQAQuestion([...listQAQuestion, msg]);
+    };
+    const logListUserQA = msg => {
+      console.log("new list");
+      setListQAQuestion(msg);
+    };
 
     socket.on("connect", logConnect);
     socket.on("error", logError);
@@ -144,6 +154,8 @@ function SlideShowHostPage() {
     socket.on("showStatistic", logStatistic);
     socket.on("getRoomState", logCurrentRoom);
     socket.on("chat", handleNewMessage);
+    socket.on("listUserQuestion", logListUserQA);
+    socket.on("postQuestion", logQA);
     socket.on("notify", logMsg);
     return () => {
       socket.off("connect", logConnect);
@@ -153,7 +165,9 @@ function SlideShowHostPage() {
       socket.off("showStatistic", logStatistic);
       socket.off("getRoomState", logMsg);
       socket.off("chat", handleNewMessage);
+      socket.off("postQuestion", logQA);
       socket.off("notify", logMsg);
+      socket.off("listUserQuestion", logListUserQA);
     };
   }, [socket, idSlide, showMessage, countMessages]);
   const data = {
@@ -178,7 +192,7 @@ function SlideShowHostPage() {
       </div>
       <div className="m-auto w-[90%] h-[80%] bg-white flex">
         <div className="w-full h-full">
-          <SlideUI statistic={statistic} idQuestion={idQuestion} />
+          <SlideUI statistic={statistic} idQuestion={idQuestion} listQAQuestion={listQAQuestion} />
         </div>
       </div>
       <div
@@ -207,7 +221,7 @@ function SlideShowHostPage() {
   );
 }
 
-function SlideUI({ statistic, idQuestion }) {
+function SlideUI({ statistic, idQuestion, listQAQuestion }) {
   const [question, setQuestion] = useState([]);
   const [dataChart, setDataChart] = useState([]);
   useEffect(() => {
@@ -235,13 +249,14 @@ function SlideUI({ statistic, idQuestion }) {
       />
       {dataChart.length > 0 ? <BarChartPre data={dataChart} isMultiple={isMultiple} /> : <NoneBarChart />}
       {/* <FooterSlide type={QUESTION_TYPE.HEADING} checkedList={[1, 2, 3]} /> */}
-      <FooterSlide />
+      <FooterSlide listQuestions={listQAQuestion} />
     </div>
   );
 }
 SlideUI.propTypes = {
   statistic: PropTypes.any,
   idQuestion: PropTypes.string,
+  listQAQuestion: PropTypes.array,
 };
 
 function NoneBarChart() {

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable react/no-typos */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -16,6 +17,8 @@ import MessageIcon from "@mui/icons-material/Message";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import uuid from "react-uuid";
 import ButtonMain from "../components/button/ButtonMain";
 import RadioItem from "../components/radio/RadioItem";
@@ -36,30 +39,31 @@ import QAButton from "../components/button/QAButton";
 import ListReactSlideMember from "../modules/presentation/ListReactSlideMember";
 import useChat from "../hooks/useChat";
 import Chat from "../components/chat/Chat";
+import TextAreaAutoResize from "../components/textarea/TextAreaAutoResize";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
   return data;
 };
 
-const listQAQuestion = [
-  {
-    description: "Hello my is Lionel Messvan",
-    vote: 1,
-  },
-  {
-    description: "Messi vô địchhhhhhhhhhhhhhhhh",
-    vote: 56,
-  },
-  {
-    description: "Messi vô địchhhhhhhhhhhhhhhhh",
-    vote: 56,
-  },
-  {
-    description: "Messi vô địchhhhhhhhhhhhhhhhh",
-    vote: 56,
-  },
-];
+// const listQAQuestion = [
+//   {
+//     description: "Hello my is Lionel Messvan",
+//     vote: 1,
+//   },
+//   {
+//     description: "Messi vô địchhhhhhhhhhhhhhhhh",
+//     vote: 56,
+//   },
+//   {
+//     description: "Messi vô địchhhhhhhhhhhhhhhhh",
+//     vote: 56,
+//   },
+//   {
+//     description: "Messi vô địchhhhhhhhhhhhhhhhh",
+//     vote: 56,
+//   },
+// ];
 
 function SlideShowMemberPage() {
   const socket = useContext(SocketContext);
@@ -68,7 +72,7 @@ function SlideShowMemberPage() {
   const [value, setValue] = useState("");
   const [question, setQuesion] = useState(null);
   const [questions, setQuestions] = useState([]);
-  const [qaQuestions, setQAQuestions] = useState(listQAQuestion);
+  const [qaQuestions, setQAQuestions] = useState([]);
   const [statistic, setStatistic] = useState();
   const [answers, setAnswers] = useState([]);
   const [username, setUsername] = useState("");
@@ -114,9 +118,10 @@ function SlideShowMemberPage() {
       setQuestions(data);
     });
   };
-  const logRoomActive = msg => {
-    console.log(msg);
+  const logListQA = msg => {
+    setQAQuestions(msg);
   };
+  const logRoomActive = msg => {};
   const logError = err => {
     console.log("received socket error:");
     console.log(err);
@@ -137,18 +142,18 @@ function SlideShowMemberPage() {
       socket.emit("join", name, `${idSlide}`);
       getQuestionList();
       socket.emit("getRoomState");
+      socket.emit("listUserQuestion");
       console.log("member connected");
     });
     socket.on("disconnect", () => {
       console.log("disconnect");
     });
-
     socket.on("error", logError);
     socket.on("getRoomActive", logRoomActive);
     socket.on("showStatistic", logStatistic);
     socket.on("getRoomState", logRoomState);
     socket.on("chat", handleNewMessage);
-
+    socket.on("listUserQuestion", logListQA);
     socket.on("reply", function (msg) {
       console.log("reply", msg);
     });
@@ -271,8 +276,37 @@ function SlideShowMemberPage() {
           <QAButton handleClickOpen={handleClickOpen} />
         </div>
       )}
+      <div
+        className="absolute bottom-20 right-10"
+        onClick={() => {
+          socket.emit("getChatHistory");
+          setCountMessages(0);
+          setShowMessage(!showMessage);
+          setShowNewMessage(false);
+        }}
+      >
+        <div className="relative">
+          <IconReactQuestion className="border boder-gray-100">
+            <MessageIcon fontSize="large" />
+          </IconReactQuestion>
+          {countMessages > 0 && !showMessage && (
+            <span className="absolute rounded-full text-sm text-white bg-red-500 py-1 px-2 -top-2 right-0 font-bold">
+              {countMessages}
+            </span>
+          )}
+        </div>
+      </div>
+      {showNewMessage && (
+        <MessageNotify
+          message={newMessage}
+          onClose={() => {
+            setShowNewMessage(false);
+          }}
+        />
+      )}
+      {open && <ModalQAUser qaQuestions={qaQuestions} handleClose={handleClose} socket={socket} userName={username} />}
+      {showMessage && <ChatBox socket={socket} username={username} setShowMessage={setShowMessage} />}
       <Chat data={data} />
-      {open && <ModalQAUser qaQuestions={qaQuestions} handleClose={handleClose} />}
     </div>
   );
 }
@@ -280,10 +314,39 @@ ListReactIcon.propTypes = {
   handleClick: PropTypes.func,
 };
 
-function ModalQAUser({ qaQuestions, handleClose }) {
+function ModalQAUser({ qaQuestions, handleClose, socket, userName }) {
   const [selectedSortOption, setSelectedSortOption] = useState(0);
   const handleOnSelectSortOption = sortOption => {
     setSelectedSortOption(sortOption);
+  };
+  const [askNewQuestion, setAskNewQuestion] = useState(false);
+  const [questionDescription, setQuestionDescription] = useState("");
+  const [listUnansweredQuestion, setListUnansweredQuestion] = useState([]);
+  const handleOnClickAskNewQuestion = () => {
+    setAskNewQuestion(true);
+  };
+  const handleOnClickBack = () => {
+    setAskNewQuestion(false);
+  };
+  const handleOnSubmitQuestion = () => {
+    socket.emit("postQuestion", questionDescription);
+    socket.emit("listUserQuestion");
+    toast.success("Submit question successfully");
+    setAskNewQuestion(false);
+  };
+  const handleOnUpvoteQuestion = questionId => {
+    socket.emit("upvoteQuestion", questionId);
+  };
+  const logMarkAnswered = msg => {
+    socket.emit("listUserQuestion");
+  };
+  const logUpvoteQuestion = msg => {
+    socket.emit("listUserQuestion");
+    // console.log("Mark answered", msg);
+  };
+  const logListUserQA = msg => {
+    const newList = msg.filter(e => e.answered === false);
+    setListUnansweredQuestion(newList);
   };
   const listItem = [
     {
@@ -295,38 +358,92 @@ function ModalQAUser({ qaQuestions, handleClose }) {
       label: "Top questions",
     },
   ];
+  useEffect(() => {
+    setListUnansweredQuestion(qaQuestions.filter(e => e.answered === false));
+    socket.on("toggleUserQuestionAnswered", logMarkAnswered);
+    socket.on("upvoteQuestion", logUpvoteQuestion);
+    socket.on("listUserQuestion", logListUserQA);
+    return () => {
+      socket.off("toggleUserQuestionAnswered", logMarkAnswered);
+      socket.off("upvoteQuestion", logUpvoteQuestion);
+    };
+  }, []);
   return (
     <div className="absolute w-full left-0  top-0 bottom-0  flex items-center justify-center bg-[rgba(0,0,0,0.5)] z-10">
-      <div className="relative bg-white rounded-lg w-[40%] h-[60%]">
-        <div className="px-4 py-8 flex flex-col gap-4">
-          <div
-            className="p-2 rounded-full absolute top-4 right-4 cursor-pointer hover:bg-gray-100"
-            onClick={() => {
-              handleClose();
-            }}
-          >
-            <CloseIcon />
-          </div>
-          <h1 className="ml-4 font-bold">Questions from audience</h1>
-          <DropdownMain
-            listItem={listItem}
-            selectedValue={selectedSortOption}
-            handleOnSelect={handleOnSelectSortOption}
-          />
-          <div className={`h-[200px] ${qaQuestions.length > 3 ? "overflow-y-scroll" : ""}`}>
-            {qaQuestions.map(e => (
-              <>
-                <div className="mx-4 my-4 flex justify-between">
-                  {e.description}
-                  <div className="p-2 bg-gray-200 cursor-pointer hover:bg-gray-100 rounded-full ">
-                    <ThumbUpIcon />
+      <div className="relative bg-white rounded-lg w-[40%]">
+        {!askNewQuestion ? (
+          <div className="px-4 py-8 flex flex-col gap-4">
+            <div
+              className="p-2 rounded-full absolute top-4 right-4 cursor-pointer hover:bg-gray-100"
+              onClick={() => {
+                handleClose();
+              }}
+            >
+              <CloseIcon />
+            </div>
+            <h1 className="ml-4 font-bold">Questions from audience</h1>
+            <DropdownMain
+              listItem={listItem}
+              selectedValue={selectedSortOption}
+              handleOnSelect={handleOnSelectSortOption}
+            />
+            <div className={`h-[200px] ${listUnansweredQuestion.length > 3 ? "overflow-y-scroll" : ""}`}>
+              {listUnansweredQuestion.map(e => (
+                <div key={e.question_id}>
+                  <div className="mx-4 my-4 flex justify-between">
+                    <div className="flex flex-col">
+                      <h2>{e.content}</h2>
+                      {userName === e.username && (
+                        <div className="py-[2px] px-1 bg-blue-600 text-[10px] text-white rounded-lg w-fit">
+                          Your question
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col justify-center items-center">
+                      <div
+                        className="p-2 bg-gray-200 cursor-pointer hover:bg-gray-100 rounded-full "
+                        onClick={() => {
+                          handleOnUpvoteQuestion(e.question_id);
+                        }}
+                      >
+                        <ThumbUpIcon />
+                      </div>
+                      <h2>{e.votes}</h2>
+                    </div>
                   </div>
+                  <div className="h-[1px] bg-gray-300 w-full" />
                 </div>
-                <div className="h-[1px] bg-gray-300 w-full" />
-              </>
-            ))}
+              ))}
+            </div>
+            <ButtonMain onClick={handleOnClickAskNewQuestion}>
+              <ChatBubbleOutlineIcon className="mr-2" /> Ask new question
+            </ButtonMain>
           </div>
-        </div>
+        ) : (
+          <div className="px-4 py-4 flex flex-col ">
+            <div className="flex justify-between">
+              <h2 className="text-blue-500 font-bold cursor-pointer hover:text-blue-600" onClick={handleOnClickBack}>
+                <ArrowBackIcon /> Back{" "}
+              </h2>
+              <div
+                className="p-2 rounded-full absolute top-4 right-4 cursor-pointer hover:bg-gray-100"
+                onClick={() => {
+                  handleClose();
+                }}
+              >
+                <CloseIcon />
+              </div>
+            </div>
+            <h2 className="mt-10 font-bold">Write your question here ...</h2>
+            <div>
+              <TextAreaAutoResize className="w-full" text={questionDescription} setText={setQuestionDescription} />
+            </div>
+            <ButtonMain onClick={handleOnSubmitQuestion} className="mt-4">
+              {" "}
+              Submit{" "}
+            </ButtonMain>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -334,6 +451,8 @@ function ModalQAUser({ qaQuestions, handleClose }) {
 ModalQAUser.propTypes = {
   qaQuestions: PropTypes.array,
   handleClose: PropTypes.func,
+  socket: PropTypes.any,
+  userName: PropTypes.string,
 };
 
 function SlideUI({ statistic, question }) {
