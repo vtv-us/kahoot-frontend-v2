@@ -34,6 +34,8 @@ import DropdownMain from "../modules/presentation/DropdownMain";
 import useToggleModal from "../hooks/useToggleModal";
 import QAButton from "../components/button/QAButton";
 import ListReactSlideMember from "../modules/presentation/ListReactSlideMember";
+import useChat from "../hooks/useChat";
+import Chat from "../components/chat/Chat";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -71,15 +73,22 @@ function SlideShowMemberPage() {
   const [answers, setAnswers] = useState([]);
   const [username, setUsername] = useState("");
   const user = getCurrentUser();
-  const [newMessage, setNewMessage] = useState({});
-  const [countMessages, setCountMessages] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
   const [reactCheck, setReactCheck] = useState(0);
   // const [isAnswered, setIsAnswered] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
-  const [showNewMessage, setShowNewMessage] = useState(false);
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
   const { open, handleClickOpen, handleClose } = useToggleModal();
+  const {
+    newMessage,
+    setNewMessage,
+    countMessages,
+    setCountMessages,
+    showMessage,
+    setShowMessage,
+    showNewMessage,
+    setShowNewMessage,
+    handleNewMessage,
+  } = useChat(username);
 
   const isMultiple = true;
 
@@ -112,27 +121,13 @@ function SlideShowMemberPage() {
     console.log("received socket error:");
     console.log(err);
   };
-  const handleNewMessage = (urs, msg) => {
-    console.log("new message", msg);
-    console.log("show", showMessage);
-    console.log("coount +1 ", countMessages + 1);
-    if (!showMessage) {
-      setCountMessages(countMessages + 1);
-      setNewMessage({ username: urs, message: msg });
-      setShowNewMessage(true);
-    }
-  };
+
   const getQuestionList = async () => {
     let currentIndex = 0;
     const questionList = await getData(idSlide);
     currentIndex = getIndexInQuestionList(questionList);
   };
-  useEffect(() => {
-    setCountMessages(Number(localStorage.getItem(username)));
-  }, [username]);
-  useEffect(() => {
-    localStorage.setItem(username, JSON.stringify(countMessages));
-  }, [username, countMessages]);
+
   useEffect(() => setUsername(uuid()), [idSlide]);
   useEffect(() => {
     // setIsAnswered(false);
@@ -195,6 +190,18 @@ function SlideShowMemberPage() {
   useEffect(() => {
     handleReaction();
   }, [reactCheck]);
+  const data = {
+    socket,
+    newMessage,
+    setNewMessage,
+    countMessages,
+    setCountMessages,
+    showMessage,
+    setShowMessage,
+    showNewMessage,
+    setShowNewMessage,
+    username,
+  };
   return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
       {answeredQuestions.includes(question?.index) === false ? (
@@ -226,9 +233,6 @@ function SlideShowMemberPage() {
                         control={<Radio />}
                       />
                     ))}
-                    {/* <RadioItem value="first" label="Lionel Messi" control={<Radio />} />
-                        <RadioItem value="second" label="Bruno Fernandes" control={<Radio />} />
-                        <RadioItem value="third" label="Mason Greenwood" control={<Radio />} /> */}
                   </RadioGroup>
                   <ButtonMain
                     className="w-full mt-4 text-lg py-3"
@@ -267,36 +271,8 @@ function SlideShowMemberPage() {
           <QAButton handleClickOpen={handleClickOpen} />
         </div>
       )}
-      <div
-        className="absolute bottom-20 right-10"
-        onClick={() => {
-          socket.emit("getChatHistory");
-          setCountMessages(0);
-          setShowMessage(!showMessage);
-          setShowNewMessage(false);
-        }}
-      >
-        <div className="relative">
-          <IconReactQuestion className="border boder-gray-100">
-            <MessageIcon fontSize="large" />
-          </IconReactQuestion>
-          {countMessages > 0 && !showMessage && (
-            <span className="absolute rounded-full text-sm text-white bg-red-500 py-1 px-2 -top-2 right-0 font-bold">
-              {countMessages}
-            </span>
-          )}
-        </div>
-      </div>
-      {showNewMessage && (
-        <MessageNotify
-          message={newMessage}
-          onClose={() => {
-            setShowNewMessage(false);
-          }}
-        />
-      )}
+      <Chat data={data} />
       {open && <ModalQAUser qaQuestions={qaQuestions} handleClose={handleClose} />}
-      {showMessage && <ChatBox socket={socket} username={username} setShowMessage={setShowMessage} />}
     </div>
   );
 }

@@ -9,6 +9,7 @@
 import PropTypes from "prop-types";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import MessageIcon from "@mui/icons-material/Message";
 import React, { useState, useEffect, useContext } from "react";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -19,6 +20,11 @@ import FooterSlide from "../modules/presentation/FooterSlide";
 import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getQuestionById } from "../handleApi";
 import { getCurrentUser, QUESTION_TYPE } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
+import ChatBox from "../components/chat/ChatBox";
+import MessageNotify from "../components/chat/MessageNotify";
+import IconReactQuestion from "../components/icon/IconReactQuestion";
+import useChat from "../hooks/useChat";
+import Chat from "../components/chat/Chat";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -34,6 +40,17 @@ function SlideShowHostPage() {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(1);
+  const {
+    newMessage,
+    setNewMessage,
+    countMessages,
+    setCountMessages,
+    showMessage,
+    setShowMessage,
+    showNewMessage,
+    setShowNewMessage,
+    handleNewMessage,
+  } = useChat(user?.user?.name);
   const handleOnClickNext = () => {
     socket.emit("showStatistic", currentQuestion + 1);
     setCurrentQuestion(currentQuestion + 1);
@@ -126,6 +143,7 @@ function SlideShowHostPage() {
     socket.on("getActiveParticipants", logMsg);
     socket.on("showStatistic", logStatistic);
     socket.on("getRoomState", logCurrentRoom);
+    socket.on("chat", handleNewMessage);
     socket.on("notify", logMsg);
     return () => {
       socket.off("connect", logConnect);
@@ -134,10 +152,22 @@ function SlideShowHostPage() {
       socket.off("getActiveParticipants", logMsg);
       socket.off("showStatistic", logStatistic);
       socket.off("getRoomState", logMsg);
+      socket.off("chat", handleNewMessage);
       socket.off("notify", logMsg);
     };
-  }, [socket, idSlide]);
-
+  }, [socket, idSlide, showMessage, countMessages]);
+  const data = {
+    socket,
+    newMessage,
+    setNewMessage,
+    countMessages,
+    setCountMessages,
+    showMessage,
+    setShowMessage,
+    showNewMessage,
+    setShowNewMessage,
+    username: user?.user?.name,
+  };
   return (
     <div className="bg-black w-full h-screen flex relative">
       <div
@@ -172,6 +202,7 @@ function SlideShowHostPage() {
             />
           ))}
       </div>
+      <Chat data={data} />
     </div>
   );
 }
@@ -194,7 +225,6 @@ function SlideUI({ statistic, idQuestion }) {
     fetchData();
   }, [idQuestion, statistic]);
   const isMultiple = true;
-  console.log("question", question);
   return (
     <div className="p-4 bg-white m-10 flex-1 flex-flex-col max-h-[748px] overflow-auto">
       <HeaderSlide
