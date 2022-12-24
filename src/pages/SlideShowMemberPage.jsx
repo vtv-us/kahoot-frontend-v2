@@ -276,36 +276,9 @@ function SlideShowMemberPage() {
           <QAButton handleClickOpen={handleClickOpen} />
         </div>
       )}
-      <div
-        className="absolute bottom-20 right-10"
-        onClick={() => {
-          socket.emit("getChatHistory");
-          setCountMessages(0);
-          setShowMessage(!showMessage);
-          setShowNewMessage(false);
-        }}
-      >
-        <div className="relative">
-          <IconReactQuestion className="border boder-gray-100">
-            <MessageIcon fontSize="large" />
-          </IconReactQuestion>
-          {countMessages > 0 && !showMessage && (
-            <span className="absolute rounded-full text-sm text-white bg-red-500 py-1 px-2 -top-2 right-0 font-bold">
-              {countMessages}
-            </span>
-          )}
-        </div>
-      </div>
-      {showNewMessage && (
-        <MessageNotify
-          message={newMessage}
-          onClose={() => {
-            setShowNewMessage(false);
-          }}
-        />
-      )}
+
       {open && <ModalQAUser qaQuestions={qaQuestions} handleClose={handleClose} socket={socket} userName={username} />}
-      {showMessage && <ChatBox socket={socket} username={username} setShowMessage={setShowMessage} />}
+
       <Chat data={data} />
     </div>
   );
