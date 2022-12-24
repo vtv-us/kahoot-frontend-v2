@@ -341,12 +341,17 @@ function ModalQAUser({ qaQuestions, handleClose, socket, userName }) {
     socket.emit("listUserQuestion");
   };
   const logUpvoteQuestion = msg => {
+    console.log("upvote");
     socket.emit("listUserQuestion");
     // console.log("Mark answered", msg);
   };
   const logListUserQA = msg => {
     const newList = msg.filter(e => e.answered === false);
     setListUnansweredQuestion(newList);
+  };
+  const logPostQA = msg => {
+    console.log("posted");
+    socket.emit("listUserQuestion");
   };
   const listItem = [
     {
@@ -363,9 +368,12 @@ function ModalQAUser({ qaQuestions, handleClose, socket, userName }) {
     socket.on("toggleUserQuestionAnswered", logMarkAnswered);
     socket.on("upvoteQuestion", logUpvoteQuestion);
     socket.on("listUserQuestion", logListUserQA);
+    socket.on("postQuestion", logPostQA);
     return () => {
       socket.off("toggleUserQuestionAnswered", logMarkAnswered);
       socket.off("upvoteQuestion", logUpvoteQuestion);
+      socket.off("listUserQuestion", logListUserQA);
+      socket.off("postQuestion", logPostQA);
     };
   }, []);
   return (

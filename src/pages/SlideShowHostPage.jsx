@@ -146,6 +146,9 @@ function SlideShowHostPage() {
       console.log("new list");
       setListQAQuestion(msg);
     };
+    const logUpvoteQuestion = msg => {
+      socket.emit("listUserQuestion");
+    };
 
     socket.on("connect", logConnect);
     socket.on("error", logError);
@@ -157,6 +160,7 @@ function SlideShowHostPage() {
     socket.on("listUserQuestion", logListUserQA);
     socket.on("postQuestion", logQA);
     socket.on("notify", logMsg);
+    socket.on("upvoteQuestion", logUpvoteQuestion);
     return () => {
       socket.off("connect", logConnect);
       socket.off("error", logError);
@@ -168,6 +172,7 @@ function SlideShowHostPage() {
       socket.off("postQuestion", logQA);
       socket.off("notify", logMsg);
       socket.off("listUserQuestion", logListUserQA);
+      socket.off("upvoteQuestion", logUpvoteQuestion);
     };
   }, [socket, idSlide, showMessage, countMessages]);
   const data = {
