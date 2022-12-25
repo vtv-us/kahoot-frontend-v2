@@ -45,6 +45,8 @@ const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
   return data;
 };
+const SORT_BY_RECENT = 0;
+const SORT_BY_TOP_UPVOTE = 1;
 
 // const listQAQuestion = [
 //   {
@@ -289,12 +291,31 @@ ListReactIcon.propTypes = {
 
 function ModalQAUser({ qaQuestions, handleClose, socket, userName }) {
   const [selectedSortOption, setSelectedSortOption] = useState(0);
+  const [askNewQuestion, setAskNewQuestion] = useState(false);
+  const [questionDescription, setQuestionDescription] = useState("");
+  const [listUnansweredQuestion, setListUnansweredQuestion] = useState(qaQuestions.filter(e => e.answered === false));
   const handleOnSelectSortOption = sortOption => {
     setSelectedSortOption(sortOption);
   };
-  const [askNewQuestion, setAskNewQuestion] = useState(false);
-  const [questionDescription, setQuestionDescription] = useState("");
-  const [listUnansweredQuestion, setListUnansweredQuestion] = useState([]);
+  const sortByTopVote = (a, b) => {
+    if (a.votes > b.votes) return -1;
+    if (a.votes < b.votes) return 1;
+    return 0;
+  };
+  const sortByRecent = (a, b) => {
+    if (Date.parse(a.created_at) > Date.parse(b.created_at)) return -1;
+    if (Date.parse(a.created_at) < Date.parse(b.created_at)) return 1;
+    return 0;
+  };
+  const sortQA = newList => {
+    console.log(selectedSortOption);
+    if (selectedSortOption === SORT_BY_RECENT) {
+      newList.sort(sortByRecent);
+    } else {
+      newList.sort(sortByTopVote);
+    }
+    setListUnansweredQuestion([...newList]);
+  };
   const handleOnClickAskNewQuestion = () => {
     setAskNewQuestion(true);
   };
@@ -314,16 +335,16 @@ function ModalQAUser({ qaQuestions, handleClose, socket, userName }) {
     socket.emit("listUserQuestion");
   };
   const logUpvoteQuestion = msg => {
-    console.log("upvote");
     socket.emit("listUserQuestion");
     // console.log("Mark answered", msg);
   };
   const logListUserQA = msg => {
     const newList = msg.filter(e => e.answered === false);
-    setListUnansweredQuestion(newList);
+    console.log("sort option", selectedSortOption);
+    sortQA(newList);
+    // setListUnansweredQuestion(newList);
   };
   const logPostQA = msg => {
-    console.log("posted");
     socket.emit("listUserQuestion");
   };
   const listItem = [
@@ -337,7 +358,9 @@ function ModalQAUser({ qaQuestions, handleClose, socket, userName }) {
     },
   ];
   useEffect(() => {
-    setListUnansweredQuestion(qaQuestions.filter(e => e.answered === false));
+    // const listUnanswred = qaQuestions.filter(e => e.answered === false);
+    // sortQA(listUnanswred);
+    // setListUnansweredQuestion(qaQuestions.filter(e => e.answered === false));
     socket.on("toggleUserQuestionAnswered", logMarkAnswered);
     socket.on("upvoteQuestion", logUpvoteQuestion);
     socket.on("listUserQuestion", logListUserQA);
@@ -349,6 +372,10 @@ function ModalQAUser({ qaQuestions, handleClose, socket, userName }) {
       socket.off("postQuestion", logPostQA);
     };
   }, []);
+  useEffect(() => {
+    const newList = listUnansweredQuestion;
+    sortQA(newList);
+  }, [selectedSortOption]);
   return (
     <div className="absolute w-full left-0  top-0 bottom-0  flex items-center justify-center bg-[rgba(0,0,0,0.5)] z-10">
       <div className="relative bg-white rounded-lg w-[40%]">
