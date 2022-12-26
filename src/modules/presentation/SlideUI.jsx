@@ -11,6 +11,7 @@ import { getCurrentUser, QUESTION_TYPE } from "../../utils/constants";
 import BarChartPre from "../../components/chart/BarChartPre";
 import FooterSlide from "./FooterSlide";
 import HeaderSlide from "./HeaderSlide";
+import NoneBarChart from "../../components/chart/NonBarChart";
 
 function SlideUI({ statistic, idQuestion }) {
   const data = useSlide();
@@ -46,14 +47,5 @@ SlideUI.propTypes = {
   statistic: PropTypes.any,
   idQuestion: PropTypes.string,
 };
-
-function NoneBarChart() {
-  return (
-    <div className="h-[395px] flex items-center justify-center flex-col">
-      <img src="/barchartV2.png" className="w-[200px]" alt="" />
-      <div className="text-gray-500 font-bold text-xl">Please add options</div>
-    </div>
-  );
-}
 
 export default SlideUI;

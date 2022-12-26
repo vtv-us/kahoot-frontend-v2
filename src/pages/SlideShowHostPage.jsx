@@ -25,6 +25,7 @@ import MessageNotify from "../components/chat/MessageNotify";
 import IconReactQuestion from "../components/icon/IconReactQuestion";
 import useChat from "../hooks/useChat";
 import Chat from "../components/chat/Chat";
+import NoneBarChart from "../components/chart/NonBarChart";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -264,12 +265,4 @@ SlideUI.propTypes = {
   listQAQuestion: PropTypes.array,
 };
 
-function NoneBarChart() {
-  return (
-    <div className="h-[395px] flex items-center justify-center flex-col">
-      <img src="/barchartV2.png" className="w-[200px]" alt="" />
-      <div className="text-gray-500 font-bold text-xl">Please add options</div>
-    </div>
-  );
-}
 export default SlideShowHostPage;
