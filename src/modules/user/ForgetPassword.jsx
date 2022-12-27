@@ -6,24 +6,32 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import FormInputTextField from "../../components/form_components/FormInputTextField";
+import { forgetPassword } from "../../handleApi";
 import ChangeAuthen from "./ChangeAuthen";
 
 function ForgetPassword() {
   const { handleSubmit, control } = useForm();
   const [isValid, setIsvalid] = useState(false);
   const [email, setEmail] = useState("");
-  const onSubmit = value => {
+  const onSubmit = async value => {
     // todo
-    console.log(value);
+    const res = await forgetPassword(value);
+    if (!res) {
+      toast.error("Email is not correct");
+      setIsvalid(false);
+    } else {
+      setIsvalid(true);
+    }
     setEmail(value?.email);
-    setIsvalid(true);
+    // setIsvalid(true);
   };
   return (
     <div className="w-[420px] mx-auto mt-32 bg-white py-7">
       {!isValid ? (
         <>
-          <h2 className="text-center mb-5 text-xl font-bold">Reset Password</h2>
+          <h2 className="text-center mb-5 text-xl font-bold">Forget Password</h2>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 px-5 ">
             <FormInputTextField
               name="email"

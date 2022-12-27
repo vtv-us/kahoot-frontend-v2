@@ -18,6 +18,7 @@ import SlideShowMemberPage from "./pages/SlideShowMemberPage";
 import SlideShowHostPage from "./pages/SlideShowHostPage";
 import { socket, SocketContext } from "./contexts/socketContext";
 import ForgetPasswordPage from "./pages/ForgetPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/signup" element={<RegisterPage />} />
             <Route path="/login" element={<LogInPage />} />
             <Route path="/reset-password" element={<ForgetPasswordPage />} />
+            <Route path="/reset-password/:userId/:code" element={<ResetPasswordPage />} />
             <Route path="/groups/:id" element={<GroupPage />} />
             <Route path="/groups/:role" element={<GroupPage />} />
             <Route path="/groups/:id/members" element={<GroupMembers />} />

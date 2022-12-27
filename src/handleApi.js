@@ -249,3 +249,26 @@ export const updateAnswer = async (accessToken, data) => {
   }
   return null;
 };
+
+// forget pwd
+export const forgetPassword = async data => {
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/auth/forgot-password`, data);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const resetPassword = async data => {
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/auth/reset-password`, data);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};

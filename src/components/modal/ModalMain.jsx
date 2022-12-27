@@ -56,7 +56,7 @@ ModalMain.propTypes = {
   handleClose: PropTypes.func.isRequired,
   title: PropTypes.string,
   // eslint-disable-next-line react/forbid-prop-types
-  buttonList: PropTypes.array.isRequired,
+  buttonList: PropTypes.array,
   children: PropTypes.node.isRequired,
   props: PropTypes.any,
   maxWidth: PropTypes.string,
