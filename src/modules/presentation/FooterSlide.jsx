@@ -90,7 +90,6 @@ function ModalQuestions({ handleClose, listQuestions }) {
   };
   const handleOnClickQATitle = item => {
     const index = listSortByAnswered.findIndex(e => e.question_id === item.question_id);
-    console.log(index);
     setCurrentIndex(index);
   };
   const hanldeOnClickCheckAnswered = item => {

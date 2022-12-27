@@ -18,7 +18,7 @@ import ModalInvite from "../../components/modal/ModalInvite";
 import useToggleModal from "../../hooks/useToggleModal";
 import InviteLinkInput from "../../components/input/InviteLinkInput";
 
-function GroupItem({ to = "", groupName = "MUN", id = "" }) {
+function GroupItem({ to = "", groupName = "MUN", id = "", onDeleteGroup = null }) {
   const navigate = useNavigate();
   const { open, handleClickOpen, handleClose } = useToggleModal();
   const optionGroupMenu = [
@@ -34,12 +34,17 @@ function GroupItem({ to = "", groupName = "MUN", id = "" }) {
         handleClickOpen();
       },
     },
-    {
-      icon: <DeleteOutlinedIcon />,
-      title: "Delete",
-      onClick: () => {},
-    },
+    onDeleteGroup !== null
+      ? {
+          icon: <DeleteOutlinedIcon />,
+          title: "Delete",
+          onClick: () => {
+            onDeleteGroup(id);
+          },
+        }
+      : null,
   ];
+  console.log(optionGroupMenu);
   return (
     <div
       onClick={() => navigate(to)}
@@ -78,6 +83,7 @@ GroupItem.propTypes = {
   to: PropTypes.string,
   groupName: PropTypes.string,
   id: PropTypes.string,
+  onDeleteGroup: PropTypes.func,
 };
 
 export default GroupItem;

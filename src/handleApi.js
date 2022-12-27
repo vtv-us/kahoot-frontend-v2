@@ -29,6 +29,18 @@ export const createGroup = async (groupName, accessToken) => {
   return res.data;
 };
 
+export const deleteGroup = async (id, accessToken) => {
+  try {
+    await axios.delete(`${process.env.REACT_APP_BE_ADDRESS}/group/${id}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+  }
+  return false;
+};
+
 /* eslint-disable import/prefer-default-export */
 export const getSlideById = async (id, accessToken) => {
   try {

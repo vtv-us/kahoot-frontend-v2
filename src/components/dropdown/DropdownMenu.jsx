@@ -20,21 +20,24 @@ function Dropdown({ data, children, className = "" }) {
           className={`p-3 rounded-lg absolute top-full w-[175px] z-10 bg-white right-[-15px] shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px] ${className} `}
         >
           {data.length > 0 &&
-            data.map((item, index) => (
-              <div
-                key={index}
-                className={`px-1 py-2 hover:bg-gray-200 cursor-pointer rounded-md text-black ${item.className} ${
-                  item.disable && "opacity-50"
-                }`}
-                onClick={() => {
-                  item.onClick();
-                  setShow(false);
-                  // e.stopPropagation();
-                }}
-              >
-                {item.icon} <span className={`text-sm ${item?.textColor ? item.textColor : ""}`}>{item.title}</span>
-              </div>
-            ))}
+            data.map(
+              (item, index) =>
+                item !== null && (
+                  <div
+                    key={index}
+                    className={`px-1 py-2 hover:bg-gray-200 cursor-pointer rounded-md text-black ${item.className} ${
+                      item.disable && "opacity-50"
+                    }`}
+                    onClick={() => {
+                      item.onClick();
+                      setShow(false);
+                      // e.stopPropagation();
+                    }}
+                  >
+                    {item.icon} <span className={`text-sm ${item?.textColor ? item.textColor : ""}`}>{item.title}</span>
+                  </div>
+                )
+            )}
         </div>
       )}
     </div>

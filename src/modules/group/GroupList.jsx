@@ -6,12 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from "react-router";
 import uuid from "react-uuid";
-import { JOINED, OWNED } from "../../utils/constants";
+import { getCurrentUser, JOINED, OWNED } from "../../utils/constants";
 import GroupItem from "./GroupItem";
 import GroupItemSkeleton from "../../components/skeleton/GroupItemSkeleton";
+import { deleteGroup } from "../../handleApi";
 
-function GroupList({ groupList, isFetching }) {
-  console.log("GroupList", groupList);
+function GroupList({ groupList, isFetching, handleDeleteGroup }) {
   return (
     <>
       <div className="grid grid-cols-4 gap-4 mt-10">
@@ -23,6 +23,7 @@ function GroupList({ groupList, isFetching }) {
               id={item.group_id}
               to={`/groups/${item.group_id}/members`}
               groupName={item.group_name}
+              onDeleteGroup={handleDeleteGroup}
             />
           ))}
         {isFetching && new Array(12).fill(0).map(() => <GroupItemSkeleton key={uuid()} />)}
