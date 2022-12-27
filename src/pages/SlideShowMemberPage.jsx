@@ -29,7 +29,7 @@ import QAButton from "../components/button/QAButton";
 import ListReactSlideMember from "../modules/presentation/ListReactSlideMember";
 import useChat from "../hooks/useChat";
 import Chat from "../components/chat/Chat";
-import ModalQAUser from "../components/modal/ModalQAUser";
+import ModalQAUser from "../modules/presentation/ModalQAUser";
 import NoneBarChart from "../components/chart/NonBarChart";
 
 const getData = async id => {

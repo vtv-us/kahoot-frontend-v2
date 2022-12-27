@@ -12,9 +12,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CloseIcon from "@mui/icons-material/Close";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { toast } from "react-toastify";
-import DropdownMain from "../../modules/presentation/DropdownMain";
-import ButtonMain from "../button/ButtonMain";
-import TextAreaAutoResize from "../textarea/TextAreaAutoResize";
+import DropdownMain from "./DropdownMain";
+import ButtonMain from "../../components/button/ButtonMain";
+import TextAreaAutoResize from "../../components/textarea/TextAreaAutoResize";
 
 const SORT_BY_RECENT = 0;
 function ModalQAUser({ handleClose, socket, userName }) {

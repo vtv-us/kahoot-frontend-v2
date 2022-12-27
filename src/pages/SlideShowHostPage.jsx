@@ -145,7 +145,7 @@ function SlideShowHostPage() {
     };
     const logListUserQA = msg => {
       console.log("new list");
-      setListQAQuestion(msg);
+      setListQAQuestion([...msg]);
     };
     const logUpvoteQuestion = msg => {
       socket.emit("listUserQuestion");
