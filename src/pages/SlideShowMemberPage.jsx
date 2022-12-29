@@ -178,7 +178,7 @@ function SlideShowMemberPage() {
     setShowNewMessage,
     username,
   };
-  return user !== null ? (
+  return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
       {answeredQuestions.includes(question?.index) === false ? (
         <>
@@ -257,8 +257,6 @@ function SlideShowMemberPage() {
 
       <Chat data={data} />
     </div>
-  ) : (
-    <ErrorPage />
   );
 }
 ListReactIcon.propTypes = {

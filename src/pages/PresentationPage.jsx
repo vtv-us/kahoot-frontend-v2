@@ -15,10 +15,26 @@ import SlideListMenu from "../modules/presentation/SlideListMenu";
 import MenuPresentation from "../modules/presentation/MenuPresentation";
 import SlideUI from "../modules/presentation/SlideUI";
 import { SlideProvider } from "../contexts/slideContext";
-import { createQuestion, getAllQuestionByIdSlide, getAnswerById, getQuestionById } from "../handleApi";
+import {
+  createQuestion,
+  getAllQuestionByIdSlide,
+  getAnswerById,
+  getSlideById,
+  getQuestionById,
+  getCollaboratorsByIdSlide,
+} from "../handleApi";
 import { getCurrentUser } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
 import ErrorPage from "./ErrorPage";
+
+const checkIsOwnerOrCollab = async (userId, slideId, accessToken) => {
+  const listCollab = await getCollaboratorsByIdSlide(slideId, accessToken);
+  const collabId = listCollab.map(e => e.user_id);
+  const slide = await getSlideById(slideId, accessToken);
+  const listOwnerAndCollabId = [...collabId, slide.owner];
+  return listOwnerAndCollabId.includes(userId);
+  // return listCollab.map(e => e.user_id);
+};
 
 function PresentationPage() {
   // ****** */
@@ -26,9 +42,9 @@ function PresentationPage() {
 
   const [statistic, setStatistic] = useState();
   // ****** */
-
   const [questionList, setQuestionList] = useState([]);
   const { idSlide, idQuestion } = useParams();
+  const [isOwnerOrCollab, setIsOwnerOrCollab] = useState(false);
   const navigate = useNavigate();
   const user = getCurrentUser();
   const listTypeSLide = [
@@ -60,6 +76,9 @@ function PresentationPage() {
 
   useEffect(() => {
     if (!socket) return;
+    if (user !== null)
+      checkIsOwnerOrCollab(user.user.user_id, idSlide, user.access_token).then(res => setIsOwnerOrCollab(res));
+
     socket.emit("host", user?.user?.name, `${idSlide}`);
     const getQuestionList = async () => {
       const currentQuestion = await getQuestionById(idQuestion);
@@ -110,7 +129,7 @@ function PresentationPage() {
     navigate(`/presentation/${idSlide}/${question?.data?.id}/edit`);
   };
 
-  return user !== null ? (
+  return isOwnerOrCollab === true ? (
     <LayoutPresentation socket={socket}>
       <div className="h-[56px] flex items-center border-b px-4 border-gray-200 ">
         <ButtonMain
