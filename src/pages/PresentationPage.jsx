@@ -18,6 +18,7 @@ import { SlideProvider } from "../contexts/slideContext";
 import { createQuestion, getAllQuestionByIdSlide, getAnswerById, getQuestionById } from "../handleApi";
 import { getCurrentUser } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
+import ErrorPage from "./ErrorPage";
 
 function PresentationPage() {
   // ****** */
@@ -109,7 +110,7 @@ function PresentationPage() {
     navigate(`/presentation/${idSlide}/${question?.data?.id}/edit`);
   };
 
-  return (
+  return user !== null ? (
     <LayoutPresentation socket={socket}>
       <div className="h-[56px] flex items-center border-b px-4 border-gray-200 ">
         <ButtonMain
@@ -130,6 +131,8 @@ function PresentationPage() {
         </SlideProvider>
       </div>
     </LayoutPresentation>
+  ) : (
+    <ErrorPage />
   );
 }
 

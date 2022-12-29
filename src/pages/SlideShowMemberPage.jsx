@@ -31,6 +31,7 @@ import useChat from "../hooks/useChat";
 import Chat from "../components/chat/Chat";
 import ModalQAUser from "../modules/presentation/ModalQAUser";
 import NoneBarChart from "../components/chart/NonBarChart";
+import ErrorPage from "./ErrorPage";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -177,7 +178,7 @@ function SlideShowMemberPage() {
     setShowNewMessage,
     username,
   };
-  return (
+  return user !== null ? (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
       {answeredQuestions.includes(question?.index) === false ? (
         <>
@@ -256,6 +257,8 @@ function SlideShowMemberPage() {
 
       <Chat data={data} />
     </div>
+  ) : (
+    <ErrorPage />
   );
 }
 ListReactIcon.propTypes = {

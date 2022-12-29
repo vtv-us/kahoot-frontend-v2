@@ -26,6 +26,7 @@ import IconReactQuestion from "../components/icon/IconReactQuestion";
 import useChat from "../hooks/useChat";
 import Chat from "../components/chat/Chat";
 import NoneBarChart from "../components/chart/NonBarChart";
+import ErrorPage from "./ErrorPage";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -188,7 +189,7 @@ function SlideShowHostPage() {
     setShowNewMessage,
     username: user?.user?.name,
   };
-  return (
+  return user !== null ? (
     <div className="bg-black w-full h-screen flex relative">
       <div
         className="my-auto ml-4 p-2 rounded-full cursor-pointer hover:bg-gray-700 items-center"
@@ -224,6 +225,8 @@ function SlideShowHostPage() {
       </div>
       <Chat data={data} />
     </div>
+  ) : (
+    <ErrorPage />
   );
 }
 

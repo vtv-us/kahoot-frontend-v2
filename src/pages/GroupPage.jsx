@@ -4,6 +4,7 @@ import { redirect, useNavigate } from "react-router-dom";
 import LayoutMain from "../components/layout/LayoutMain";
 import Group from "../modules/group/Group";
 import { getCurrentUser } from "../utils/constants";
+import ErrorPage from "./ErrorPage";
 
 function GroupPage() {
   useEffect(() => {
@@ -14,10 +15,12 @@ function GroupPage() {
   useEffect(() => {
     if (user === null) navigate("/login");
   }, [user]);
-  return (
+  return user !== null ? (
     <LayoutMain className="!bg-white">
       <Group />
     </LayoutMain>
+  ) : (
+    <ErrorPage />
   );
 }
 

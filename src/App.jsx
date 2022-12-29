@@ -19,6 +19,7 @@ import SlideShowHostPage from "./pages/SlideShowHostPage";
 import { socket, SocketContext } from "./contexts/socketContext";
 import ForgetPasswordPage from "./pages/ForgetPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/slides/:id" element={<SlidesPage />} />
             <Route path="/slides/member/:idSlide" element={<SlideShowMemberPage />} />
             <Route path="/presentation/:idSlide/:idQuestion" element={<SlideShowHostPage />} />
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
         </div>
       </SocketContext.Provider>
