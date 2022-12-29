@@ -1,8 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/require-default-props */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import uuid from "react-uuid";
+import { useParams } from "react-router";
+import { toast } from "react-toastify";
+import { getCurrentUser } from "../../utils/constants";
 
 import Account from "../user/Account";
 import ModalMain from "./ModalMain";
@@ -10,10 +13,30 @@ import Table from "../table/Table";
 import CollabItem from "../../modules/presentation/CollabItem";
 import ModalDelete from "./ModalDelete";
 import useToggleModal from "../../hooks/useToggleModal";
+import {
+  addCollaboratorByUserId,
+  getCollaboratorsByIdSlide,
+  getUserByEmail,
+  removeCollaboratorByUserId,
+} from "../../handleApi";
 
 function ModalManagementCollab({ children, open, handleClose = () => {} }) {
   const [filter, setFilter] = useState("");
   const { open: openDelete, handleClickOpen: handleOpenDelete, handleClose: handleCloseDelete } = useToggleModal();
+  const [collaborators, setCollaborators] = useState([]);
+  const [userSelected, setUserSelected] = useState({});
+  const [error, setError] = useState("");
+  const { idSlide } = useParams();
+  const user = getCurrentUser();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getCollaboratorsByIdSlide(idSlide, user?.access_token);
+      setCollaborators(res);
+    };
+    fetchData();
+  }, []);
+
   const buttonList = [
     {
       id: uuid(),
@@ -25,13 +48,32 @@ function ModalManagementCollab({ children, open, handleClose = () => {} }) {
       onClick: handleClose,
     },
   ];
-  const handleDelete = () => {
-    console.log("Deleted");
+  const handleDelete = async () => {
+    const data = { user_id: userSelected?.user_id, slide_id: idSlide };
+    const res = await removeCollaboratorByUserId(data, user?.access_token);
+    if (!res) toast.error("Remove failed");
+    else {
+      setCollaborators(await getCollaboratorsByIdSlide(idSlide, user?.access_token));
+    }
     // todo
   };
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log(filter);
+    const res = await getUserByEmail(filter);
+    if (!res) {
+      setError("Email is not existing on the website.");
+    } else {
+      const data = {
+        slide_id: idSlide,
+        user_id: res?.user_id,
+      };
+      const resAdd = await addCollaboratorByUserId(data, user?.access_token);
+      if (!resAdd) toast.error("Add collaborator failed");
+      else {
+        setError("");
+        setCollaborators(await getCollaboratorsByIdSlide(idSlide, user?.access_token));
+      }
+    }
     // todo
   };
   return (
@@ -57,7 +99,7 @@ function ModalManagementCollab({ children, open, handleClose = () => {} }) {
               Assign
             </button>
           </div>
-          <p className="ml-2 text-sm text-red-500 mt-1">Email is not existing on the website.</p>
+          {error && <p className="ml-2 text-sm text-red-500 mt-1">{error}</p>}
         </form>
         <Table>
           <thead>
@@ -72,9 +114,20 @@ function ModalManagementCollab({ children, open, handleClose = () => {} }) {
             </tr>
           </thead>
           <tbody>
-            <CollabItem handleOpenDelete={handleOpenDelete} />
-            <CollabItem handleOpenDelete={handleOpenDelete} />
-            <CollabItem handleOpenDelete={handleOpenDelete} />
+            {collaborators.length > 0 ? (
+              collaborators.map(item => (
+                <CollabItem
+                  key={item?.user_id}
+                  handleOpenDelete={() => {
+                    handleOpenDelete();
+                    setUserSelected(item);
+                  }}
+                  user={item}
+                />
+              ))
+            ) : (
+              <div className="mx-4 py-4 w-full italic">There is not any collaborator</div>
+            )}
           </tbody>
         </Table>
       </ModalMain>
@@ -85,7 +138,7 @@ function ModalManagementCollab({ children, open, handleClose = () => {} }) {
           handleCloseDelete();
         }}
       >
-        Are you sure to delete this collaborator
+        Are you sure to remove <strong>{userSelected?.name}</strong>
       </ModalDelete>
     </>
   );

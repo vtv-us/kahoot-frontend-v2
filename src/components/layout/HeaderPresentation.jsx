@@ -119,7 +119,7 @@ function HeaderPresentation({ socket }) {
     <div className="flex items-center justify-between w-full py-2 px-4 border-b-2 border-gray-200">
       <div className="flex gap-4">
         <BackButton
-          to="/slides"
+          to="/slides/owned"
           onClick={() => {
             socket.emit("manualDisconnect");
           }}

@@ -40,7 +40,7 @@ const MenuBar = () => {
           <Diversity1OutlinedIcon />
         </MenuItem>
       </NavLink>
-      <NavLink to="/slides" className={({ isActive }) => (isActive ? "!text-purple-700" : "")} end>
+      <NavLink to="/slides/owned" className={({ isActive }) => (isActive ? "!text-purple-700" : "")} end>
         <MenuItem title="Slides">
           <Topic />
         </MenuItem>

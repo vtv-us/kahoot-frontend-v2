@@ -132,7 +132,8 @@ export const createQuestion = async (
   accessToken,
   raw_question = "Multiple Choice",
   meta = "",
-  long_description = ""
+  long_description = "",
+  type = "multiple-choice"
 ) => {
   const questions = await getAllQuestionByIdSlide(slide_id);
   let index = 1;
@@ -146,6 +147,7 @@ export const createQuestion = async (
       raw_question,
       meta,
       long_description,
+      type,
     };
     const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/question`, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -278,6 +280,68 @@ export const resetPassword = async data => {
   try {
     const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/auth/reset-password`, data);
 
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+// user
+export const getUserByEmail = async email => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/user/${email}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+// collab
+export const addCollaboratorByUserId = async (data, accessToken) => {
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/slide/collab`, data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const getCollaboratorsByIdSlide = async (idSlide, accessToken) => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/slide/collab/${idSlide}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const removeCollaboratorByUserId = async (data, accessToken) => {
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_BE_ADDRESS}/slide/collab/remove`, data, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
+export const getCollaboratorsSlide = async (userId, accessToken) => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_BE_ADDRESS}/slide/collab/user/${userId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
     return res.data;
   } catch (error) {
     console.log(error);

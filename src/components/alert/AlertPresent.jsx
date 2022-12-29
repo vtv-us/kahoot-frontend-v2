@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
 
-function AlertPresent({ name = "Tile", link = "/slides" }) {
+function AlertPresent({ name = "Tile", link = "/slides/owned" }) {
   const navigate = useNavigate();
   return (
     <Stack sx={{ width: "100%" }} spacing={2}>

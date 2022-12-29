@@ -66,8 +66,7 @@ function SlideShowMemberPage() {
     handleNewMessage,
   } = useChat(username);
 
-  const isMultiple = true;
-
+  const isMultiple = question?.type === "multiple-choice";
   const getIndexInQuestionList = questionList => {
     for (let i = 0; i < questionList.length; i++) {
       if (idQuestion === questionList[i].id) {

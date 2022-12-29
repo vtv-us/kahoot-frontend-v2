@@ -29,7 +29,8 @@ function SlideUI({ statistic, idQuestion }) {
     };
     fetchData();
   }, [idQuestion, statistic, data]);
-  const isMultiple = data.type === QUESTION_TYPE.MULTIPLE_CHOICE;
+  const isMultiple = data.type === QUESTION_TYPE["multiple-choice"];
+
   return (
     <div className={`p-4 bg-white m-10 flex-1 flex-flex-col relative max-h-[748px] overflow-auto `}>
       <HeaderSlide
@@ -38,7 +39,7 @@ function SlideUI({ statistic, idQuestion }) {
         description={data?.description}
         isMultiple={isMultiple}
       />
-      {dataChart.length > 0 ? <BarChartPre data={dataChart} isMultiple={isMultiple} /> : <NoneBarChart />}
+      {dataChart.length > 0 ? <BarChartPre data={dataChart} isMultiple={isMultiple} /> : isMultiple && <NoneBarChart />}
       <FooterSlide type={data?.type} checkedList={data.checkedReactionList} />
     </div>
   );

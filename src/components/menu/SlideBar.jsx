@@ -12,10 +12,18 @@ function SlideBar() {
     <div className="h-screen shadow-[rgb(0_0_0_/_15%)_0px_2px_4px_0px]">
       <div className="h-full w-[224px] bg-white  px-2 py-8 border border-b-2">
         <MenuItem
-          onClick={() => navigate(`/slides`)}
+          onClick={() => navigate(`/slides/owned`)}
           title="My slides"
+          className="p-2 hover:bg-gray-200 mb-2"
+          isActive={id === "owned"}
+        >
+          <FolderOutlined />
+        </MenuItem>{" "}
+        <MenuItem
+          onClick={() => navigate(`/slides/collaborations`)}
+          title="Collaborations"
           className="p-2 hover:bg-gray-200"
-          isActive={id === undefined}
+          isActive={id === "collaborations"}
         >
           <FolderOutlined />
         </MenuItem>

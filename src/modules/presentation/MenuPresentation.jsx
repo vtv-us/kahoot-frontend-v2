@@ -17,7 +17,6 @@ import DropdownMain from "./DropdownMain";
 
 function MenuPresentation({ listItem }) {
   const data = useSlide();
-  console.log("type of slide", data.type);
   return (
     <div className="w-[460px] max-h-[600px] overflow-auto border-l border-gray-200 bg-white">
       <DropdownMain selectedValue={data.type} handleOnSelect={data.setType} listItem={listItem} />

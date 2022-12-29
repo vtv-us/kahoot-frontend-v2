@@ -13,12 +13,7 @@ export const REACTION = {
   DISLIKE: 4,
   ANGRY: 5,
 };
-export const QUESTION_TYPE = {
-  MULTIPLE_CHOICE: 1,
-  HEADING: 2,
-  PARAGRAPH: 3,
-  QA: 4,
-};
+export const QUESTION_TYPE = { "multiple-choice": 1, heading: 2, paragraph: 3, qa: 4 };
 
 export const getCurrentUser = () => useSelector(state => state.auth.login.currentUser);
 

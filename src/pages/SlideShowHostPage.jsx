@@ -244,7 +244,9 @@ function SlideUI({ statistic, idQuestion, listQAQuestion }) {
     };
     fetchData();
   }, [idQuestion, statistic]);
-  const isMultiple = true;
+  console.log("question", question);
+  const isMultiple = question.type === "multiple-choice";
+  console.log(isMultiple);
   return (
     <div className="p-4 bg-white m-10 flex-1 flex-flex-col max-h-[748px] overflow-auto">
       <HeaderSlide
@@ -253,7 +255,7 @@ function SlideUI({ statistic, idQuestion, listQAQuestion }) {
         description={question.long_description}
         isMultiple={isMultiple}
       />
-      {dataChart.length > 0 ? <BarChartPre data={dataChart} isMultiple={isMultiple} /> : <NoneBarChart />}
+      {dataChart.length > 0 ? <BarChartPre data={dataChart} isMultiple={isMultiple} /> : isMultiple && <NoneBarChart />}
       {/* <FooterSlide type={QUESTION_TYPE.HEADING} checkedList={[1, 2, 3]} /> */}
       <FooterSlide listQuestions={listQAQuestion} />
     </div>

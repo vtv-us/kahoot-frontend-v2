@@ -40,17 +40,24 @@ function ContentSlideSetting({ data }) {
           onChange={() => {}}
           limit={150}
           name="question"
-          label="Your question?"
+          label={data.type === QUESTION_TYPE["multiple-choice"] ? "Your question?" : "Heading"}
         />
         <ClickToShowInput title="Add longer description">
           <div>
             <label className="text-sm font-thin text-gray-400 mb-4">
-              Longer description shown in your audience's phones and if you hover the question while presenting.
+              {data.type === QUESTION_TYPE.heading && (
+                <div className="text-[16px] text-gray-800 font-bold">Subheading</div>
+              )}
+              {data.type === QUESTION_TYPE.paragraph && (
+                <div className="text-[16px] text-gray-800 font-bold">Paragraph</div>
+              )}
+              {data.type === QUESTION_TYPE["multiple-choice"] &&
+                "Longer description shown in your audience's phones and if you hover the question while presenting."}
             </label>
             <TextAreaAutoResize text={data.description} setText={data.setDescription} />
           </div>
         </ClickToShowInput>
-        {data.type === QUESTION_TYPE.MULTIPLE_CHOICE ? <OptionSlide /> : <ReactionQuestion />}
+        {data.type === QUESTION_TYPE["multiple-choice"] ? <OptionSlide /> : <ReactionQuestion />}
       </div>
     </div>
   );

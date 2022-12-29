@@ -4,13 +4,15 @@ import { Search } from "@mui/icons-material";
 import { debounce } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import LeftOptionSlide from "../../components/layout/LeftOptionSlide";
-import { createQuestion, createSlide, getAlllides } from "../../handleApi";
+import { createQuestion, createSlide, getAlllides, getCollaboratorsSlide } from "../../handleApi";
 import { getCurrentUser } from "../../utils/constants";
 import SlideList from "./SlideList";
 
 function DashboardSlide() {
   const user = getCurrentUser();
+  const { id } = useParams();
   const [slideList, setSlideList] = useState([]);
   const [filter, setFilter] = useState("");
   const [isSelectedAll, setIsSelectedAll] = useState(false);
@@ -25,8 +27,10 @@ function DashboardSlide() {
     setIsSelectedAll(value);
   };
   useEffect(() => {
-    getAlllides(user.access_token).then(res => setSlideList(res.data.reverse()));
-  }, []);
+    if (id === "owned") getAlllides(user.access_token).then(res => setSlideList(res.data?.reverse()));
+    else if (id === "collaborations")
+      getCollaboratorsSlide(user?.user?.user_id, user?.access_token).then(res => setSlideList(res?.reverse()));
+  }, [id]);
   return (
     <div className="p-8 px-10 flex-1 bg-gray-50">
       <div className="flex justify-between">
