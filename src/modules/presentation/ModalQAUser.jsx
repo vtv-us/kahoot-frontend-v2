@@ -122,7 +122,7 @@ function ModalQAUser({ handleClose, socket, userName }) {
               selectedValue={selectedSortOption}
               handleOnSelect={handleOnSelectSortOption}
             />
-            <div className={`h-[200px] ${listUnansweredQuestion.length > 3 ? "overflow-y-scroll" : ""}`}>
+            <div className={`h-[300px] ${listUnansweredQuestion.length > 3 ? "overflow-y-scroll" : ""}`}>
               {listUnansweredQuestion.map(e => (
                 <div key={e.question_id}>
                   <div className="mx-4 my-4 flex justify-between">

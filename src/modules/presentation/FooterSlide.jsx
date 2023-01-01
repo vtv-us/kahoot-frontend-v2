@@ -24,6 +24,10 @@ import ReactionListInSlideUI from "./ReactionListInSlideUI";
 import { useSlide } from "../../contexts/slideContext";
 import { QUESTION_TYPE } from "../../utils/constants";
 import { SocketContext } from "../../contexts/socketContext";
+import DropdownMain from "./DropdownMain";
+
+const SORT_BY_RECENT = 0;
+const SORT_BY_TOPVOTE = 1;
 
 function FooterSlide({ type = QUESTION_TYPE.MULTIPLE_CHOICE, checkedList = [], listQuestions }) {
   const [ref, hovered] = useHover();
@@ -79,6 +83,38 @@ function ModalQuestions({ handleClose, listQuestions }) {
   const [listSortByAnswered, setListSortByAnswered] = useState([]);
   const [showSideBar, setShowSideBar] = useState(true);
   const [showUnansweredSideBar, setShowUnansweredSideBar] = useState(true);
+  const [selectedSortOption, setSortSelectedOption] = useState(0);
+  const handleOnSelectSortType = value => {
+    setSortSelectedOption(value);
+  };
+  const sortByTopVote = (a, b) => {
+    if (a.votes > b.votes) return -1;
+    if (a.votes < b.votes) return 1;
+    return 0;
+  };
+  const sortByRecent = (a, b) => {
+    if (Date.parse(a.created_at) > Date.parse(b.created_at)) return -1;
+    if (Date.parse(a.created_at) < Date.parse(b.created_at)) return 1;
+    return 0;
+  };
+  const sortOptions = [
+    {
+      value: 0,
+      label: "Recent",
+    },
+    {
+      value: 1,
+      label: "Top vote",
+    },
+  ];
+  const sortQA = (setList, newList) => {
+    if (selectedSortOption === SORT_BY_RECENT) {
+      newList.sort(sortByRecent);
+    } else {
+      newList.sort(sortByTopVote);
+    }
+    setList([...newList]);
+  };
   const handleShowUnansweredSideBar = () => {
     setShowUnansweredSideBar(true);
   };
@@ -128,9 +164,11 @@ function ModalQuestions({ handleClose, listQuestions }) {
     const unAnswereds = listQuestions.filter(e => e.answered === false);
     const listSorted = unAnswereds.concat(answereds);
     setListSortByAnswered([...listSorted]);
-    setListAnsweredQuestions([...answereds]);
-    setlistUnansweredQuestions([...unAnswereds]);
-  }, [listQuestions]);
+    sortQA(setListAnsweredQuestions, answereds);
+    sortQA(setlistUnansweredQuestions, unAnswereds);
+    // setListAnsweredQuestions([...answereds]);
+    // setlistUnansweredQuestions([...unAnswereds]);
+  }, [listQuestions, selectedSortOption]);
 
   return (
     <div className="absolute w-full left-0  top-0 bottom-0  flex items-center justify-center bg-[rgba(0,0,0,0.5)] z-10">
@@ -153,10 +191,57 @@ function ModalQuestions({ handleClose, listQuestions }) {
         </div>
         {showSideBar && (
           <div className="w-[350px] flex flex-col overflow-y-scroll rounded-tl-md rounded-bl-md border border-gray-300 justify-between">
-            {showUnansweredSideBar ? (
-              listUnansweredQuestions.length > 0 ? (
+            <div>
+              <DropdownMain
+                selectedValue={selectedSortOption}
+                handleOnSelect={handleOnSelectSortType}
+                listItem={sortOptions}
+              />
+              {showUnansweredSideBar ? (
+                listUnansweredQuestions.length > 0 ? (
+                  <div>
+                    {listUnansweredQuestions.map((e, index) => (
+                      <div
+                        className={`flex justify-between items-center p-2 ${
+                          index !== listAnsweredQuestions.length - 1 ? "border-b border-gray-200" : ""
+                        }`}
+                      >
+                        <div className="flex flex-col max-w-[160px]">
+                          <h2
+                            className={` ${
+                              listSortByAnswered[currentIndex] === e ? "text-blue-500" : ""
+                            } font-bold text-[14px] text-ellipsis title-slide-menu w-full`}
+                            onClick={() => {
+                              handleOnClickQATitle(e);
+                            }}
+                          >
+                            {e.content}
+                          </h2>
+                          <h2
+                            className="text-[10px] cursor-pointer hover:text-gray-500"
+                            onClick={() => {
+                              hanldeOnClickCheckAnswered(e);
+                            }}
+                          >
+                            <CheckIcon className="text-[10px]" /> Mark as answered
+                          </h2>
+                        </div>
+                        <div className="text-[14px] !w-[40px]">
+                          <ThumbUpOffAltIcon className="text-[14px] mr-1" />
+                          {e.votes}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center text-center px-2">
+                    <h2 className="font-bold mt-5">No questions from the audience</h2>
+                    <h2>You are doing awsome!</h2>
+                  </div>
+                )
+              ) : listAnsweredQuestions.length > 0 ? (
                 <div>
-                  {listUnansweredQuestions.map((e, index) => (
+                  {listAnsweredQuestions.map((e, index) => (
                     <div
                       className={`flex justify-between items-center p-2 ${
                         index !== listAnsweredQuestions.length - 1 ? "border-b border-gray-200" : ""
@@ -164,9 +249,9 @@ function ModalQuestions({ handleClose, listQuestions }) {
                     >
                       <div className="flex flex-col max-w-[160px]">
                         <h2
-                          className={` ${
+                          className={`${
                             listSortByAnswered[currentIndex] === e ? "text-blue-500" : ""
-                          } font-bold text-[14px] text-ellipsis title-slide-menu w-full`}
+                          } font-bold text-[14px] text-ellipsi title-slide-menu w-full`}
                           onClick={() => {
                             handleOnClickQATitle(e);
                           }}
@@ -176,10 +261,10 @@ function ModalQuestions({ handleClose, listQuestions }) {
                         <h2
                           className="text-[10px] cursor-pointer hover:text-gray-500"
                           onClick={() => {
-                            hanldeOnClickCheckAnswered(e);
+                            handleOnClickUncheckAnswered(e);
                           }}
                         >
-                          <CheckIcon className="text-[10px]" /> Mark as answered
+                          Restore question
                         </h2>
                       </div>
                       <div className="text-[14px] !w-[40px]">
@@ -192,50 +277,10 @@ function ModalQuestions({ handleClose, listQuestions }) {
               ) : (
                 <div className="flex flex-col items-center text-center px-2">
                   <h2 className="font-bold mt-5">No questions from the audience</h2>
-                  <h2>You are doing awsome!</h2>
+                  <h2>When you mark questions as answered, you can still see them here.</h2>
                 </div>
-              )
-            ) : listUnansweredQuestions.length > 0 ? (
-              <div>
-                {listAnsweredQuestions.map((e, index) => (
-                  <div
-                    className={`flex justify-between items-center p-2 ${
-                      index !== listAnsweredQuestions.length - 1 ? "border-b border-gray-200" : ""
-                    }`}
-                  >
-                    <div className="flex flex-col max-w-[160px]">
-                      <h2
-                        className={`${
-                          listSortByAnswered[currentIndex] === e ? "text-blue-500" : ""
-                        } font-bold text-[14px] text-ellipsi title-slide-menu w-full`}
-                        onClick={() => {
-                          handleOnClickQATitle(e);
-                        }}
-                      >
-                        {e.content}
-                      </h2>
-                      <h2
-                        className="text-[10px] cursor-pointer hover:text-gray-500"
-                        onClick={() => {
-                          handleOnClickUncheckAnswered(e);
-                        }}
-                      >
-                        Restore question
-                      </h2>
-                    </div>
-                    <div className="text-[14px] !w-[40px]">
-                      <ThumbUpOffAltIcon className="text-[14px] mr-1" />
-                      {e.votes}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center text-center px-2">
-                <h2 className="font-bold mt-5">No questions from the audience</h2>
-                <h2>When you mark questions as answered, you can still see them here.</h2>
-              </div>
-            )}
+              )}
+            </div>
             <div className="p-2 border-t border-gray-300 flex text-[10px] sticky bottom-0 bg-white">
               <div
                 className={` ${
