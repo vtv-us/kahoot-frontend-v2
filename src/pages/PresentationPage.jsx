@@ -78,7 +78,6 @@ function PresentationPage() {
     if (!socket) return;
     if (user !== null)
       checkIsOwnerOrCollab(user.user.user_id, idSlide, user.access_token).then(res => setIsOwnerOrCollab(res));
-
     socket.emit("host", user?.user?.name, `${idSlide}`);
     const getQuestionList = async () => {
       const currentQuestion = await getQuestionById(idQuestion);

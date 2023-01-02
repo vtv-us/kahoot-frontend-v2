@@ -3,25 +3,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-fragments */
 import { Button } from "@mui/material";
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LogoutIcon from "@mui/icons-material/Logout";
-import useToggleModal from "../../hooks/useToggleModal";
 import ButtonMain from "../button/ButtonMain";
 import Bell from "../icon/Bell";
-import DropdownMenu from "../dropdown/DropdownMenu";
 import MenuBar from "../menu/MenuBar";
-import User from "../user/User";
-import { logoutSuccess } from "../../redux/authSlice";
-import { logoutUser } from "../../redux/apiRequest";
 import DropdownUser from "../dropdown/DropdownUser";
 
 function HeaderMain() {
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.login.currentUser);
-
   return (
     <div className="flex items-center justify-between  px-4 py-3 fixed w-full z-50 bg-white shadow-[rgb(0_0_0_/_10%)_0px_2px_4px_0px]">
       <div className=" flex items-center gap-4">

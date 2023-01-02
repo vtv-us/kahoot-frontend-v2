@@ -27,6 +27,7 @@ import useChat from "../hooks/useChat";
 import Chat from "../components/chat/Chat";
 import NoneBarChart from "../components/chart/NonBarChart";
 import ErrorPage from "./ErrorPage";
+import { NotiSocketContext } from "../contexts/notiSocketContext";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -36,7 +37,8 @@ const getData = async id => {
 // const socket = io.connect(process.env.REACT_APP_BE_ADDRESS);
 function SlideShowHostPage() {
   const socket = useContext(SocketContext);
-  const { idSlide, idQuestion } = useParams();
+  const notiSocket = useContext(NotiSocketContext);
+  const { idGroup, idSlide, idQuestion } = useParams();
   const [statistic, setStatistic] = useState();
   const user = getCurrentUser();
   const navigate = useNavigate();
@@ -104,7 +106,12 @@ function SlideShowHostPage() {
 
   useEffect(() => {
     if (!socket) return;
-    socket.emit("host", user?.user?.name, `${idSlide}`);
+    // if (idGroup === undefined) {
+    //   socket.emit("host", user?.user?.name, `${idSlide}`);
+    // } else {
+    //   socket.emit("host", user?.user?.user_id, idSlide, true, idGroup, user.access_token);
+    // }
+    notiSocket.emit("join", user?.access_token);
     socket.emit("listUserQuestion");
     socket.emit("chatHistory");
     const getQuestionList = async () => {
@@ -121,8 +128,13 @@ function SlideShowHostPage() {
     const logConnect = async msg => {
       // const questionList = await getData(idSlide, user?.access_token);
       // const currentIndex = getIndexInQuestionList(questionList);
-      socket.emit("host", user?.user?.name, `${idSlide}`);
-
+      if (idGroup === undefined) {
+        console.log("all ");
+        socket.emit("host", user?.user?.name, `${idSlide}`);
+      } else {
+        console.log("group");
+        socket.emit("host", user?.user?.user_id, idSlide, true, idGroup, user.access_token);
+      }
       // socket.emit("showStatistic", currentIndex);
       socket.emit("listUserQuestion");
       console.log("host connected");
@@ -145,7 +157,6 @@ function SlideShowHostPage() {
       // setListQAQuestion([...listQAQuestion, msg]);
     };
     const logListUserQA = msg => {
-      console.log("new list");
       setListQAQuestion([...msg]);
     };
     const logUpvoteQuestion = msg => {
@@ -247,9 +258,7 @@ function SlideUI({ statistic, idQuestion, listQAQuestion }) {
     };
     fetchData();
   }, [idQuestion, statistic]);
-  console.log("question", question);
   const isMultiple = question.type === "multiple-choice";
-  console.log(isMultiple);
   return (
     <div className="p-4 bg-white m-10 flex-1 flex-flex-col max-h-[748px] overflow-auto">
       <HeaderSlide
