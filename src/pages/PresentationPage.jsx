@@ -81,14 +81,15 @@ function PresentationPage() {
     socket.emit("host", user?.user?.name, `${idSlide}`);
     const getQuestionList = async () => {
       const currentQuestion = await getQuestionById(idQuestion);
+      socket.emit("showStatistic", idQuestion);
 
-      socket.emit("showStatistic", currentQuestion.index);
       socket.emit("getRoomAcitve");
       socket.emit("setRoomState", currentQuestion.index);
     };
     getQuestionList();
     const logConnect = async msg => {
       socket.emit("host", user?.user?.name, `${idSlide}`);
+      socket.emit("showStatistic", idQuestion);
 
       console.log("host connected");
     };
@@ -99,7 +100,7 @@ function PresentationPage() {
       console.log(msg);
     };
     const logCurrentRoom = msg => {
-      console.log("current question", msg);
+      // console.log("current question", msg);
     };
     const logStatistic = msg => {
       setStatistic(msg);

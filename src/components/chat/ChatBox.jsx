@@ -26,9 +26,9 @@ function ChatBox({ socket, username = "", setShowMessage = () => {} }) {
     socket.on("chatHistory", msg => {
       const newMsg = msg?.map(item => {
         return {
-          message: item.Message,
-          name: item.Username,
-          isCurrent: username === item.Username,
+          message: item.content,
+          name: item.username,
+          isCurrent: username === item.username,
         };
       });
       setMessageList([...newMsg]);

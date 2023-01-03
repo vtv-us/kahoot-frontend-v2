@@ -153,7 +153,8 @@ function SlideShowMemberPage() {
       toast.error("Please enter your option");
       return;
     }
-    socket.emit("submitAnswer", Number(question.index), Number(value));
+    console.log("value", value);
+    socket.emit("submitAnswer", question.id, value);
     const newList = [...answeredQuestions, question.index];
     setAnsweredQuestions(newList);
     // setIsAnswered(true);
@@ -202,12 +203,7 @@ function SlideShowMemberPage() {
                     defaultValue="first"
                   >
                     {answers?.map(item => (
-                      <RadioItem
-                        key={item.id}
-                        value={`${item.index}`}
-                        label={`${item.raw_answer}`}
-                        control={<Radio />}
-                      />
+                      <RadioItem key={item.id} value={`${item.id}`} label={`${item.raw_answer}`} control={<Radio />} />
                     ))}
                   </RadioGroup>
                   <ButtonMain
@@ -242,7 +238,7 @@ function SlideShowMemberPage() {
           </div>
           <h2 className="text-3xl font-bold mt-10">Thank you for your participation!</h2>
           <h2 className="text-2xl mt-4">
-            Your answer is: <span className="font-bold">{answers[Number(value - 1)].raw_answer}</span>
+            {/* Your answer is: <span className="font-bold">{answers[Number(value - 1)].raw_answer}</span> */}
           </h2>
           <div className="m-auto bg-white flex">
             <div className="">
@@ -268,8 +264,8 @@ function SlideUI({ statistic, question }) {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getAllAnswersByIdQuestion(question.id);
-      const newDataChart = res?.map(item => {
-        return { name: item.raw_answer, quantity: (statistic && statistic[item.index]) || 0 };
+      const newDataChart = res?.map((item, index) => {
+        return { name: item.raw_answer, quantity: (statistic && statistic[index])?.Count || 0 };
       });
 
       setDataChart(newDataChart);

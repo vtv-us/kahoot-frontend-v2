@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function useChat({ username }) {
+export default function useChat({ username = "" }) {
   const [newMessage, setNewMessage] = useState({});
   const [countMessages, setCountMessages] = useState(0);
   const [showMessage, setShowMessage] = useState(false);
