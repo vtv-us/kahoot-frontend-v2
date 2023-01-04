@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 /* eslint-disable spaced-comment */
 /* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
@@ -17,7 +18,14 @@ import { useNavigate, useParams } from "react-router";
 import HeaderSlide from "../modules/presentation/HeaderSlide";
 import BarChartPre from "../components/chart/BarChartPre";
 import FooterSlide from "../modules/presentation/FooterSlide";
-import { getAllAnswersByIdQuestion, getAllQuestionByIdSlide, getQuestionById } from "../handleApi";
+import {
+  getAllAnswersByIdQuestion,
+  getAllQuestionByIdSlide,
+  getGroupsCreatedByUser,
+  getGroupsUserHasJoined,
+  getQuestionById,
+  getSlideById,
+} from "../handleApi";
 import { getCurrentUser, QUESTION_TYPE } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
 import ChatBox from "../components/chat/ChatBox";
@@ -28,10 +36,20 @@ import Chat from "../components/chat/Chat";
 import NoneBarChart from "../components/chart/NonBarChart";
 import ErrorPage from "./ErrorPage";
 import { NotiSocketContext } from "../contexts/notiSocketContext";
+import { checkIsOwnerOrCollab } from "./PresentationPage";
+import { getGroupsMembers } from "../redux/apiRequest";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
   return data;
+};
+const isOwnerOrCoowerOfGroup = async (user, idGroup, accessToken) => {
+  const members = await getGroupsMembers(accessToken, idGroup);
+  console.log("member", members);
+  for (let i = 0; i < members.length; i++) {
+    if (members[i].user_id === user?.user_id && members[i].role !== "member") return true;
+  }
+  return false;
 };
 
 // const socket = io.connect(process.env.REACT_APP_BE_ADDRESS);
@@ -43,6 +61,7 @@ function SlideShowHostPage() {
   const user = getCurrentUser();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
+  const [resultList, setResultList] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const {
     newMessage,
@@ -57,25 +76,31 @@ function SlideShowHostPage() {
   } = useChat(user?.user?.name);
   const [listQAQuestion, setListQAQuestion] = useState([]);
   const handleOnClickNext = () => {
-    socket.emit("showStatistic", currentQuestion + 1);
+    // socket.emit("showStatistic", currentQuestion + 1);
     setCurrentQuestion(currentQuestion + 1);
     socket.emit("next");
-    questions.forEach((item, index) => {
-      if (currentQuestion === index) {
-        //index cua question lon hon index 1 so
-        navigate(`/presentation/${idSlide}/${item.id}`);
-      }
-    });
+    socket.emit("getRoomState");
+    // questions.forEach((item, index) => {
+    //   if (currentQuestion === index) {
+    //     //index cua question lon hon index 1 so
+    //     socket.emit("showStatistic", item.id);
+    //     if (!idGroup) navigate(`/presentation/${idSlide}/${item.id}`);
+    //     else navigate(`/presentation/${idGroup}/${idSlide}/${item.id}`);
+    //   }
+    // });
   };
   const handleOnClickPre = () => {
-    socket.emit("showStatistic", currentQuestion - 1);
+    // socket.emit("showStatistic", currentQuestion - 1);
     setCurrentQuestion(currentQuestion - 1);
     socket.emit("prev");
-    questions.forEach((item, index) => {
-      if (currentQuestion - 1 === index + 1) {
-        navigate(`/presentation/${idSlide}/${item.id}`);
-      }
-    });
+    socket.emit("getRoomState");
+    // questions.forEach((item, index) => {
+    //   if (currentQuestion - 1 === index + 1) {
+    //     socket.emit("showStatistic", item.id);
+    //     if (!idGroup) navigate(`/presentation/${idSlide}/${item.id}`);
+    //     else navigate(`/presentation/${idGroup}/${idSlide}/${item.id}`);
+    //   }
+    // });
   };
   const handleOnBack = () => {
     socket.emit("manualDisconnect");
@@ -111,15 +136,15 @@ function SlideShowHostPage() {
     // } else {
     //   socket.emit("host", user?.user?.user_id, idSlide, true, idGroup, user.access_token);
     // }
-    notiSocket.emit("join", user?.access_token);
+    // notiSocket.emit("join", user?.access_token);
     socket.emit("listUserQuestion");
     socket.emit("chatHistory");
     const getQuestionList = async () => {
       let currentIndex = 0;
       const questionList = await getData(idSlide);
       currentIndex = getIndexInQuestionList(questionList);
-      socket.emit("showStatistic", currentIndex);
-      socket.emit("getRoomAcitve");
+      socket.emit("showStatistic", idQuestion);
+      socket.emit("getRoomActive");
       socket.emit("setRoomState", currentIndex);
     };
     getQuestionList();
@@ -129,15 +154,20 @@ function SlideShowHostPage() {
       // const questionList = await getData(idSlide, user?.access_token);
       // const currentIndex = getIndexInQuestionList(questionList);
       if (idGroup === undefined) {
-        console.log("all ");
         socket.emit("host", user?.user?.name, `${idSlide}`);
       } else {
-        console.log("group");
-        socket.emit("host", user?.user?.user_id, idSlide, true, idGroup, user.access_token);
+        // const isHost = await isOwnerOrCoowerOfGroup(user?.user, idGroup, user?.access_token);
+        // if (!isHost) socket.emit("host", user?.user?.name, idSlide, true, idGroup, user.access_token);
+        // else {
+        //   socket.emit("join", user?.user?.name, `${idSlide}`, user?.access_token);
+        // }
+        socket.emit("host", user?.user?.name, idSlide, true, idGroup, user.access_token);
       }
       // socket.emit("showStatistic", currentIndex);
       socket.emit("listUserQuestion");
       console.log("host connected");
+      socket.emit("showStatistic", idQuestion);
+
       // setCurrentQuestion(currentIndex);
     };
     const logError = err => {
@@ -146,10 +176,23 @@ function SlideShowHostPage() {
     const logMsg = msg => {
       console.log(msg);
     };
-    const logCurrentRoom = msg => {
-      console.log("current question", msg);
+    const logCurrentRoom = async msg => {
+      // console.log("current question", msg);
+      const questionList = await getData(idSlide);
+      // console.log("question in loop", questionList);
+      questionList.forEach((item, index) => {
+        // console.log("compare", msg, item.index.msg === item.index);
+        if (msg === item.index) {
+          console.log("question ", item);
+          //index cua question lon hon index 1 so
+          socket.emit("showStatistic", item.id);
+          if (!idGroup) navigate(`/presentation/${idSlide}/${item.id}`);
+          else navigate(`/presentation/${idGroup}/${idSlide}/${item.id}`);
+        }
+      });
     };
     const logStatistic = msg => {
+      // console.log("statistic", msg);
       setStatistic(msg);
     };
     const logQA = msg => {
@@ -169,6 +212,10 @@ function SlideShowHostPage() {
     socket.on("getActiveParticipants", logMsg);
     socket.on("showStatistic", logStatistic);
     socket.on("getRoomState", logCurrentRoom);
+    socket.on("resultList", function (msg) {
+      // console.log("resultList", msg);
+      setResultList([...msg]);
+    });
     socket.on("chat", handleNewMessage);
     socket.on("listUserQuestion", logListUserQA);
     socket.on("postQuestion", logQA);
@@ -210,7 +257,12 @@ function SlideShowHostPage() {
       </div>
       <div className="m-auto w-[90%] h-[80%] bg-white flex">
         <div className="w-full h-full">
-          <SlideUI statistic={statistic} idQuestion={idQuestion} listQAQuestion={listQAQuestion} />
+          <SlideUI
+            statistic={statistic}
+            idQuestion={idQuestion}
+            listQAQuestion={listQAQuestion}
+            resultList={resultList}
+          />
         </div>
       </div>
       <div
@@ -241,14 +293,14 @@ function SlideShowHostPage() {
   );
 }
 
-function SlideUI({ statistic, idQuestion, listQAQuestion }) {
+function SlideUI({ statistic, resultList, idQuestion, listQAQuestion }) {
   const [question, setQuestion] = useState([]);
   const [dataChart, setDataChart] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       const res = await getAllAnswersByIdQuestion(idQuestion);
-      const newDataChart = res?.map(item => {
-        return { name: item.raw_answer, quantity: (statistic && statistic[item.index]) || 0 };
+      const newDataChart = res?.map((item, index) => {
+        return { name: item.raw_answer, quantity: (statistic && statistic[index])?.Count || 0 };
       });
 
       const resQuestion = await getQuestionById(idQuestion);
@@ -269,7 +321,7 @@ function SlideUI({ statistic, idQuestion, listQAQuestion }) {
       />
       {dataChart.length > 0 ? <BarChartPre data={dataChart} isMultiple={isMultiple} /> : isMultiple && <NoneBarChart />}
       {/* <FooterSlide type={QUESTION_TYPE.HEADING} checkedList={[1, 2, 3]} /> */}
-      <FooterSlide listQuestions={listQAQuestion} />
+      <FooterSlide listQuestions={listQAQuestion} resultList={resultList} />
     </div>
   );
 }
@@ -277,6 +329,7 @@ SlideUI.propTypes = {
   statistic: PropTypes.any,
   idQuestion: PropTypes.string,
   listQAQuestion: PropTypes.array,
+  resultList: PropTypes.array,
 };
 
 export default SlideShowHostPage;

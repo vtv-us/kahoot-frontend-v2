@@ -13,6 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CloseIcon from "@mui/icons-material/Close";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import CheckIcon from "@mui/icons-material/Check";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
@@ -25,13 +26,15 @@ import { useSlide } from "../../contexts/slideContext";
 import { QUESTION_TYPE } from "../../utils/constants";
 import { SocketContext } from "../../contexts/socketContext";
 import DropdownMain from "./DropdownMain";
+import ModalResultAnswerList from "./ModalResultAnswerList";
 
 const SORT_BY_RECENT = 0;
 const SORT_BY_TOPVOTE = 1;
 
-function FooterSlide({ type = QUESTION_TYPE.MULTIPLE_CHOICE, checkedList = [], listQuestions }) {
+function FooterSlide({ type = QUESTION_TYPE.MULTIPLE_CHOICE, checkedList = [], resultList = [], listQuestions }) {
   const [ref, hovered] = useHover();
   const { open, handleClickOpen, handleClose } = useToggleModal();
+  const { open: openResult, handleClickOpen: handleClickOpenResult, handleClose: handleCloseResult } = useToggleModal();
 
   return (
     <>
@@ -39,6 +42,15 @@ function FooterSlide({ type = QUESTION_TYPE.MULTIPLE_CHOICE, checkedList = [], l
         {type !== QUESTION_TYPE.MULTIPLE_CHOICE && (
           <ReactionListInSlideUI type={type} checkedReactionList={checkedList} />
         )}
+        <div
+          ref={ref}
+          className={`p-2 rounded-full relative cursor-pointer ${hovered ? "bg-gray-300" : "bg-gray-200"}`}
+          onClick={() => {
+            handleClickOpenResult();
+          }}
+        >
+          <BookmarkAddedIcon className="text-gray-600" />
+        </div>
         <div
           ref={ref}
           className={`p-2 rounded-full relative cursor-pointer ${hovered ? "bg-gray-300" : "bg-gray-200"}`}
@@ -64,6 +76,7 @@ function FooterSlide({ type = QUESTION_TYPE.MULTIPLE_CHOICE, checkedList = [], l
         </div>
       </div>
       {open && <ModalQuestions handleClose={handleClose} listQuestions={listQuestions} />}
+      {openResult && <ModalResultAnswerList resultList={resultList} handleClose={handleCloseResult} />}
     </>
   );
 }
@@ -71,6 +84,7 @@ FooterSlide.propTypes = {
   type: PropTypes.number,
   checkedList: PropTypes.array,
   listQuestions: PropTypes.array,
+  resultList: PropTypes.array,
 };
 
 function ModalQuestions({ handleClose, listQuestions }) {

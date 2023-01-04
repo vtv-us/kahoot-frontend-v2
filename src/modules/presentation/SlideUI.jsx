@@ -19,8 +19,8 @@ function SlideUI({ statistic, idQuestion }) {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getAllAnswersByIdQuestion(idQuestion);
-      const newDataChart = res?.map(item => {
-        return { name: item.raw_answer, quantity: (statistic && statistic[item.index]) || 0 };
+      const newDataChart = res?.map((item, index) => {
+        return { name: item.raw_answer, quantity: (statistic && statistic[index])?.Count || 0 };
       });
 
       const resQuestion = await getQuestionById(idQuestion);

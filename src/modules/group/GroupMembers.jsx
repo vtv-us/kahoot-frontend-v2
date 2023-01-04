@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import uuid from "react-uuid";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -16,14 +16,20 @@ import GroupMemberSkeleton from "../../components/skeleton/GroupMemberSkeletion"
 import BackButton from "../../components/button/BackButton";
 import InviteLinkInput from "../../components/input/InviteLinkInput";
 import AlertPresent from "../../components/alert/AlertPresent";
+import { SocketContext } from "../../contexts/socketContext";
+import { getSlideById } from "../../handleApi";
+import { NotiSocketContext } from "../../contexts/notiSocketContext";
 
 function GroupMembers() {
   const [members, setMembers] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
+  const [room, setRoom] = useState("");
   const navigate = useNavigate();
   const { open, handleClickOpen, handleClose } = useToggleModal();
   const { id } = useParams("id");
   const user = getCurrentUser();
+  const socket = useContext(SocketContext);
+  const notiSocket = useContext(NotiSocketContext);
 
   useEffect(() => {
     setIsFetching(true);
@@ -35,6 +41,32 @@ function GroupMembers() {
   useEffect(() => {
     document.title = "Group ";
   }, []);
+
+  const logConnect = () => {
+    socket.emit("getRoomActive");
+    socket.emit("getSlidePresentation", id);
+  };
+  useEffect(() => {
+    socket.emit("getSlidePresentation", id);
+    socket.emit("getRoomActive");
+
+    socket.on("connect", logConnect);
+    socket.on("getRoomActive", async msg => {
+      console.log("activ", msg);
+    });
+    notiSocket.on("notify", msg => socket.emit("getSlidePresentation", id));
+    socket.on("error", msg => console.log("er", msg));
+    socket.on("getSlidePresentation", async msg => {
+      console.log("room gr", msg);
+      const roomPresent = await getSlideById(msg, user?.access_token);
+      setRoom(roomPresent);
+    });
+
+    return () => {
+      socket.off("error");
+      socket.off("getSlidePresentation");
+    };
+  }, [socket]);
   return (
     <LayoutMain className="!bg-white">
       <div className="flex ">
@@ -52,7 +84,12 @@ function GroupMembers() {
           >
             Invite
           </Button>
-          <AlertPresent name="Argentina is the Champion" />
+          {room && (
+            <AlertPresent
+              name={room?.title}
+              link={`${process.env.REACT_APP_FE_ADDRESS}/slides/member/${id}/${room?.id}`}
+            />
+          )}
           <ModalInvite open={open} handleClose={handleClose}>
             <InviteLinkInput idGroup={id} />
           </ModalInvite>
