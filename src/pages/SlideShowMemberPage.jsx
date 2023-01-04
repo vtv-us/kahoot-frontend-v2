@@ -13,7 +13,7 @@
 import { Radio, RadioGroup } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import uuid from "react-uuid";
 import ButtonMain from "../components/button/ButtonMain";
@@ -58,6 +58,7 @@ function SlideShowMemberPage() {
   // const [isAnswered, setIsAnswered] = useState(false);
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
   const { open, handleClickOpen, handleClose } = useToggleModal();
+  const navigate = useNavigate();
   const {
     newMessage,
     setNewMessage,
@@ -136,6 +137,11 @@ function SlideShowMemberPage() {
     });
     socket.on("disconnect", () => {
       console.log("disconnect");
+    });
+    socket.on("cancelPresentation", msg => {
+      console.log("cancel presentation", msg);
+      toast.info("End presentation because there is another presentation");
+      navigate(`/`);
     });
     socket.on("error", logError);
     socket.on("getRoomActive", logRoomActive);

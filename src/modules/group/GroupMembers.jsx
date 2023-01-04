@@ -17,13 +17,16 @@ import BackButton from "../../components/button/BackButton";
 import InviteLinkInput from "../../components/input/InviteLinkInput";
 import AlertPresent from "../../components/alert/AlertPresent";
 import { SocketContext } from "../../contexts/socketContext";
-import { getSlideById } from "../../handleApi";
+import { getAllQuestionByIdSlide, getSlideById } from "../../handleApi";
 import { NotiSocketContext } from "../../contexts/notiSocketContext";
+import { isOwnerOrCoowerOfGroup } from "../../pages/SlideShowHostPage";
 
 function GroupMembers() {
   const [members, setMembers] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
+  const [isHost, setIsHost] = useState(false);
   const [room, setRoom] = useState("");
+  const [firstQuestion, setFirstQuestion] = useState({});
   const navigate = useNavigate();
   const { open, handleClickOpen, handleClose } = useToggleModal();
   const { id } = useParams("id");
@@ -36,15 +39,25 @@ function GroupMembers() {
     getGroupsMembers(user.access_token, id).then(res => {
       setMembers(res);
       setIsFetching(false);
+      isOwnerOrCoowerOfGroup(user?.user, id, user?.access_token).then(resHost => setIsHost(resHost));
     });
-  }, []);
-  useEffect(() => {
     document.title = "Group ";
   }, []);
 
   const logConnect = () => {
     socket.emit("getRoomActive");
+
     socket.emit("getSlidePresentation", id);
+  };
+  const getFirstQuestion = async idSlide => {
+    try {
+      const questions = await getAllQuestionByIdSlide(idSlide);
+      const [first, ...rest] = questions;
+      return first;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
   };
   useEffect(() => {
     socket.emit("getSlidePresentation", id);
@@ -54,19 +67,27 @@ function GroupMembers() {
     socket.on("getRoomActive", async msg => {
       console.log("activ", msg);
     });
+    socket.on("getRoomState", msg => {
+      console.log("current", msg);
+    });
+
     notiSocket.on("notify", msg => socket.emit("getSlidePresentation", id));
     socket.on("error", msg => console.log("er", msg));
     socket.on("getSlidePresentation", async msg => {
       console.log("room gr", msg);
       const roomPresent = await getSlideById(msg, user?.access_token);
       setRoom(roomPresent);
+      const first = await getFirstQuestion(roomPresent?.id, user?.access_token);
+      setFirstQuestion(first);
     });
 
     return () => {
       socket.off("error");
       socket.off("getSlidePresentation");
+      socket.off("getRoomState");
     };
   }, [socket]);
+
   return (
     <LayoutMain className="!bg-white">
       <div className="flex ">
@@ -84,12 +105,7 @@ function GroupMembers() {
           >
             Invite
           </Button>
-          {room && (
-            <AlertPresent
-              name={room?.title}
-              link={`${process.env.REACT_APP_FE_ADDRESS}/slides/member/${id}/${room?.id}`}
-            />
-          )}
+          {room && <AlertPresent name={room?.title} idRoom={room?.id} isHost={isHost} />}
           <ModalInvite open={open} handleClose={handleClose}>
             <InviteLinkInput idGroup={id} />
           </ModalInvite>

@@ -10,6 +10,7 @@
 import PropTypes from "prop-types";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { toast } from "react-toastify";
 import MessageIcon from "@mui/icons-material/Message";
 import React, { useState, useEffect, useContext } from "react";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -43,7 +44,7 @@ const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
   return data;
 };
-const isOwnerOrCoowerOfGroup = async (user, idGroup, accessToken) => {
+export const isOwnerOrCoowerOfGroup = async (user, idGroup, accessToken) => {
   const members = await getGroupsMembers(accessToken, idGroup);
   console.log("member", members);
   for (let i = 0; i < members.length; i++) {
@@ -162,6 +163,10 @@ function SlideShowHostPage() {
         //   socket.emit("join", user?.user?.name, `${idSlide}`, user?.access_token);
         // }
         socket.emit("host", user?.user?.name, idSlide, true, idGroup, user.access_token);
+        socket.emit("getRoomState");
+        // socket.emit("cancelPresentation");
+
+        console.log("group id", idQuestion);
       }
       // socket.emit("showStatistic", currentIndex);
       socket.emit("listUserQuestion");
@@ -177,13 +182,11 @@ function SlideShowHostPage() {
       console.log(msg);
     };
     const logCurrentRoom = async msg => {
-      // console.log("current question", msg);
       const questionList = await getData(idSlide);
       // console.log("question in loop", questionList);
       questionList.forEach((item, index) => {
         // console.log("compare", msg, item.index.msg === item.index);
         if (msg === item.index) {
-          console.log("question ", item);
           //index cua question lon hon index 1 so
           socket.emit("showStatistic", item.id);
           if (!idGroup) navigate(`/presentation/${idSlide}/${item.id}`);
@@ -212,6 +215,11 @@ function SlideShowHostPage() {
     socket.on("getActiveParticipants", logMsg);
     socket.on("showStatistic", logStatistic);
     socket.on("getRoomState", logCurrentRoom);
+    socket.on("cancelPresentation", msg => {
+      console.log("cancel presentation", msg);
+      toast.info("End presentation because there is another presentation");
+      navigate(`/`);
+    });
     socket.on("resultList", function (msg) {
       // console.log("resultList", msg);
       setResultList([...msg]);

@@ -5,11 +5,11 @@ import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router";
 import ModalMain from "./ModalMain";
 import { SocketContext } from "../../contexts/socketContext";
-// import { getCurrentUser } from "../../utils/constants";
+import { getCurrentUser } from "../../utils/constants";
 
 function ModalShareToGroup({ children, open, handleClose = () => {}, choosed = [] }) {
   const socket = useContext(SocketContext);
-  // const user = getCurrentUser();
+  const user = getCurrentUser();
   const navigate = useNavigate();
   const { idSlide, idQuestion } = useParams();
   const buttonList = [
@@ -34,6 +34,7 @@ function ModalShareToGroup({ children, open, handleClose = () => {}, choosed = [
           ? e => {
               // todo
               e.stopPropagation();
+              socket.emit("cancelPresentation", choosed[0], user?.access_token);
               socket.emit("manualDisconnect");
               // socket.emit("host", user?.user?.user_id, idSlide, true, choosed[0], user.access_token);
               navigate(`/presentation/${choosed[0]}/${idSlide}/${idQuestion}`);
