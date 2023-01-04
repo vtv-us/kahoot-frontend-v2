@@ -124,11 +124,11 @@ function ModalQAUser({ handleClose, socket, userName }) {
             />
             <div className={`h-[300px] ${listUnansweredQuestion.length > 3 ? "overflow-y-scroll" : ""}`}>
               {listUnansweredQuestion.map(e => (
-                <div key={e.question_id}>
+                <div key={e?.question_id}>
                   <div className="mx-4 my-4 flex justify-between">
                     <div className="flex flex-col">
-                      <h2>{e.content}</h2>
-                      {userName === e.username && (
+                      <h2>{e?.content}</h2>
+                      {userName === e?.username && (
                         <div className="py-[2px] px-1 bg-blue-600 text-[10px] text-white rounded-lg w-fit">
                           Your question
                         </div>
@@ -138,12 +138,12 @@ function ModalQAUser({ handleClose, socket, userName }) {
                       <div
                         className="p-2 bg-gray-200 cursor-pointer hover:bg-gray-100 rounded-full "
                         onClick={() => {
-                          handleOnUpvoteQuestion(e.question_id);
+                          handleOnUpvoteQuestion(e?.question_id);
                         }}
                       >
                         <ThumbUpIcon />
                       </div>
-                      <h2>{e.votes}</h2>
+                      <h2>{e?.votes}</h2>
                     </div>
                   </div>
                   <div className="h-[1px] bg-gray-300 w-full" />
