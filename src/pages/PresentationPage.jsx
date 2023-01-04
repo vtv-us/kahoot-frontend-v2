@@ -27,7 +27,7 @@ import { getCurrentUser } from "../utils/constants";
 import { SocketContext } from "../contexts/socketContext";
 import ErrorPage from "./ErrorPage";
 
-const checkIsOwnerOrCollab = async (userId, slideId, accessToken) => {
+export const checkIsOwnerOrCollab = async (userId, slideId, accessToken) => {
   const listCollab = await getCollaboratorsByIdSlide(slideId, accessToken);
   const collabId = listCollab.map(e => e.user_id);
   const slide = await getSlideById(slideId, accessToken);

@@ -3,7 +3,6 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { toast } from "react-toastify";
 // import CloseIcon from "@mui/icons-material/Close";
 import HeaderMain from "./HeaderMain";
 import { NotiSocketContext } from "../../contexts/notiSocketContext";
@@ -15,6 +14,7 @@ function LayoutMain({ children, bgColor, className = "" }) {
   const [showNoti, setShowNoti] = useState(false);
   const [notiInfo, setNotiInfo] = useState(null);
   const notiSocket = useContext(NotiSocketContext);
+  const [groupCurrent, setGroupCurrent] = useState({});
   const user = getCurrentUser();
   const handleCloseNoti = () => {
     setShowNoti(false);
@@ -22,16 +22,13 @@ function LayoutMain({ children, bgColor, className = "" }) {
   const logNoti = async msg => {
     const group = await getGroupById(msg.GroupID, user?.access_token);
     const slide = await getSlideById(msg.SlideID, user?.access_token);
-    console.log(slide);
-    // console.log("notify", msg);
-    // console.log(group);
-    // console.log(slide);
+    setGroupCurrent(group);
     setNotiInfo({
       slide,
       group,
     });
     setShowNoti(true);
-    toast.info(`Presentation ${slide.title} is being presented in group ${group.group_name}`, { autoClose: false });
+    // toast.info(`Presentation ${slide.title} is being presented in group ${group.group_name}`, { autoClose: false });
   };
   useEffect(() => {
     notiSocket.emit("join", user?.access_token);
@@ -54,7 +51,7 @@ function LayoutMain({ children, bgColor, className = "" }) {
             Close
           </div>
           <a
-            href={`${process.env.REACT_APP_FE_ADDRESS}/slides/member/${notiInfo?.slide?.id}`}
+            href={`${process.env.REACT_APP_FE_ADDRESS}/slides/member/${groupCurrent.group_id}/${notiInfo?.slide?.id}`}
             className="p-1 text-green-500 cursor-pointer rounded-md hover:bg-green-100"
             target="_blank"
             rel="noreferrer"

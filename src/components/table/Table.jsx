@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 
 const TableStyles = styled.div`
   /* overflow-x: auto; */
+  overflow-y: auto;
+  height: 400px;
   background-color: white;
   border-radius: 10px;
   box-shadow: rgb(0 0 0 / 15%) 0px 1px 4px 0px;
@@ -23,6 +25,9 @@ const TableStyles = styled.div`
     font-weight: 600;
     text-align: left;
     white-space: nowrap;
+    position: sticky;
+    top: 0;
+    background-color: #f7f7f8;
   }
   td {
     padding: 15px 30px;

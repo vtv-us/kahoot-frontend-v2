@@ -1,19 +1,21 @@
 import React from "react";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router";
 
 function AlertPresent({ name = "Tile", link = "/slides/owned" }) {
-  const navigate = useNavigate();
   return (
     <Stack sx={{ width: "100%" }} spacing={2}>
       <Alert
         action={
-          <Button color="inherit" size="small" onClick={() => navigate(link)}>
+          <a
+            href={link}
+            target="_blank"
+            rel="noreferrer"
+            className="my-auto p-1 bg-gray-200 hover:opacity-50 rounded-md"
+          >
             Join now
-          </Button>
+          </a>
         }
       >
         <div className="text-green-600">

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable react/no-typos */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -32,6 +33,7 @@ import Chat from "../components/chat/Chat";
 import ModalQAUser from "../modules/presentation/ModalQAUser";
 import NoneBarChart from "../components/chart/NonBarChart";
 import ErrorPage from "./ErrorPage";
+import { getGroupsMembers } from "../redux/apiRequest";
 
 const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
@@ -40,10 +42,11 @@ const getData = async id => {
 
 function SlideShowMemberPage() {
   const socket = useContext(SocketContext);
-  const { idSlide } = useParams();
+  const { idSlide, idGroup } = useParams();
   const [idQuestion, setIdQuestion] = useState("");
   const [value, setValue] = useState("");
   const [question, setQuesion] = useState(null);
+  const [memberGroup, setMemberGroup] = useState([]);
   const [questions, setQuestions] = useState([]);
   // const [qaQuestions, setQAQuestions] = useState([]);
   const [statistic, setStatistic] = useState();
@@ -104,6 +107,19 @@ function SlideShowMemberPage() {
     const questionList = await getData(idSlide);
     currentIndex = getIndexInQuestionList(questionList);
   };
+  const isMemberOfGroup = (group, id) => {
+    for (let i = 0; i < group.length; i++) {
+      if (group[i].user_id === id) return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    if (idGroup)
+      getGroupsMembers(user?.access_token, idGroup).then(res => {
+        setMemberGroup(res);
+      });
+  }, [idGroup]);
 
   useEffect(() => setUsername(uuid()), [idSlide]);
   useEffect(() => {
@@ -111,7 +127,8 @@ function SlideShowMemberPage() {
     socket.on("connect", msg => {
       const name = user?.user?.name || uuid();
       setUsername(name);
-      socket.emit("join", name, `${idSlide}`);
+      if (!idGroup) socket.emit("join", name, `${idSlide}`);
+      else socket.emit("join", name, `${idSlide}`, user?.access_token);
       getQuestionList();
       socket.emit("getRoomState");
       socket.emit("listUserQuestion");
@@ -179,6 +196,8 @@ function SlideShowMemberPage() {
     setShowNewMessage,
     username,
   };
+  if ((idGroup && !user) || (idGroup && user && !isMemberOfGroup(memberGroup, user?.user?.user_id)))
+    return <ErrorPage />;
   return (
     <div className="mx-auto  flex flex-col items-center max-w-[600px] m-10 p-2">
       {answeredQuestions.includes(question?.index) === false ? (

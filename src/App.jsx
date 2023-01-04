@@ -44,6 +44,7 @@ function App() {
               <Route path="/presentation/:idSlide/:idQuestion/edit" element={<PresentationPage />} />
               <Route path="/slides/:id" element={<SlidesPage />} />
               <Route path="/slides/member/:idSlide" element={<SlideShowMemberPage />} />
+              <Route path="/slides/member/:idGroup/:idSlide" element={<SlideShowMemberPage />} />
               <Route path="/presentation/:idSlide/:idQuestion" element={<SlideShowHostPage />} />
               <Route path="/presentation/:idGroup/:idSlide/:idQuestion" element={<SlideShowHostPage />} />
               <Route path="*" element={<ErrorPage />} />
