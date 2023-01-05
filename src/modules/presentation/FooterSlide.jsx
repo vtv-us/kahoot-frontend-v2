@@ -380,11 +380,9 @@ function ModalQuestions({ handleClose, listQuestions }) {
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full">
+          <div className="flex flex-col items-center justify-center w-full h-full text-center">
             <h2 className="text-4xl">No questions from the audience!</h2>
-            <h3 className="text-xl text-center">
-              Incoming questions will show up here so that you can answer them one by one.
-            </h3>
+            <h3 className="text-xl">Incoming questions will show up here so that you can answer them one by one.</h3>
           </div>
         )}
       </div>
