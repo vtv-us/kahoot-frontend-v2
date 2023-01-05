@@ -196,20 +196,22 @@ function SlideShowHostPage() {
       console.log(err);
     };
     const logMsg = msg => {
-      console.log(msg);
+      // console.log(msg);
     };
     const logCurrentRoom = async msg => {
       const questionList = await getData(idSlide);
       // console.log("question in loop", questionList);
-      questionList.forEach((item, index) => {
-        // console.log("compare", msg, item.index.msg === item.index);
-        if (msg === item.index) {
-          //index cua question lon hon index 1 so
-          socket.emit("showStatistic", item.id);
-          if (!idGroup) navigate(`/presentation/${idSlide}/${item.id}`);
-          else navigate(`/presentation/${idGroup}/${idSlide}/${item.id}`);
-        }
-      });
+      const url = window.location.href;
+      if (!url.includes("/edit"))
+        questionList.forEach((item, index) => {
+          // console.log("compare", msg, item.index.msg === item.index);
+          if (msg === item.index) {
+            //index cua question lon hon index 1 so
+            socket.emit("showStatistic", item.id);
+            if (!idGroup) navigate(`/presentation/${idSlide}/${item.id}`);
+            else navigate(`/presentation/${idGroup}/${idSlide}/${item.id}`);
+          }
+        });
     };
     const logStatistic = msg => {
       // console.log("statistic", msg);

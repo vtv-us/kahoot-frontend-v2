@@ -39,7 +39,7 @@ function GroupMembers() {
     getGroupsMembers(user.access_token, id).then(res => {
       setMembers(res);
       setIsFetching(false);
-      isOwnerOrCoowerOfGroup(user?.user, id, user?.access_token).then(resHost => setIsHost(resHost));
+      isOwnerOrCoowerOfGroup(user?.user?.user_id, id, user?.access_token).then(resHost => setIsHost(resHost));
     });
     document.title = "Group ";
   }, []);

@@ -48,7 +48,6 @@ function SlideProvider(props) {
       long_description: description,
       type: valueByType[type],
     };
-    console.log("data", questionData);
 
     updateQuestion(user?.access_token, questionData);
   }, [meta, question, description, type]);
