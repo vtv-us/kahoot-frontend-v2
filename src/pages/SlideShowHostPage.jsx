@@ -45,32 +45,35 @@ const getData = async id => {
   const data = await getAllQuestionByIdSlide(id);
   return data;
 };
-export const isOwnerOrCoowerOfGroup = async (user, idGroup, accessToken) => {
+export const isOwnerOrCoowerOfGroup = async (userId, idGroup, accessToken) => {
   const members = await getGroupsMembers(accessToken, idGroup);
   for (let i = 0; i < members.length; i++) {
-    if (members[i].user_id === user?.user_id && members[i].role !== "member") return true;
+    if (members[i].user_id === userId && members[i].role !== "member") return true;
   }
   return false;
 };
 
-const checkIsOwnerOrCollabOfSlide = async (userId, idSlide, accessToken) => {
+const checkIsOwnerOrCollabOfSlide = async (userId, idGroup, idSlide, accessToken) => {
   if (userId === undefined) return false;
+  const checkIsOwnerOrCoownerOfGroup = await isOwnerOrCoowerOfGroup(userId, idGroup, accessToken);
   const listOwnedSlide = await getAlllides(accessToken);
   const listCollabSlide = await getCollaboratorsSlide(userId, accessToken);
   if (listOwnedSlide === null || listCollabSlide === null) return false;
   const listOwnedSlideId = listOwnedSlide.data.map(e => e.id);
   const listCollabSlideId = listCollabSlide.map(e => e.id);
-  if (listOwnedSlideId.includes(idSlide) || listCollabSlideId.includes(idSlide)) return true;
+  if (checkIsOwnerOrCoownerOfGroup || listOwnedSlideId.includes(idSlide) || listCollabSlideId.includes(idSlide))
+    return true;
   return false;
 };
 
 // const socket = io.connect(process.env.REACT_APP_BE_ADDRESS);
 function SlideShowHostPage() {
+  const user = getCurrentUser();
+  if (user === null) return <ErrorPage />;
   const socket = useContext(SocketContext);
   const notiSocket = useContext(NotiSocketContext);
   const { idGroup, idSlide, idQuestion } = useParams();
   const [statistic, setStatistic] = useState();
-  const user = getCurrentUser();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [resultList, setResultList] = useState([]);
@@ -144,7 +147,10 @@ function SlideShowHostPage() {
 
   useEffect(() => {
     if (!socket) return;
-    checkIsOwnerOrCollabOfSlide(user?.user?.user_id, idSlide, user.access_token).then(res => setIsOwnerOrCollab(res));
+    checkIsOwnerOrCollabOfSlide(user?.user?.user_id, idGroup, idSlide, user?.access_token).then(res =>
+      setIsOwnerOrCollab(res)
+    );
+
     // if (idGroup === undefined) {
     //   socket.emit("host", user?.user?.name, `${idSlide}`);
     // } else {
