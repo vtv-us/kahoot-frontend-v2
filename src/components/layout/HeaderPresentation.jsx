@@ -18,7 +18,13 @@ import User from "../user/User";
 import { getCurrentUser } from "../../utils/constants";
 import ButtonMain from "../button/ButtonMain";
 import DropdownMenu from "../dropdown/DropdownMenu";
-import { getGroupsCreatedByUser, getGroupsUserHasJoined, getSlideById, updateSlide } from "../../handleApi";
+import {
+  getAlllides,
+  getGroupsCreatedByUser,
+  getGroupsUserHasJoined,
+  getSlideById,
+  updateSlide,
+} from "../../handleApi";
 import { getUserById } from "../../redux/apiRequest";
 import useToggleModal from "../../hooks/useToggleModal";
 import ModalInvite from "../modal/ModalInvite";
@@ -29,11 +35,19 @@ import ModalMain from "../modal/ModalMain";
 import ModalShareToGroup from "../modal/ModalShareToGroup";
 import ModalManagementCollab from "../modal/ModalManagementCollab";
 
+const checkIsOwner = async (idSlide, accessToken) => {
+  const slide = await getAlllides(accessToken);
+  const listSlideId = slide.data.map(e => e.id);
+  if (listSlideId.includes(idSlide)) return true;
+  return false;
+};
+
 function HeaderPresentation({ socket }) {
   const { idSlide, idQuestion } = useParams();
   const user = getCurrentUser();
   const navigate = useNavigate();
   const [owner, setOwner] = useState({});
+  const [isOwner, setIsOwner] = useState(false);
   const [slide, setSlide] = useState({});
   const [choosed, setChoosed] = useState([]);
   const [filter, setFilter] = useState({});
@@ -85,15 +99,18 @@ function HeaderPresentation({ socket }) {
         handleClickOpenShareGroup();
       },
     },
-    {
-      icon: <ManageAccountsIcon />,
-      title: "Manage collaborators",
-      onClick: () => {
-        handleClickOpenManageCollab();
-      },
-    },
+    isOwner
+      ? {
+          icon: <ManageAccountsIcon />,
+          title: "Manage collaborators",
+          onClick: () => {
+            handleClickOpenManageCollab();
+          },
+        }
+      : null,
   ];
   useEffect(() => {
+    checkIsOwner(idSlide, user.access_token).then(res => setIsOwner(res));
     getSlideById(idSlide, user?.access_token).then(res => setSlide(res));
   }, []);
   useEffect(() => {

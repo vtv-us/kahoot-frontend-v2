@@ -77,7 +77,9 @@ export default function ModalInviteByEmail({ groupId, open, handleClose }) {
           <CircularProgress />
         </div>
       ) : (
-        <h2 className="text-red-500 font-thin">{errorText}</h2>
+        <h2 className={`${errorText === "success" ? "text-green-600" : "text-red-500"} font-thin`}>
+          {errorText === "success" ? "Send invite link successfully" : errorText}
+        </h2>
       )}
     </ModalMain>
   );

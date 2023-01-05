@@ -21,7 +21,9 @@ import BarChartPre from "../components/chart/BarChartPre";
 import FooterSlide from "../modules/presentation/FooterSlide";
 import {
   getAllAnswersByIdQuestion,
+  getAlllides,
   getAllQuestionByIdSlide,
+  getCollaboratorsSlide,
   getGroupsCreatedByUser,
   getGroupsUserHasJoined,
   getQuestionById,
@@ -37,7 +39,6 @@ import Chat from "../components/chat/Chat";
 import NoneBarChart from "../components/chart/NonBarChart";
 import ErrorPage from "./ErrorPage";
 import { NotiSocketContext } from "../contexts/notiSocketContext";
-import { checkIsOwnerOrCollab } from "./PresentationPage";
 import { getGroupsMembers } from "../redux/apiRequest";
 
 const getData = async id => {
@@ -46,10 +47,20 @@ const getData = async id => {
 };
 export const isOwnerOrCoowerOfGroup = async (user, idGroup, accessToken) => {
   const members = await getGroupsMembers(accessToken, idGroup);
-  console.log("member", members);
   for (let i = 0; i < members.length; i++) {
     if (members[i].user_id === user?.user_id && members[i].role !== "member") return true;
   }
+  return false;
+};
+
+const checkIsOwnerOrCollabOfSlide = async (userId, idSlide, accessToken) => {
+  if (userId === undefined) return false;
+  const listOwnedSlide = await getAlllides(accessToken);
+  const listCollabSlide = await getCollaboratorsSlide(userId, accessToken);
+  if (listOwnedSlide === null || listCollabSlide === null) return false;
+  const listOwnedSlideId = listOwnedSlide.data.map(e => e.id);
+  const listCollabSlideId = listCollabSlide.map(e => e.id);
+  if (listOwnedSlideId.includes(idSlide) || listCollabSlideId.includes(idSlide)) return true;
   return false;
 };
 
@@ -64,6 +75,7 @@ function SlideShowHostPage() {
   const [questions, setQuestions] = useState([]);
   const [resultList, setResultList] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [isOwnerOrCollab, setIsOwnerOrCollab] = useState(false);
   const {
     newMessage,
     setNewMessage,
@@ -132,6 +144,7 @@ function SlideShowHostPage() {
 
   useEffect(() => {
     if (!socket) return;
+    checkIsOwnerOrCollabOfSlide(user?.user?.user_id, idSlide, user.access_token).then(res => setIsOwnerOrCollab(res));
     // if (idGroup === undefined) {
     //   socket.emit("host", user?.user?.name, `${idSlide}`);
     // } else {
@@ -165,8 +178,6 @@ function SlideShowHostPage() {
         socket.emit("host", user?.user?.name, idSlide, true, idGroup, user.access_token);
         socket.emit("getRoomState");
         // socket.emit("cancelPresentation");
-
-        console.log("group id", idQuestion);
       }
       // socket.emit("showStatistic", currentIndex);
       socket.emit("listUserQuestion");
@@ -216,7 +227,6 @@ function SlideShowHostPage() {
     socket.on("showStatistic", logStatistic);
     socket.on("getRoomState", logCurrentRoom);
     socket.on("cancelPresentation", msg => {
-      console.log("cancel presentation", msg);
       toast.info("End presentation because there is another presentation");
       navigate(`/`);
     });
@@ -255,7 +265,7 @@ function SlideShowHostPage() {
     setShowNewMessage,
     username: user?.user?.name,
   };
-  return user !== null ? (
+  return user !== null && isOwnerOrCollab === true ? (
     <div className="bg-black w-full h-screen flex relative">
       <div
         className="my-auto ml-4 p-2 rounded-full cursor-pointer hover:bg-gray-700 items-center"

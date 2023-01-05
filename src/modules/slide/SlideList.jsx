@@ -90,6 +90,8 @@ function SlideList({ onSelected = value => {}, listItem, setSlideList }) {
             title={item.title}
             // checked={!!isSelectedAll}
             idSlide={item.id}
+            createdAt={item.created_at}
+            updatedAt={item.updated_at}
             onShowSlide={() => {
               // show slide
             }}
@@ -162,7 +164,7 @@ ListHeader.propTypes = {
   onSelectAll: PropTypes.func,
 };
 
-function ListItem({ title, onShowSlide, idSlide, onDelete, onChecked, onRename }) {
+function ListItem({ title, onShowSlide, idSlide, onDelete, onChecked, onRename, createdAt, updatedAt }) {
   const optionGroupMenu = [
     {
       icon: <OpenInNewOutlinedIcon />,
@@ -238,8 +240,8 @@ function ListItem({ title, onShowSlide, idSlide, onDelete, onChecked, onRename }
         <h3 className="font-light text-sm text-gray-400">{questionList.length || 0} SLIDES</h3>
       </div>
       <div className="text-gray-400 w-[244px]">me</div>
-      <div className="text-gray-400 w-[244px]">about 19 hours ago</div>
-      <div className="text-gray-400 w-[244px]">about 19 hours ago</div>
+      <div className="text-gray-400 w-[244px]">{updatedAt}</div>
+      <div className="text-gray-400 w-[244px]">{createdAt}</div>
       <Icon onClick={e => e.stopPropagation()}>
         <DropdownMenu data={optionGroupMenu}>
           <MoreHorizIcon className="mr-4" />
@@ -255,6 +257,8 @@ ListItem.propTypes = {
   onDelete: PropTypes.func,
   onChecked: PropTypes.func,
   onRename: PropTypes.func,
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
 };
 
 function PlayButton({ onClick, className, ...props }) {
